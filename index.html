@@ -27,7 +27,6 @@
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
-        /* Deposit & Withdraw Buttons Style */
         .wallet-actions {
             display: flex;
             justify-content: center;
@@ -98,7 +97,6 @@
             overflow-y: auto;
         }
 
-        /* Popup Modals Style */
         .modal {
             display: none;
             position: fixed;
@@ -181,6 +179,7 @@
         <div>System initialized. Waiting for bets...</div>
     </div>
 
+    <!-- DEPOSIT MODAL -->
     <div id="depositModal" class="modal">
         <div class="modal-content">
             <h3>Deposit Funds</h3>
@@ -204,10 +203,11 @@
         </div>
     </div>
 
+    <!-- WITHDRAW MODAL -->
     <div id="withdrawModal" class="modal">
         <div class="modal-content">
             <h3>Withdraw Funds</h3>
-            <p style="font-size: 13px; color: #bbb;">Apna account details aur rayeem enter karein:</p>
+            <p style="font-size: 13px; color: #bbb;">Apna account details aur raqam enter karein:</p>
             
             <select id="withMethod">
                 <option value="Easypaisa">Easypaisa</option>
@@ -277,18 +277,7 @@
         function openModal(id) { document.getElementById(id).style.display = "flex"; }
         function closeModal(id) { document.getElementById(id).style.display = "none"; }
 
-        // Deposit Process Submission
-        function submitDeposit() {
-            let amount = document.getElementById('depAmount').value;
-            let trx = document.getElementById('depTrx').value;
-            let method = document.getElementById('depMethod').value;
-
-            if(!amount || !trx) {
-                alert("Meherbani karke Amount aur TRX ID dono enter karein!");
-                return;
-            }
-            
-         // Deposit Process Submission with Telegram Notification
+        // Deposit Process Submission with Telegram Notification
         function submitDeposit() {
             let amount = document.getElementById('depAmount').value;
             let trx = document.getElementById('depTrx').value;
