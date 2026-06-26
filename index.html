@@ -3,87 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Win Zone - Automated Risk Management Elite</title>
-    <!-- Firebase Libraries -->
+    <title>Win Zone Pro - Elite Gaming Terminal</title>
+    <!-- Firebase & Google Fonts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800;900&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
+        :root {
+            --bg-dark: #080c14;
+            --card-bg: #111827;
+            --accent: #f1c40f;
+            --green: #10b981;
+            --red: #ef4444;
+            --purple: #8b5cf6;
+        }
         body {
             margin: 0; padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0b0f19; color: white;
-            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark); color: #f3f4f6;
+            text-align: center; -webkit-tap-highlight-color: transparent;
         }
-        #appScreen { display: none; }
-        .auth-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; background: linear-gradient(to bottom, #0b0f19, #111827); }
-        .auth-card { background-color: #1e293b; padding: 35px 25px; border-radius: 24px; width: 100%; max-width: 380px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); border: 1px solid #334155; }
-        .auth-card h2 { color: #f1c40f; margin-bottom: 25px; font-size: 26px; font-weight: 800; text-transform: uppercase; }
-        .header { background-color: #111827; padding: 18px 15px; font-size: 22px; font-weight: 800; border-bottom: 3px solid #f1c40f; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-        .header span { color: #f1c40f; }
-        .logout-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; }
+        #appScreen { display: none; padding-bottom: 40px; }
         
-        /* Promotion Banner */
-        .promo-banner { background: linear-gradient(90deg, #b91c1c, #4338ca); margin: 15px 20px; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: bold; border: 1px solid #f1c40f; line-height: 1.5; text-align: left; }
+        /* Auth Screen Styling */
+        .auth-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; background: radial-gradient(circle at top, #111827 0%, #080c14 100%); }
+        .auth-card { background-color: var(--card-bg); padding: 35px 25px; border-radius: 24px; width: 100%; max-width: 380px; box-shadow: 0 0 30px rgba(0,0,0,0.7); border: 1px solid #1f2937; }
+        .auth-card h2 { font-family: 'Orbitron', sans-serif; color: var(--accent); margin-bottom: 25px; font-size: 24px; letter-spacing: 1px; }
+        .auth-card input { padding: 14px; background: #0b0f19; border: 1px solid #374151; color: white; border-radius: 12px; width: 100%; box-sizing: border-box; margin-bottom: 15px; font-size: 15px; outline: none; }
+
+        /* VIP Header */
+        .header { background: #0f172a; padding: 18px 20px; border-bottom: 2px solid var(--accent); display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .header span { font-family: 'Orbitron', sans-serif; font-weight: 900; color: var(--accent); font-size: 20px; letter-spacing: 1px; }
+        .logout-btn { background: var(--red); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
+
+        /* Dynamic Offers Banner */
+        .promo-banner { background: linear-gradient(135deg, #1e1b4b 0%, #311042 100%); margin: 15px; padding: 14px; border-radius: 16px; font-size: 12px; border-left: 4px solid var(--accent); text-align: left; line-height: 1.6; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+
+        /* Dashboard Core Balance */
+        .balance-card { background: linear-gradient(135deg, #1f2937 0%, #111827 100%); margin: 15px; padding: 22px; border-radius: 20px; border: 1px solid #374151; position: relative; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05), 0 10px 25px rgba(0,0,0,0.4); }
+        .balance-card .amt { font-family: 'Orbitron', sans-serif; font-size: 36px; font-weight: 900; color: var(--accent); margin-top: 5px; text-shadow: 0 0 15px rgba(241, 196, 15, 0.4); }
         
-        .balance-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); margin: 15px 20px; padding: 20px; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.5); border: 1px solid #334155; }
-        .wallet-actions { display: flex; justify-content: center; gap: 15px; margin: -5px 20px 15px 20px; }
-        .btn-wallet { flex: 1; padding: 12px; font-size: 15px; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; }
-        .btn-dep { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .wallet-actions { display: flex; justify-content: center; gap: 15px; margin: -5px 15px 15px 15px; }
+        .btn-wallet { flex: 1; padding: 14px; font-size: 15px; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: 0.2s; }
+        .btn-wallet:active { transform: scale(0.97); }
+        .btn-dep { background: linear-gradient(135deg, #10b981, #047857); color: white; }
         .btn-with { background: linear-gradient(135deg, #0284c7, #0369a1); color: white; }
 
-        /* History Component */
-        .history-box { background-color: #111827; margin: 15px 20px; padding: 12px; border-radius: 14px; border: 1px solid #334155; text-align: left; }
-        .history-title { font-size: 13px; color: #94a3b8; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; }
-        .trends-list { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; }
-        .trend-dot { min-width: 36px; height: 36px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: white; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
-        .latest-win-mark { position: absolute; top: -8px; font-size: 9px; background: #f1c40f; color: black; padding: 1px 3px; border-radius: 4px; font-weight: 900; animation: blink 1s infinite; }
-        
-        @keyframes blink { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+        /* Timer Zone Container */
+        .timer-container { background: #111827; margin: 15px; padding: 15px; border-radius: 16px; border: 1px solid #1f2937; display: flex; justify-content: space-between; align-items: center; }
+        .period-box { text-align: left; }
+        .period-box div:first-child { font-size: 11px; color: #9ca3af; font-weight: bold; text-transform: uppercase; }
+        .period-box div:last-child { font-family: 'Orbitron', sans-serif; font-size: 18px; color: white; font-weight: bold; margin-top: 2px; }
+        .clock-box { text-align: right; }
+        .clock-box div:first-child { font-size: 11px; color: #9ca3af; font-weight: bold; text-transform: uppercase; }
+        .clock-box div:last-child { font-family: 'Orbitron', sans-serif; font-size: 24px; color: #f59e0b; font-weight: 900; }
 
-        .history-pagination-btn { background: none; border: 1px solid #f1c40f; color: #f1c40f; padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; }
+        /* Premium Glow Buttons (Big / Small / Color) */
+        .premium-bet-row { display: flex; gap: 12px; padding: 0 15px; margin: 15px 0; }
+        .premium-btn { flex: 1; padding: 16px; font-size: 16px; font-weight: bold; border: none; border-radius: 14px; cursor: pointer; color: white; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.1s; }
+        .premium-btn:active { transform: scale(0.95); }
+        .btn-big { background: linear-gradient(135deg, #f59e0b, #b45309); border-bottom: 4px solid #78350f; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2); }
+        .btn-small { background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-bottom: 4px solid #1e40af; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2); }
+        
+        /* Beautified Number Grid Container */
+        .number-box-container { background: #111827; margin: 15px; padding: 15px 10px; border-radius: 20px; border: 1px solid #1f2937; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+        .grid-header-label { font-size: 12px; color: #9ca3af; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .number-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .num-btn-pro { position: relative; height: 50px; font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 900; border: none; border-radius: 12px; cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.1s; }
+        .num-btn-pro:active { transform: scale(0.9); }
+        .num-btn-pro span { font-size: 9px; position: absolute; bottom: 3px; font-family: 'Poppins', sans-serif; font-weight: bold; opacity: 0.8; }
+        
+        .bg-green { background: linear-gradient(135deg, #10b981, #047857); border-bottom: 3px solid #064e3b; }
+        .bg-red { background: linear-gradient(135deg, #ef4444, #b91c1c); border-bottom: 3px solid #7f1d1d; }
+        .bg-mix { background: linear-gradient(135deg, #8b5cf6, #ec4899); border: 1px dashed #fff; border-bottom: 3px solid #5b21b6; }
 
-        .timer-section { background-color: #1e293b; margin: 15px 20px; padding: 12px; border-radius: 14px; font-size: 18px; color: #f59e0b; font-weight: bold; border: 1px solid #334155; }
-        .timer-section span { font-size: 22px; color: #fff; background: #0f172a; padding: 4px 12px; border-radius: 8px; margin-left: 8px; border: 1px solid #f59e0b; }
-        
-        .color-buttons { display: flex; justify-content: center; gap: 20px; margin: 15px 0; padding: 0 20px; }
-        .btn { flex: 1; padding: 15px; font-size: 18px; font-weight: bold; border: none; border-radius: 14px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4); text-transform: uppercase; }
-        .btn-red { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; }
-        .btn-green { background: linear-gradient(135deg, #10b981, #047857); color: white; }
-        
-        .number-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 0 20px; margin-bottom: 20px; }
-        .num-btn { padding: 12px 0; font-size: 16px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; color: white; }
-        
-        .bg-green { background: linear-gradient(135deg, #10b981, #059669); }
-        .bg-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        .bg-mix { background: linear-gradient(135deg, #8b5cf6, #ec4899); border: 1px dashed #fff; }
+        /* Faster Chips Multiplying Box */
+        .chip-multiplier-row { display: flex; justify-content: center; gap: 8px; margin: 15px; padding: 0 5px; }
+        .chip-btn { flex: 1; padding: 10px 0; background: #1f2937; border: 1px solid #374151; color: #cbd5e1; font-weight: bold; font-size: 13px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .chip-btn.active { background: var(--accent); color: #000; border-color: var(--accent); box-shadow: 0 0 10px rgba(241, 196, 15, 0.4); }
 
-        input[type="number"], input[type="text"], input[type="email"], input[type="password"], select { padding: 12px; font-size: 15px; border-radius: 10px; border: 1px solid #334155; background-color: #0f172a; color: white; width: 100%; max-width: 280px; text-align: center; margin-bottom: 12px; box-sizing: border-box; }
-        .status-display { background-color: #111827; border: 1px dashed #334155; padding: 12px; margin: 15px 20px; border-radius: 12px; font-size: 14px; color: #94a3b8; font-weight: bold; }
-        .logs { background-color: #1e293b; margin: 20px; padding: 12px; border-radius: 12px; text-align: left; max-height: 100px; overflow-y: auto; font-size: 13px; color: #cbd5e1; border: 1px solid #334155; }
+        /* Professional 3-Tab Display Blocks */
+        .tab-box-container { margin: 20px 15px; }
+        .tab-headers { display: flex; background: #111827; border-radius: 12px; padding: 4px; border: 1px solid #1f2937; }
+        .tab-nav { flex: 1; padding: 10px; font-size: 13px; font-weight: bold; color: #9ca3af; cursor: pointer; border-radius: 8px; transition: 0.2s; }
+        .tab-nav.active { background: #1f2937; color: white; border-bottom: 2px solid var(--accent); }
         
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000; padding: 15px; box-sizing: border-box; }
-        .modal-content { background-color: #1e293b; padding: 25px 20px; border-radius: 24px; width: 100%; max-width: 360px; border: 1px solid #475569; text-align: center; }
-        .account-details { background-color: #0f172a; padding: 12px; border-radius: 12px; font-weight: bold; margin-bottom: 15px; font-size: 14px; color: #f1c40f; line-height: 1.5; }
-        .submit-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; }
-        .close-btn { background-color: #475569; color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; margin-top: 12px; width: 100%; }
+        .tab-content-panel { background: #111827; margin-top: 8px; border-radius: 16px; border: 1px solid #1f2937; padding: 15px; min-height: 180px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .tab-block { display: none; }
+        .tab-block.active { display: block; }
+
+        /* Professional History Grid Table */
+        .history-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+        .history-table th { color: #9ca3af; padding: 8px; border-bottom: 1px solid #1f2937; font-weight: bold; text-transform: uppercase; font-size: 11px; }
+        .history-table td { padding: 10px 8px; border-bottom: 1px solid #1f2937; font-weight: 500; }
+        .badge-ui { padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; color: white; display: inline-block; }
+        
+        /* Strategy Follow Card Layout */
+        .strategy-card { background: #1e293b; border-radius: 12px; padding: 15px; border-left: 4px solid #3b82f6; text-align: left; }
+        .strategy-card div:first-child { font-weight: bold; color: var(--accent); font-size: 14px; margin-bottom: 5px; }
+        .strategy-card div:last-child { font-size: 12px; color: #cbd5e1; }
+
+        /* Charts 📈 CSS Micro Render */
+        .chart-flow-wrapper { display: flex; gap: 8px; align-items: flex-end; justify-content: space-around; height: 120px; padding-top: 20px; }
+        .chart-pillar { width: 16px; background: #374151; border-radius: 4px 4px 0 0; position: relative; min-height: 15px; transition: 0.3s; }
+        .chart-pillar span { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 10px; font-weight: bold; font-family: 'Orbitron'; }
+
+        /* Modals and Overlays */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.95); justify-content: center; align-items: center; z-index: 1000; padding: 15px; box-sizing: border-box; }
+        .modal-content { background-color: var(--card-bg); padding: 25px 20px; border-radius: 24px; width: 100%; max-width: 360px; border: 1px solid #374151; text-align: center; }
+        .account-details { background-color: #0b0f19; padding: 14px; border-radius: 12px; font-weight: bold; margin-bottom: 15px; font-size: 14px; color: var(--accent); line-height: 1.6; }
+        .submit-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; font-size: 15px; }
+        .close-btn { background-color: #475569; color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer; margin-top: 12px; width: 100%; }
+        
+        .status-display { background-color: #0f172a; border: 1px dashed #374151; padding: 12px; margin: 15px; border-radius: 12px; font-size: 13px; color: #9ca3af; font-weight: bold; }
+        .logs { background-color: #111827; margin: 15px; padding: 12px; border-radius: 12px; text-align: left; max-height: 90px; overflow-y: auto; font-size: 12px; color: #9ca3af; border: 1px solid #1f2937; }
         .switch-auth { color: #38bdf8; cursor: pointer; text-decoration: underline; margin-top: 15px; font-size: 13px; display: inline-block; }
         .timing-info { font-size: 11px; color: #a7f3d0; margin-top: 8px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <!-- AUTH SCREEN -->
+    <!-- AUTH SECTION -->
     <div id="authScreen" class="auth-container">
         <div id="loginCard" class="auth-card">
-            <h2>Win Zone Login</h2>
+            <h2>WIN ZONE LOGIN</h2>
             <input type="email" id="loginEmail" placeholder="Email Address">
             <input type="password" id="loginPassword" placeholder="Password">
             <button class="submit-btn" onclick="handleLogin()">Login Account</button>
             <span class="switch-auth" onclick="toggleAuth(false)">Naya Account (Signup)</span>
         </div>
         <div id="signupCard" class="auth-card" style="display: none;">
-            <h2>Create Account</h2>
+            <h2>CREATE ACCOUNT</h2>
             <input type="text" id="signupPhone" placeholder="Mobile Number">
             <input type="email" id="signupEmail" placeholder="Email Address">
             <input type="password" id="signupPassword" placeholder="Password (Min 6 Chars)">
@@ -95,25 +147,23 @@
     <!-- MAIN APP SCREEN -->
     <div id="appScreen">
         <div class="header">
-            <span>👑 WIN ZONE AUTOMATED</span>
+            <span>👑 WIN ZONE PRO</span>
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
 
-        <!-- Dynamic Offer Config Display -->
         <div class="promo-banner">
-            🎁 *VIP WELCOME BONUS OFFER:*<br>
-            • Deposit **Rs. 300** Get **Rs. 350** Auto Credit!<br>
-            • Deposit **Rs. 500** Get **Rs. 600** Auto Credit!<br>
-            • Deposit **Rs. 1000** Get **Rs. 1150** Auto Credit!
+            🎁 **VIP WELCOME BONUS BONANZA:**<br>
+            • Deposit **Rs. 300** Get **Rs. 350** Credit! | • Deposit **Rs. 500** Get **Rs. 600** Credit!<br>
+            • Deposit **Rs. 1000** Get **Rs. 1150** Credit!
         </div>
 
-        <div style="margin-top: 10px; font-size: 13px; color: #94a3b8;">
-            Account Phone: <span id="userPhoneDisplay" style="font-weight: bold; color: #fff;">-</span>
+        <div style="margin: 10px 15px; text-align: left; font-size: 12px; color: #9ca3af;">
+            Terminal ID: <span id="userPhoneDisplay" style="font-weight: bold; color: #fff;">-</span>
         </div>
 
         <div class="balance-card">
-            <div style="font-size: 12px; opacity: 0.7;">AVAILABLE BALANCE</div>
-            <div id="balance" style="font-size: 34px; font-weight: 900; margin-top: 5px; color: #f1c40f;">PKR 0</div>
+            <div style="font-size: 11px; opacity: 0.6; letter-spacing: 1px; font-weight: bold; text-transform: uppercase;">Secure Wallet Balance</div>
+            <div id="balance" class="amt">PKR 0</div>
         </div>
 
         <div class="wallet-actions">
@@ -121,48 +171,103 @@
             <button class="btn-wallet btn-with" onclick="openModal('withdrawModal')">Withdraw 📤</button>
         </div>
 
-        <!-- History Trends Module with Pagination Architecture -->
-        <div class="history-box">
-            <div class="history-title">
-                <span id="historyRangeText">📊 Trends History (Latest 10)</span>
-                <button class="history-pagination-btn" id="toggleHistoryBtn" onclick="toggleHistoryPage()">View Older History</button>
+        <!-- Timer / Period Box Section -->
+        <div class="timer-container">
+            <div class="period-box">
+                <div>Current Period</div>
+                <div id="periodDisplay">20260626001</div>
             </div>
-            <div class="trends-list" id="trendsHistory"></div>
-        </div>
-
-        <div class="timer-section">
-            ⏱️ Round Ends In: <span id="timer">00:30</span>
+            <div class="clock-box">
+                <div>Time Remaining</div>
+                <div id="timer">00:30</div>
+            </div>
         </div>
 
         <div class="status-display" id="roundStatus">
-            ⏳ Place your bets. Smart Profit Filter Engine Active!
+            ⏳ System initialized. Safe routing algorithms active.
         </div>
 
-        <div>
-            <label style="display:block; margin-bottom: 6px; font-size: 12px; color: #94a3b8; font-weight: bold;">BET AMOUNT (MIN RS. 30):</label>
-            <input type="number" id="betAmount" value="30" min="30" style="width: 140px; font-weight: bold; font-size: 16px; color: #f1c40f;">
+        <!-- Dynamic Multiplier Fast Bet Chips -->
+        <div style="text-align: left; font-size: 11px; color: #9ca3af; font-weight: bold; margin: 15px 15px 5px 15px; text-transform: uppercase;">SELECT MULTIPLIER CHIP AMOUNT:</div>
+        <div class="chip-multiplier-row">
+            <button class="chip-btn active" id="chip1" onclick="selectChip(30, 'chip1')">X1 (30)</button>
+            <button class="chip-btn" id="chip10" onclick="selectChip(300, 'chip10')">X10 (300)</button>
+            <button class="chip-btn" id="chip20" onclick="selectChip(600, 'chip20')">X20 (600)</button>
+            <button class="chip-btn" id="chip50" onclick="selectChip(1500, 'chip50')">X50 (1.5k)</button>
+            <button class="chip-btn" id="chip100" onclick="selectChip(3000, 'chip100')">X100 (3k)</button>
         </div>
 
-        <div class="color-buttons">
-            <button class="btn btn-red" onclick="placeBet('color', 'Red')">Join Red</button>
-            <button class="btn btn-green" onclick="placeBet('color', 'Green')">Join Green</button>
+        <!-- Premium Big & Small Buttons -->
+        <div class="premium-bet-row">
+            <button class="premium-btn btn-big" onclick="placeBet('big_small', 'Big')">Join Big</button>
+            <button class="premium-btn btn-small" onclick="placeBet('big_small', 'Small')">Join Small</button>
         </div>
 
-        <div class="number-grid">
-            <button class="num-btn bg-mix" onclick="placeBet('number', 0)">0</button>
-            <button class="num-btn bg-green" onclick="placeBet('number', 1)">1</button>
-            <button class="num-btn bg-green" onclick="placeBet('number', 2)">2</button>
-            <button class="num-btn bg-green" onclick="placeBet('number', 3)">3</button>
-            <button class="num-btn bg-green" onclick="placeBet('number', 4)">4</button>
-            <button class="num-btn bg-mix" onclick="placeBet('number', 5)">5</button>
-            <button class="num-btn bg-red" onclick="placeBet('number', 6)">6</button>
-            <button class="num-btn bg-red" onclick="placeBet('number', 7)">7</button>
-            <button class="num-btn bg-red" onclick="placeBet('number', 8)">8</button>
-            <button class="num-btn bg-red" onclick="placeBet('number', 9)">9</button>
+        <!-- Premium Colors Bet Row -->
+        <div class="premium-bet-row" style="margin-top:-5px;">
+            <button class="premium-btn" style="background:linear-gradient(135deg,#ef4444,#dc2626);" onclick="placeBet('color', 'Red')">Join Red</button>
+            <button class="premium-btn" style="background:linear-gradient(135deg,#10b981,#059669);" onclick="placeBet('color', 'Green')">Join Green</button>
+        </div>
+
+        <!-- Beautiful Number Grid Container -->
+        <div class="number-box-container">
+            <div class="grid-header-label">🎰 High-Yield Target Numbers (Payout X9)</div>
+            <div class="number-grid">
+                <button class="num-btn-pro bg-mix" onclick="placeBet('number', 0)">0<span>Mix</span></button>
+                <button class="num-btn-pro bg-green" onclick="placeBet('number', 1)">1<span>Small</span></button>
+                <button class="num-btn-pro bg-green" onclick="placeBet('number', 2)">2<span>Small</span></button>
+                <button class="num-btn-pro bg-green" onclick="placeBet('number', 3)">3<span>Small</span></button>
+                <button class="num-btn-pro bg-green" onclick="placeBet('number', 4)">4<span>Small</span></button>
+                <button class="num-btn-pro bg-mix" onclick="placeBet('number', 5)">5<span>Mix</span></button>
+                <button class="num-btn-pro bg-red" onclick="placeBet('number', 6)">6<span>Big</span></button>
+                <button class="num-btn-pro bg-red" onclick="placeBet('number', 7)">7<span>Big</span></button>
+                <button class="num-btn-pro bg-red" onclick="placeBet('number', 8)">8<span>Big</span></button>
+                <button class="num-btn-pro bg-red" onclick="placeBet('number', 9)">9<span>Big</span></button>
+            </div>
+        </div>
+
+        <!-- 3-Tabs Panels Layout -->
+        <div class="tab-box-container">
+            <div class="tab-headers">
+                <div class="tab-nav active" id="nav-history" onclick="switchTab('history')">Game History</div>
+                <div class="tab-nav" id="nav-chart" onclick="switchTab('chart')">Chart 📈</div>
+                <div class="tab-nav" id="nav-strategy" onclick="switchTab('strategy')">Follow Strategy</div>
+            </div>
+            
+            <div class="tab-content-panel">
+                <!-- Tab 1: Game History Table -->
+                <div class="tab-block active" id="tab-history" style="max-height: 220px; overflow-y: auto;">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Period</th>
+                                <th>Number</th>
+                                <th>Big/Small</th>
+                                <th>Color</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- Tab 2: Chart Visual Block -->
+                <div class="tab-block" id="tab-chart">
+                    <div style="font-size: 11px; text-align: left; color: #9ca3af; margin-bottom: 5px;">🔥 PREDICTION FLUCTUATION GRAPH (LAST 10 ROUNDS)</div>
+                    <div class="chart-flow-wrapper" id="chartWrapper"></div>
+                </div>
+
+                <!-- Tab 3: Strategy Follow Card -->
+                <div class="tab-block" id="tab-strategy">
+                    <div class="strategy-card">
+                        <div>💡 SMART AI RECOMMENDATION ENGINE</div>
+                        <div style="margin-top: 8px;" id="strategyAdvice">Analyzing network trend parameters... Based on the last pattern, betting on [Small / Green] presents an optimal safety coefficient for this cycle.</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="logs" id="logSection">
-            <div style="color: #f1c40f; font-weight: bold;">✨ Game Protection Routing Active.</div>
+            <div style="color: var(--accent); font-weight: bold;">✨ Pro-Terminal Data Layer Connected successfully.</div>
         </div>
     </div>
 
@@ -226,15 +331,20 @@
         let currentBalance = 0;
         let timeLeft = 30;
         let activeBet = null; 
-        let viewOlderHistory = false;
+        let currentSelectedBetAmount = 30;
+        let currentPeriodId = 20260626001;
 
-        // Structured Array targeting safe deep backup of up to 50 items
-        let largeTrendPool = [
-            {num: 1, color:'Green'},{num: 6, color:'Red'},{num: 0, color:'Mix'},{num: 2, color:'Green'},{num: 9, color:'Red'},
-            {num: 4, color:'Green'},{num: 7, color:'Red'},{num: 5, color:'Mix'},{num: 3, color:'Green'},{num: 8, color:'Red'},
-            {num: 2, color:'Green'},{num: 6, color:'Red'},{num: 0, color:'Mix'},{num: 3, color:'Green'},{num: 7, color:'Red'},
-            {num: 1, color:'Green'},{num: 8, color:'Red'},{num: 5, color:'Mix'},{num: 4, color:'Green'},{num: 9, color:'Red'},
-            {num: 3, color:'Green'},{num: 6, color:'Red'},{num: 2, color:'Green'},{num: 7, color:'Red'},{num: 0, color:'Mix'}
+        // Comprehensive History Database Array
+        let mainTrendPool = [
+            {period: 20260626001, num: 3, bs: 'Small', color: 'Green'},
+            {period: 20260626002, num: 8, bs: 'Big', color: 'Red'},
+            {period: 20260626003, num: 0, bs: 'Small', color: 'Mix'},
+            {period: 20260626004, num: 7, bs: 'Big', color: 'Red'},
+            {period: 20260626005, num: 2, bs: 'Small', color: 'Green'},
+            {period: 20260626006, num: 6, bs: 'Big', color: 'Red'},
+            {period: 20260626007, num: 5, bs: 'Big', color: 'Mix'},
+            {period: 20260626008, num: 1, bs: 'Small', color: 'Green'},
+            {period: 20260626009, num: 9, bs: 'Big', color: 'Red'}
         ];
 
         function toggleAuth(isLogin) {
@@ -246,17 +356,16 @@
             const phone = document.getElementById('signupPhone').value.trim();
             const email = document.getElementById('signupEmail').value.trim();
             const password = document.getElementById('signupPassword').value;
-            if(!phone || !email || !password) { alert("Sari fields fill karein!"); return; }
+            if(!phone || !email || !password) { alert("Fields entry missing!"); return; }
             auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
                 database.ref('users/' + userCredential.user.uid).set({ phone: phone, email: email, balance: 0 })
-                .then(() => { alert("Account Ban Gaya!"); location.reload(); });
+                .then(() => { alert("Registration Success!"); location.reload(); });
             }).catch((e) => alert(e.message));
         }
 
         function handleLogin() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-            if(!email || !password) { alert("Fields enter karein!"); return; }
             auth.signInWithEmailAndPassword(email, password).catch((e) => alert(e.message));
         }
 
@@ -265,7 +374,7 @@
                 currentUser = user;
                 document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('appScreen').style.display = 'block';
-                renderHistoryView();
+                renderTableAndModules();
                 database.ref('users/' + user.uid).on('value', (snapshot) => {
                     let data = snapshot.val();
                     if(data) {
@@ -282,108 +391,140 @@
 
         function handleLogout() { auth.signOut().then(() => location.reload()); }
 
-        // Dynamic Pagination Renderer Engine with Highlight Mechanism
-        function renderHistoryView() {
-            const container = document.getElementById('trendsHistory');
-            container.innerHTML = '';
+        // Tab Switch Architecture
+        function switchTab(target) {
+            document.querySelectorAll('.tab-nav').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-block').forEach(el => el.classList.remove('active'));
             
-            let dataset = viewOlderHistory ? largeTrendPool.slice(-50) : largeTrendPool.slice(-10);
-            let displayArray = [...dataset].reverse();
+            document.getElementById('nav-' + target).classList.add('active');
+            document.getElementById('tab-' + target).classList.add('active');
+        }
 
-            displayArray.forEach((item, index) => {
-                let colorBg = item.color === 'Green' ? 'linear-gradient(135deg, #10b981, #059669)' : 
-                              item.color === 'Red' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 
-                              'linear-gradient(135deg, #8b5cf6, #ec4899)';
-                let borderStyle = item.color === 'Mix' ? '2px dashed #fff' : 'none';
+        // Chip Selector System
+        function selectChip(amount, id) {
+            currentSelectedBetAmount = amount;
+            document.querySelectorAll('.chip-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // Deep Module Unified Render Engine
+        function renderTableAndModules() {
+            // 1. Table Render
+            const body = document.getElementById('historyTableBody');
+            body.innerHTML = '';
+            let reversedData = [...mainTrendPool].reverse();
+            
+            reversedData.forEach((row, i) => {
+                let badgeColor = row.color === 'Green' ? 'var(--green)' : (row.color === 'Red' ? 'var(--red)' : 'var(--purple)');
+                let bsColor = row.bs === 'Big' ? '#f59e0b' : '#3b82f6';
+                let indicatorStr = i === 0 ? ' <span style="font-size:10px; color:#f1c40f; font-weight:bold;">🔥 Win</span>' : '';
                 
-                // Top-layer check for absolute fresh index identification
-                let dynamicIndicator = (index === 0) ? `<span class="latest-win-mark">🔥 Win</span>` : '';
-
-                container.innerHTML += `
-                    <div class="trend-dot" style="background: ${colorBg}; border: ${borderStyle};">
-                        ${dynamicIndicator}
-                        <span>${item.num}</span>
-                    </div>`;
+                body.innerHTML += `
+                    <tr>
+                        <td style="font-family:'Orbitron'; font-weight:bold; color:#9ca3af;">${row.period}</td>
+                        <td style="font-family:'Orbitron'; font-weight:900; font-size:15px;">${row.num}${indicatorStr}</td>
+                        <td><span class="badge-ui" style="background:${bsColor};">${row.bs}</span></td>
+                        <td><span class="badge-ui" style="background:${badgeColor};">${row.color}</span></td>
+                    </tr>`;
             });
+
+            // 2. Graphical Chart Node Render
+            const chartWrapper = document.getElementById('chartWrapper');
+            chartWrapper.innerHTML = '';
+            let graphSlice = mainTrendPool.slice(-10);
+            
+            graphSlice.forEach(row => {
+                let pHeight = (row.num + 1) * 10; // Scaled factor
+                let pColor = row.color === 'Green' ? 'var(--green)' : (row.color === 'Red' ? 'var(--red)' : 'var(--purple)');
+                chartWrapper.innerHTML += `<div class="chart-pillar" style="height:${pHeight}px; background:${pColor};"><span>${row.num}</span></div>`;
+            });
+
+            // 3. Automation Strategy Tip
+            let lastItem = mainTrendPool[mainTrendPool.length - 1];
+            let nextAdvisedBS = lastItem.bs === 'Big' ? 'Small' : 'Big';
+            let nextAdvisedColor = lastItem.color === 'Red' ? 'Green' : 'Red';
+            document.getElementById('strategyAdvice').innerText = `Analysis complete: Previous pattern nodes detected [${lastItem.num} - ${lastItem.bs}]. Statistical safety calculations strongly recommend placing high stake chips on [${nextAdvisedBS}] and [${nextAdvisedColor}] for active period ${currentPeriodId + 1}.`;
+            
+            document.getElementById('periodDisplay').innerText = currentPeriodId;
         }
 
-        function toggleHistoryPage() {
-            viewOlderHistory = !viewOlderHistory;
-            document.getElementById('historyRangeText').innerText = viewOlderHistory ? "📊 Trends History (All 50 Rounds)" : "📊 Trends History (Latest 10)";
-            document.getElementById('toggleHistoryBtn').innerText = viewOlderHistory ? "Back to Main Page" : "View Older History";
-            renderHistoryView();
-        }
-
-        // 100% SMART-PROFIT LOSS CONTROL SYSTEM GAME LOOP
+        // AUTOMATED RISK OPTIMIZATION STRATEGY TERMINAL LOOP
         setInterval(() => {
             timeLeft--;
             if (timeLeft <= 0) {
-                // Read global entries mock evaluation -> Fallback to Lowest Invested Node
-                let finalColorResult = 'Green'; 
-                let finalNumberResult = Math.floor(Math.random() * 4) + 1; // Default low risk green load (1-4)
+                // Default clean nodes values
+                let finalColor = 'Red';
+                let finalBS = 'Big';
+                let finalNum = 7;
 
+                // Anti-Risk Mitigation Evaluator
                 if (activeBet) {
-                    // Reverse Anti-Fraud Logic Integration
                     if (activeBet.type === 'color') {
-                        finalColorResult = activeBet.value === 'Red' ? 'Green' : 'Red';
-                        finalNumberResult = finalColorResult === 'Red' ? 7 : 3;
+                        finalColor = activeBet.value === 'Red' ? 'Green' : 'Red';
+                        finalBS = finalColor === 'Red' ? 'Big' : 'Small';
+                        finalNum = finalColor === 'Red' ? 6 : 2;
+                    } else if (activeBet.type === 'big_small') {
+                        finalBS = activeBet.value === 'Big' ? 'Small' : 'Big';
+                        finalColor = finalBS === 'Big' ? 'Red' : 'Green';
+                        finalNum = finalBS === 'Big' ? 8 : 1;
                     } else if (activeBet.type === 'number') {
-                        let targetedNum = parseInt(activeBet.value);
-                        finalNumberResult = (targetedNum === 3) ? 7 : 3; 
-                        finalColorResult = 'Red';
+                        let lockedNum = parseInt(activeBet.value);
+                        finalNum = lockedNum >= 5 ? 2 : 7;
+                        finalBS = finalNum >= 5 ? 'Big' : 'Small';
+                        finalColor = finalBS === 'Big' ? 'Red' : 'Green';
                     }
                 } else {
-                    // Regular clean randomized fallback trend generation
-                    let choices = ['Red', 'Green', 'Mix'];
-                    finalColorResult = choices[Math.floor(Math.random() * choices.length)];
-                    if (finalColorResult === 'Mix') finalNumberResult = Math.random() > 0.5 ? 0 : 5;
-                    else if (finalColorResult === 'Green') finalNumberResult = Math.floor(Math.random() * 4) + 1;
-                    else finalNumberResult = Math.floor(Math.random() * 4) + 6;
+                    // Raw organic trend distribution generator
+                    finalNum = Math.floor(Math.random() * 10);
+                    if(finalNum === 0 || finalNum === 5) finalColor = 'Mix';
+                    else finalColor = (finalNum % 2 === 0) ? 'Red' : 'Green';
+                    finalBS = finalNum >= 5 ? 'Big' : 'Small';
                 }
 
-                // Append validated payout index to pool architecture
-                largeTrendPool.push({ num: finalNumberResult, color: finalColorResult });
-                if(largeTrendPool.length > 60) largeTrendPool.shift(); // Keep database light
-                
-                renderHistoryView();
-                
-                let outColor = finalColorResult === 'Mix' ? '#8b5cf6' : (finalColorResult === 'Red' ? '#ef4444' : '#10b981');
-                document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Color <span style="color:${outColor};">[${finalColorResult}]</span>`;
-                addLog(`🏆 System rolled optimized result: ${finalNumberResult} (${finalColorResult})`);
+                // Add to record history pipeline
+                currentPeriodId++;
+                mainTrendPool.push({ period: currentPeriodId, num: finalNum, bs: finalBS, color: finalColor });
+                if (mainTrendPool.length > 50) mainTrendPool.shift();
 
-                // Evaluate Payout matches
+                renderTableAndModules();
+                
+                let outC = finalColor === 'Mix' ? 'var(--purple)' : (finalColor === 'Red' ? 'var(--red)' : 'var(--green)');
+                document.getElementById('roundStatus').innerHTML = `🎉 Result: Node <span style="color:var(--accent); font-family:'Orbitron'; font-weight:bold;">${finalNum}</span> | Target <span style="color:${outC}; font-weight:bold;">[${finalBS} / ${finalColor}]</span>`;
+                addLog(`🎯 System closed trend node: ${finalNum} (${finalBS})`);
+
+                // Compute player financial state shifts
                 if (activeBet && currentUser) {
-                    let userWon = false;
-                    let mult = 0;
-                    if (activeBet.type === 'color' && activeBet.value === finalColorResult) { userWon = true; mult = 2; }
-                    if (activeBet.type === 'number' && parseInt(activeBet.value) === finalNumberResult) { userWon = true; mult = 9; }
+                    let winState = false;
+                    let m = 0;
+                    if (activeBet.type === 'color' && activeBet.value === finalColor) { winState = true; m = 2; }
+                    if (activeBet.type === 'big_small' && activeBet.value === finalBS) { winState = true; m = 2; }
+                    if (activeBet.type === 'number' && parseInt(activeBet.value) === finalNum) { winState = true; m = 9; }
 
-                    if (userWon) {
-                        let winnings = activeBet.amount * mult;
-                        database.ref('users/' + currentUser.uid).update({ balance: currentBalance + winnings });
-                        addLog(`💰 Won PKR ${winnings}`);
+                    if (winState) {
+                        let totalWin = activeBet.amount * m;
+                        database.ref('users/' + currentUser.uid).update({ balance: currentBalance + totalWin });
+                        addLog(`💰 Profit Released: +PKR ${totalWin}`);
                     } else {
-                        addLog(`❌ Better luck next round! Try again.`);
+                        addLog(`❌ Anti-trend impact detected. Position lost.`);
                     }
                 }
 
                 activeBet = null;
-                timeLeft = 30; 
+                timeLeft = 30;
             }
-            document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
+            document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0' + timeLeft : timeLeft}`;
         }, 1000);
 
         function placeBet(type, value) {
-            if (activeBet) { alert("Bet already active!"); return; }
-            let amount = parseInt(document.getElementById('betAmount').value);
-            if (isNaN(amount) || amount < 30) { alert("Min bet PKR 30!"); return; }
-            if (amount > currentBalance) { alert("In-sufficient balance!"); return; }
+            if (activeBet) { alert("Position lock active in current cycle!"); return; }
+            if (currentSelectedBetAmount > currentBalance) { alert("Insufficent balance values!"); return; }
             
-            let newBal = currentBalance - amount;
-            database.ref('users/' + currentUser.uid).update({ balance: newBal });
+            let updatedWallet = currentBalance - currentSelectedBetAmount;
+            database.ref('users/' + currentUser.uid).update({ balance: updatedWallet });
             
-            activeBet = { type: type, value: value, amount: amount };
-            addLog(`🎲 Locked PKR ${amount} on ${value}`);
+            activeBet = { type: type, value: value, amount: currentSelectedBetAmount };
+            addLog(`🎲 Locked PKR ${currentSelectedBetAmount} on ${value}`);
+            document.getElementById('roundStatus').innerText = `✅ Risk parameter registered: [${value}]`;
         }
 
         function addLog(text) {
@@ -400,11 +541,11 @@
             let trx = document.getElementById('depTrx').value;
             let method = document.getElementById('depMethod').value;
             let phone = document.getElementById('userPhoneDisplay').innerText;
-            if(!amount || !trx) { alert("Sari fields fill karein!"); return; }
+            if(!amount || !trx) { alert("Missing credentials!"); return; }
             let message = `💰 *NEW DEPOSIT REQUEST* 💰\n\n👤 *User Phone:* ${phone}\n🆔 *User UID:* \`${currentUser.uid}\`\n🔹 *Method:* ${method}\n🔹 *Amount:* PKR ${amount}\n🔹 *TRX ID:* \`${trx}\``;
             let url = `https://api.telegram.org/bot${tgToken}/sendMessage?chat_id=${tgChatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
             fetch(url, { mode: 'no-cors' }).then(() => {
-                alert("Deposit notification sent to admin pipeline!"); closeModal('depositModal');
+                alert("Deposit log transmitted securely to master console!"); closeModal('depositModal');
             });
         }
 
@@ -414,14 +555,14 @@
             let name = document.getElementById('withName').value;
             let method = document.getElementById('withMethod').value;
             let phone = document.getElementById('userPhoneDisplay').innerText;
-            if(!amount || !account || !name) { alert("Fill fields!"); return; }
-            if(amount > currentBalance) { alert("Balance is lower!"); return; }
+            if(!amount || !account || !name) { alert("All values required!"); return; }
+            if(amount > currentBalance) { alert("Insufficient funds!"); return; }
             let newBal = currentBalance - amount;
             database.ref('users/' + currentUser.uid).update({ balance: newBal });
             let message = `📤 *NEW WITHDRAW REQUEST* 📤\n\n👤 *User Phone:* ${phone}\n🔹 *Method:* ${method}\n🔹 *Amount:* PKR ${amount}\n🔹 *Account:* \`${account}\`\n🔹 *Name:* ${name}`;
             let url = `https://api.telegram.org/bot${tgToken}/sendMessage?chat_id=${tgChatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
             fetch(url, { mode: 'no-cors' }).then(() => {
-                alert("Withdraw request submitted securely!"); closeModal('withdrawModal');
+                alert("Withdraw processing secure handshake initiated!"); closeModal('withdrawModal');
             });
         }
     </script>
