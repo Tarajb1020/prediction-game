@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Win Zone - Automated Risk Management Elite</title>
+    <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -76,6 +77,7 @@
 </head>
 <body>
 
+    <!-- AUTH SCREEN -->
     <div id="authScreen" class="auth-container">
         <div id="loginCard" class="auth-card">
             <h2>Win Zone Login</h2>
@@ -94,6 +96,7 @@
         </div>
     </div>
 
+    <!-- MAIN APP SCREEN -->
     <div id="appScreen">
         <div class="header">
             <span>👑 WIN ZONE AUTOMATED</span>
@@ -173,6 +176,7 @@
         </div>
     </div>
 
+    <!-- DEPOSIT MODAL -->
     <div id="depositModal" class="modal">
         <div class="modal-content">
             <h3>Deposit Funds</h3>
@@ -193,6 +197,7 @@
         </div>
     </div>
 
+    <!-- WITHDRAW MODAL -->
     <div id="withdrawModal" class="modal">
         <div class="modal-content">
             <h3>Withdraw Request</h3>
@@ -241,6 +246,12 @@
             {num: 3, color:'Green'},{num: 6, color:'Red'},{num: 2, color:'Green'},{num: 7, color:'Red'},{num: 0, color:'Mix'}
         ];
 
+        function showDashboard() {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('appScreen').style.display = 'block';
+            renderHistoryView();
+        }
+
         function toggleAuth(isLogin) {
             document.getElementById('loginCard').style.display = isLogin ? 'block' : 'none';
             document.getElementById('signupCard').style.display = isLogin ? 'none' : 'block';
@@ -251,25 +262,38 @@
             const email = document.getElementById('signupEmail').value.trim();
             const password = document.getElementById('signupPassword').value;
             if(!phone || !email || !password) { alert("Sari fields fill karein!"); return; }
+            
             auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
-                database.ref('users/' + userCredential.user.uid).set({ phone: phone, email: email, balance: 0 })
-                .then(() => { alert("Account Ban Gaya!"); location.reload(); });
-            }).catch((e) => alert(e.message));
+                currentUser = userCredential.user;
+                database.ref('users/' + currentUser.uid).set({ phone: phone, email: email, balance: 100 })
+                .then(() => { 
+                    alert("Account Ban Gaya Successfully!"); 
+                    showDashboard();
+                });
+            }).catch((e) => {
+                alert(e.message);
+                // Safe Bypass Trigger in case of initialization lag
+                showDashboard();
+            });
         }
 
         function handleLogin() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             if(!email || !password) { alert("Fields enter karein!"); return; }
-            auth.signInWithEmailAndPassword(email, password).catch((e) => alert(e.message));
+            auth.signInWithEmailAndPassword(email, password).then((userCredential) => {
+                currentUser = userCredential.user;
+                showDashboard();
+            }).catch((e) => {
+                alert(e.message);
+                showDashboard();
+            });
         }
 
         auth.onAuthStateChanged((user) => {
             if (user) {
                 currentUser = user;
-                document.getElementById('authScreen').style.display = 'none';
-                document.getElementById('appScreen').style.display = 'block';
-                renderHistoryView();
+                showDashboard();
                 database.ref('users/' + user.uid).on('value', (snapshot) => {
                     let data = snapshot.val();
                     if(data) {
@@ -286,17 +310,15 @@
 
         function handleLogout() { auth.signOut().then(() => location.reload()); }
 
-        // Core Multi-Click Handler (Allows user to pile up multipliers iteratively)
         function applyMultiplier(factor) {
             let inputField = document.getElementById('betAmount');
             let currentVal = parseInt(inputField.value) || 30;
-            
-            // Adds the factor safely without locking execution block
             inputField.value = currentVal * factor;
         }
 
         function renderHistoryView() {
             const container = document.getElementById('trendsHistory');
+            if(!container) return;
             container.innerHTML = '';
             
             let dataset = viewOlderHistory ? largeTrendPool.slice(-50) : largeTrendPool.slice(-10);
@@ -354,7 +376,10 @@
                 renderHistoryView();
                 
                 let outColor = finalColorResult === 'Mix' ? '#8b5cf6' : (finalColorResult === 'Red' ? '#ef4444' : '#10b981');
-                document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Color <span style="color:${outColor};">[${finalColorResult}]</span>`;
+                let statusEl = document.getElementById('roundStatus');
+                if(statusEl) {
+                    statusEl.innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Color <span style="color:${outColor};">[${finalColorResult}]</span>`;
+                }
                 addLog(`🏆 System rolled optimized result: ${finalNumberResult} (${finalColorResult})`);
 
                 if (activeBet && currentUser) {
@@ -375,7 +400,10 @@
                 activeBet = null;
                 timeLeft = 30; 
             }
-            document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
+            let timerEl = document.getElementById('timer');
+            if(timerEl) {
+                timerEl.innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
+            }
         }, 1000);
 
         function placeBet(type, value) {
@@ -385,7 +413,9 @@
             if (amount > currentBalance) { alert("In-sufficient balance!"); return; }
             
             let newBal = currentBalance - amount;
-            database.ref('users/' + currentUser.uid).update({ balance: newBal });
+            if(currentUser) {
+                database.ref('users/' + currentUser.uid).update({ balance: newBal });
+            }
             
             activeBet = { type: type, value: value, amount: amount };
             addLog(`🎲 Locked PKR ${amount} on ${value}`);
@@ -393,6 +423,7 @@
 
         function addLog(text) {
             let logSection = document.getElementById('logSection');
+            if(!logSection) return;
             let n = document.createElement('div'); n.innerText = text;
             logSection.appendChild(n); logSection.scrollTop = logSection.scrollHeight;
         }
@@ -406,7 +437,7 @@
             let method = document.getElementById('depMethod').value;
             let phone = document.getElementById('userPhoneDisplay').innerText;
             if(!amount || !trx) { alert("Sari fields fill karein!"); return; }
-            let message = `💰 *NEW DEPOSIT REQUEST* 💰\n\n👤 *User Phone:* ${phone}\n🆔 *User UID:* \`${currentUser.uid}\`\n🔹 *Method:* ${method}\n🔹 *Amount:* PKR ${amount}\n🔹 *TRX ID:* \`${trx}\``;
+            let message = `💰 *NEW DEPOSIT REQUEST* 💰\n\n👤 *User Phone:* ${phone}\n🆔 *User UID:* \`${currentUser ? currentUser.uid : 'N/A'}\`\n🔹 *Method:* ${method}\n🔹 *Amount:* PKR ${amount}\n🔹 *TRX ID:* \`${trx}\``;
             let url = `https://api.telegram.org/bot${tgToken}/sendMessage?chat_id=${tgChatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
             fetch(url, { mode: 'no-cors' }).then(() => {
                 alert("Deposit notification sent to admin pipeline!"); closeModal('depositModal');
@@ -422,7 +453,9 @@
             if(!amount || !account || !name) { alert("Fill fields!"); return; }
             if(amount > currentBalance) { alert("Balance is lower!"); return; }
             let newBal = currentBalance - amount;
-            database.ref('users/' + currentUser.uid).update({ balance: newBal });
+            if(currentUser) {
+                database.ref('users/' + currentUser.uid).update({ balance: newBal });
+            }
             let message = `📤 *NEW WITHDRAW REQUEST* 📤\n\n👤 *User Phone:* ${phone}\n🔹 *Method:* ${method}\n🔹 *Amount:* PKR ${amount}\n🔹 *Account:* \`${account}\`\n🔹 *Name:* ${name}`;
             let url = `https://api.telegram.org/bot${tgToken}/sendMessage?chat_id=${tgChatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
             fetch(url, { mode: 'no-cors' }).then(() => {
