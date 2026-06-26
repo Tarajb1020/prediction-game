@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Win Zone Pro - Elite Dual Engine App v3.4</title>
+    <!-- Browser Tab/Favicon Logo Icon -->
+    <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1XgG9GisbCHW3p_K8L6hEAtp5XF-a6vBw">
     <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -21,8 +23,7 @@
         .auth-card { background-color: #1e293b; padding: 35px 25px; border-radius: 24px; width: 100%; max-width: 380px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); border: 1px solid #334155; }
         .auth-card h2 { color: #f1c40f; margin-bottom: 25px; font-size: 26px; font-weight: 800; text-transform: uppercase; }
         
-        .header { background-color: #111827; padding: 18px 15px; font-size: 22px; font-weight: 800; border-bottom: 3px solid #f1c40f; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-        .header span { color: #f1c40f; }
+        .header { background-color: #111827; padding: 12px 15px; border-bottom: 3px solid #f1c40f; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
         .logout-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; }
         
         .live-ticker-bar { background: #070a12; color: #34d399; font-size: 12px; font-weight: bold; padding: 6px; border-bottom: 1px solid #1e293b; overflow: hidden; white-space: nowrap; box-sizing: border-box; }
@@ -149,8 +150,12 @@
 
     <!-- MAIN APP SCREEN -->
     <div id="appScreen">
+        <!-- HEADER WITH PREMIUM WIN ZONE THUMBNAIL LOGO -->
         <div class="header">
-            <span>👑 WIN ZONE AUTOMATED v3.4</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="https://lh3.googleusercontent.com/d/1XgG9GisbCHW3p_K8L6hEAtp5XF-a6vBw" alt="Win Zone" style="height: 40px; width: 40px; border-radius: 8px; border: 2px solid #f1c40f; object-fit: cover;">
+                <span style="color: #f1c40f; font-size: 20px; font-weight: 800; letter-spacing: 0.5px;">WIN ZONE PRO</span>
+            </div>
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
 
@@ -554,6 +559,7 @@
             if(!phone || !email || !password) return;
             auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
                 currentUser = userCredential.user;
+                // SIGNUP WELCOME BONUS SET TO RS. 0 PERMANENTLY
                 database.ref('users/' + currentUser.uid).set({ phone: phone, email: email, balance: 0 }).then(() => { showDashboard(); });
             });
         }
