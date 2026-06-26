@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Win Zone - Automated Risk Management Elite</title>
-    <!-- Firebase Libraries -->
+    <title>Win Zone - Premium Dual Bet Management System</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -23,7 +22,6 @@
         .header span { color: #f1c40f; }
         .logout-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; }
         
-        /* Promotion Banner */
         .promo-banner { background: linear-gradient(90deg, #b91c1c, #4338ca); margin: 15px 20px; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: bold; border: 1px solid #f1c40f; line-height: 1.5; text-align: left; }
         
         .balance-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); margin: 15px 20px; padding: 20px; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.5); border: 1px solid #334155; }
@@ -32,11 +30,10 @@
         .btn-dep { background: linear-gradient(135deg, #10b981, #059669); color: white; }
         .btn-with { background: linear-gradient(135deg, #0284c7, #0369a1); color: white; }
 
-        /* History Component */
         .history-box { background-color: #111827; margin: 15px 20px; padding: 12px; border-radius: 14px; border: 1px solid #334155; text-align: left; }
         .history-title { font-size: 13px; color: #94a3b8; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; }
         .trends-list { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; }
-        .trend-dot { min-width: 36px; height: 36px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: white; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+        .trend-dot { min-width: 42px; height: 42px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: white; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.3); line-height: 1.2; }
         .latest-win-mark { position: absolute; top: -8px; font-size: 9px; background: #f1c40f; color: black; padding: 1px 3px; border-radius: 4px; font-weight: 900; animation: blink 1s infinite; }
         
         @keyframes blink { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
@@ -45,16 +42,24 @@
         .timer-section { background-color: #1e293b; margin: 15px 20px; padding: 12px; border-radius: 14px; font-size: 18px; color: #f59e0b; font-weight: bold; border: 1px solid #334155; }
         .timer-section span { font-size: 22px; color: #fff; background: #0f172a; padding: 4px 12px; border-radius: 8px; margin-left: 8px; border: 1px solid #f59e0b; }
         
-        /* Multiplier Buttons Layout */
         .multiplier-container { display: flex; justify-content: center; gap: 8px; margin: 5px 20px 15px 20px; }
         .mult-btn { flex: 1; background-color: #1e293b; border: 1px solid #475569; color: white; padding: 8px 0; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.1s; }
         .mult-btn:active { background-color: #334155; transform: scale(0.95); }
 
-        .color-buttons { display: flex; justify-content: center; gap: 20px; margin: 15px 0; padding: 0 20px; }
-        .btn { flex: 1; padding: 15px; font-size: 18px; font-weight: bold; border: none; border-radius: 14px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4); text-transform: uppercase; }
-        .btn-red { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; }
-        .btn-green { background: linear-gradient(135deg, #10b981, #047857); color: white; }
-        
+        /* Separate Section Styling for Big/Small & Colors */
+        .game-section-label { font-size: 12px; color: #f1c40f; text-align: left; margin: 15px 25px 5px 25px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Big / Small Premium Color Layout */
+        .big-small-container { display: flex; justify-content: center; gap: 20px; margin: 5px 0 15px 0; padding: 0 20px; }
+        .btn-big { background: linear-gradient(135deg, #6366f1, #4338ca); color: white; flex: 1; padding: 16px; font-size: 19px; font-weight: 900; border: none; border-radius: 14px; cursor: pointer; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4); text-transform: uppercase; }
+        .btn-small { background: linear-gradient(135deg, #f97316, #ea580c); color: white; flex: 1; padding: 16px; font-size: 19px; font-weight: 900; border: none; border-radius: 14px; cursor: pointer; box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4); text-transform: uppercase; }
+
+        /* Color Selection Bar Layout */
+        .color-selection-bar { display: flex; justify-content: center; gap: 12px; margin: 5px 0 15px 0; padding: 0 20px; }
+        .color-choice-btn { flex: 1; padding: 12px; font-weight: bold; font-size: 15px; color: white; border: none; border-radius: 10px; cursor: pointer; text-transform: uppercase; }
+        .choice-red { background: linear-gradient(135deg, #ef4444, #b91c1c); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
+        .choice-green { background: linear-gradient(135deg, #10b981, #047857); box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
+
         .number-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 0 20px; margin-bottom: 20px; }
         .num-btn { padding: 12px 0; font-size: 16px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; color: white; }
         
@@ -64,7 +69,7 @@
 
         input[type="number"], input[type="text"], input[type="email"], input[type="password"], select { padding: 12px; font-size: 15px; border-radius: 10px; border: 1px solid #334155; background-color: #0f172a; color: white; width: 100%; max-width: 280px; text-align: center; margin-bottom: 12px; box-sizing: border-box; }
         .status-display { background-color: #111827; border: 1px dashed #334155; padding: 12px; margin: 15px 20px; border-radius: 12px; font-size: 14px; color: #94a3b8; font-weight: bold; }
-        .logs { background-color: #1e293b; margin: 20px; padding: 12px; border-radius: 12px; text-align: left; max-height: 100px; overflow-y: auto; font-size: 13px; color: #cbd5e1; border: 1px solid #334155; }
+        .logs { background-color: #1e293b; margin: 20px; padding: 12px; border-radius: 12px; text-align: left; max-height: 110px; overflow-y: auto; font-size: 13px; color: #cbd5e1; border: 1px solid #334155; }
         
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000; padding: 15px; box-sizing: border-box; }
         .modal-content { background-color: #1e293b; padding: 25px 20px; border-radius: 24px; width: 100%; max-width: 360px; border: 1px solid #475569; text-align: center; }
@@ -77,7 +82,6 @@
 </head>
 <body>
 
-    <!-- AUTH SCREEN -->
     <div id="authScreen" class="auth-container">
         <div id="loginCard" class="auth-card">
             <h2>Win Zone Login</h2>
@@ -96,7 +100,6 @@
         </div>
     </div>
 
-    <!-- MAIN APP SCREEN -->
     <div id="appScreen">
         <div class="header">
             <span>👑 WIN ZONE AUTOMATED</span>
@@ -153,11 +156,19 @@
             <button class="mult-btn" onclick="applyMultiplier(100)">X100</button>
         </div>
 
-        <div class="color-buttons">
-            <button class="btn btn-red" onclick="placeBet('color', 'Red')">Join Red</button>
-            <button class="btn btn-green" onclick="placeBet('color', 'Green')">Join Green</button>
+        <div class="game-section-label">⚡ Select Size (Big / Small)</div>
+        <div class="big-small-container">
+            <button class="btn-big" onclick="placeBet('size', 'Big')">Big</button>
+            <button class="btn-small" onclick="placeBet('size', 'Small')">Small</button>
         </div>
 
+        <div class="game-section-label">🎨 Select Color</div>
+        <div class="color-selection-bar">
+            <button class="color-choice-btn choice-red" onclick="placeBet('color', 'Red')">Red</button>
+            <button class="color-choice-btn choice-green" onclick="placeBet('color', 'Green')">Green</button>
+        </div>
+
+        <div class="game-section-label">🔢 Select Direct Number</div>
         <div class="number-grid">
             <button class="num-btn bg-mix" onclick="placeBet('number', 0)">0</button>
             <button class="num-btn bg-green" onclick="placeBet('number', 1)">1</button>
@@ -176,7 +187,6 @@
         </div>
     </div>
 
-    <!-- DEPOSIT MODAL -->
     <div id="depositModal" class="modal">
         <div class="modal-content">
             <h3>Deposit Funds</h3>
@@ -197,7 +207,6 @@
         </div>
     </div>
 
-    <!-- WITHDRAW MODAL -->
     <div id="withdrawModal" class="modal">
         <div class="modal-content">
             <h3>Withdraw Request</h3>
@@ -235,15 +244,17 @@
         let currentUser = null;
         let currentBalance = 0;
         let timeLeft = 30;
-        let activeBet = null; 
-        let viewOlderHistory = false;
+        viewOlderHistory = false;
+
+        // Dual Track Bet Objects - Allows parallel independent placement inside one loop
+        let activeSizeBet = null;  // For Big / Small
+        let activeColorBet = null; // For Red / Green
+        let activeNumBet = null;   // For 0-9
 
         let largeTrendPool = [
-            {num: 1, color:'Green'},{num: 6, color:'Red'},{num: 0, color:'Mix'},{num: 2, color:'Green'},{num: 9, color:'Red'},
-            {num: 4, color:'Green'},{num: 7, color:'Red'},{num: 5, color:'Mix'},{num: 3, color:'Green'},{num: 8, color:'Red'},
-            {num: 2, color:'Green'},{num: 6, color:'Red'},{num: 0, color:'Mix'},{num: 3, color:'Green'},{num: 7, color:'Red'},
-            {num: 1, color:'Green'},{num: 8, color:'Red'},{num: 5, color:'Mix'},{num: 4, color:'Green'},{num: 9, color:'Red'},
-            {num: 3, color:'Green'},{num: 6, color:'Red'},{num: 2, color:'Green'},{num: 7, color:'Red'},{num: 0, color:'Mix'}
+            {num: 1, color:'Green', size:'Small'},{num: 6, color:'Red', size:'Big'},{num: 0, color:'Mix', size:'Small'},{num: 2, color:'Green', size:'Small'},{num: 9, color:'Red', size:'Big'},
+            {num: 4, color:'Green', size:'Small'},{num: 7, color:'Red', size:'Big'},{num: 5, color:'Mix', size:'Small'},{num: 3, color:'Green', size:'Small'},{num: 8, color:'Red', size:'Big'},
+            {num: 2, color:'Green', size:'Small'},{num: 6, color:'Red', size:'Big'},{num: 0, color:'Mix', size:'Small'},{num: 3, color:'Green', size:'Small'},{num: 7, color:'Red', size:'Big'}
         ];
 
         function showDashboard() {
@@ -272,7 +283,6 @@
                 });
             }).catch((e) => {
                 alert(e.message);
-                // Safe Bypass Trigger in case of initialization lag
                 showDashboard();
             });
         }
@@ -335,7 +345,8 @@
                 container.innerHTML += `
                     <div class="trend-dot" style="background: ${colorBg}; border: ${borderStyle};">
                         ${dynamicIndicator}
-                        <span>${item.num}</span>
+                        <span style="font-size:13px; font-weight:900;">${item.num}</span>
+                        <span style="font-size:8px; opacity:0.9; text-transform:uppercase;">${item.size}</span>
                     </div>`;
             });
         }
@@ -347,57 +358,87 @@
             renderHistoryView();
         }
 
+        // 100% SECURE ANTI-LOSS ALGORITHM SYSTEM DUAL EVALUATOR
         setInterval(() => {
             timeLeft--;
             if (timeLeft <= 0) {
                 let finalColorResult = 'Green'; 
-                let finalNumberResult = Math.floor(Math.random() * 4) + 1;
+                let finalNumberResult = 3; // Default stable small green number
+                let finalSizeResult = 'Small';
 
-                if (activeBet) {
-                    if (activeBet.type === 'color') {
-                        finalColorResult = activeBet.value === 'Red' ? 'Green' : 'Red';
-                        finalNumberResult = finalColorResult === 'Red' ? 7 : 3;
-                    } else if (activeBet.type === 'number') {
-                        let targetedNum = parseInt(activeBet.value);
-                        finalNumberResult = (targetedNum === 3) ? 7 : 3; 
-                        finalColorResult = 'Red';
+                // Look across parallel tracks and pick the absolute opposite to secure house profits
+                if (activeSizeBet) {
+                    finalSizeResult = activeSizeBet.value === 'Big' ? 'Small' : 'Big';
+                    if(finalSizeResult === 'Big') {
+                        finalNumberResult = 7; finalColorResult = 'Red';
+                    } else {
+                        finalNumberResult = 3; finalColorResult = 'Green';
                     }
+                } else if (activeColorBet) {
+                    finalColorResult = activeColorBet.value === 'Red' ? 'Green' : 'Red';
+                    finalNumberResult = finalColorResult === 'Red' ? 6 : 2;
+                    finalSizeResult = finalNumberResult >= 5 ? 'Big' : 'Small';
+                } else if (activeNumBet) {
+                    let bannedNum = parseInt(activeNumBet.value);
+                    finalNumberResult = (bannedNum === 2) ? 8 : 2;
+                    finalColorResult = finalNumberResult === 8 ? 'Red' : 'Green';
+                    finalSizeResult = finalNumberResult >= 5 ? 'Big' : 'Small';
                 } else {
-                    let choices = ['Red', 'Green', 'Mix'];
+                    // Regular randomizer block when no active risks are populated
+                    let choices = ['Red', 'Green'];
                     finalColorResult = choices[Math.floor(Math.random() * choices.length)];
-                    if (finalColorResult === 'Mix') finalNumberResult = Math.random() > 0.5 ? 0 : 5;
-                    else if (finalColorResult === 'Green') finalNumberResult = Math.floor(Math.random() * 4) + 1;
-                    else finalNumberResult = Math.floor(Math.random() * 4) + 6;
+                    finalNumberResult = finalColorResult === 'Green' ? Math.floor(Math.random() * 4) + 1 : Math.floor(Math.random() * 4) + 6;
+                    finalSizeResult = finalNumberResult >= 5 ? 'Big' : 'Small';
                 }
 
-                largeTrendPool.push({ num: finalNumberResult, color: finalColorResult });
+                largeTrendPool.push({ num: finalNumberResult, color: finalColorResult, size: finalSizeResult });
                 if(largeTrendPool.length > 60) largeTrendPool.shift();
                 
                 renderHistoryView();
                 
-                let outColor = finalColorResult === 'Mix' ? '#8b5cf6' : (finalColorResult === 'Red' ? '#ef4444' : '#10b981');
+                let outColor = finalColorResult === 'Red' ? '#ef4444' : '#10b981';
                 let statusEl = document.getElementById('roundStatus');
                 if(statusEl) {
-                    statusEl.innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Color <span style="color:${outColor};">[${finalColorResult}]</span>`;
+                    statusEl.innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Size <span style="color:#38bdf8;">[${finalSizeResult}]</span> | Color <span style="color:${outColor};">[${finalColorResult}]</span>`;
                 }
-                addLog(`🏆 System rolled optimized result: ${finalNumberResult} (${finalColorResult})`);
+                addLog(`🏆 Result Generated: ${finalNumberResult} - ${finalSizeResult} (${finalColorResult})`);
 
-                if (activeBet && currentUser) {
-                    let userWon = false;
-                    let mult = 0;
-                    if (activeBet.type === 'color' && activeBet.value === finalColorResult) { userWon = true; mult = 2; }
-                    if (activeBet.type === 'number' && parseInt(activeBet.value) === finalNumberResult) { userWon = true; mult = 9; }
+                // Parallel track independent winning evaluations
+                let grossWinnings = 0;
 
-                    if (userWon) {
-                        let winnings = activeBet.amount * mult;
-                        database.ref('users/' + currentUser.uid).update({ balance: currentBalance + winnings });
-                        addLog(`💰 Won PKR ${winnings}`);
-                    } else {
-                        addLog(`❌ Better luck next round! Try again.`);
+                if (currentUser) {
+                    // 1. Evaluate Size Track
+                    if (activeSizeBet) {
+                        if (activeSizeBet.value === finalSizeResult) {
+                            grossWinnings += activeSizeBet.amount * 2;
+                            addLog(`💰 Size Bet Won!`);
+                        } else { addLog(`❌ Size Bet Lost.`); }
+                    }
+                    // 2. Evaluate Color Track
+                    if (activeColorBet) {
+                        if (activeColorBet.value === finalColorResult) {
+                            grossWinnings += activeColorBet.amount * 2;
+                            addLog(`💰 Color Bet Won!`);
+                        } else { addLog(`❌ Color Bet Lost.`); }
+                    }
+                    // 3. Evaluate Direct Number Track
+                    if (activeNumBet) {
+                        if (parseInt(activeNumBet.value) === finalNumberResult) {
+                            grossWinnings += activeNumBet.amount * 9;
+                            addLog(`💰 Jackpot Number Bet Won!`);
+                        } else { addLog(`❌ Number Bet Lost.`); }
+                    }
+
+                    if (grossWinnings > 0) {
+                        database.ref('users/' + currentUser.uid).update({ balance: currentBalance + grossWinnings });
+                        addLog(`⭐ Total Credited: PKR ${grossWinnings}`);
                     }
                 }
 
-                activeBet = null;
+                // Clean and unlock independent tracking modules safely
+                activeSizeBet = null;
+                activeColorBet = null;
+                activeNumBet = null;
                 timeLeft = 30; 
             }
             let timerEl = document.getElementById('timer');
@@ -406,19 +447,28 @@
             }
         }, 1000);
 
-        function placeBet(type, value) {
-            if (activeBet) { alert("Bet already active!"); return; }
+        // Advanced Multi-Category Bet Placer Module
+        function placeBet(category, value) {
             let amount = parseInt(document.getElementById('betAmount').value);
             if (isNaN(amount) || amount < 30) { alert("Min bet PKR 30!"); return; }
             if (amount > currentBalance) { alert("In-sufficient balance!"); return; }
+
+            if (category === 'size') {
+                if (activeSizeBet) { alert("Size bet already locked for this round!"); return; }
+                activeSizeBet = { value: value, amount: amount };
+            } else if (category === 'color') {
+                if (activeColorBet) { alert("Color bet already locked for this round!"); return; }
+                activeColorBet = { value: value, amount: amount };
+            } else if (category === 'number') {
+                if (activeNumBet) { alert("Number bet already locked for this round!"); return; }
+                activeNumBet = { value: value, amount: amount };
+            }
             
             let newBal = currentBalance - amount;
             if(currentUser) {
                 database.ref('users/' + currentUser.uid).update({ balance: newBal });
             }
-            
-            activeBet = { type: type, value: value, amount: amount };
-            addLog(`🎲 Locked PKR ${amount} on ${value}`);
+            addLog(`🎲 Locked PKR ${amount} on [${value}]`);
         }
 
         function addLog(text) {
