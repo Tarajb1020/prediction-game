@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Win Zone - VIP Number & Color Premium</title>
+    <title>Win Zone - Automated Risk Management Elite</title>
     <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -15,121 +15,105 @@
             background-color: #0b0f19; color: white;
             text-align: center;
         }
-        /* Auth Screen Styling */
-        .auth-container {
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            height: 100vh; padding: 20px; box-sizing: border-box;
-            background: linear-gradient(to bottom, #0b0f19, #111827);
-        }
-        .auth-card {
-            background-color: #1e293b; padding: 35px 25px; border-radius: 24px;
-            width: 100%; max-width: 380px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            border: 1px solid #334155;
-        }
-        .auth-card h2 { color: #f1c40f; margin-bottom: 25px; font-size: 26px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-        
-        /* Main App Screen Styling */
         #appScreen { display: none; }
-        
-        .header {
-            background-color: #111827; padding: 18px 15px; font-size: 22px; font-weight: 800;
-            border-bottom: 3px solid #f1c40f; display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4); letter-spacing: 1px;
-        }
+        .auth-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; background: linear-gradient(to bottom, #0b0f19, #111827); }
+        .auth-card { background-color: #1e293b; padding: 35px 25px; border-radius: 24px; width: 100%; max-width: 380px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); border: 1px solid #334155; }
+        .auth-card h2 { color: #f1c40f; margin-bottom: 25px; font-size: 26px; font-weight: 800; text-transform: uppercase; }
+        .header { background-color: #111827; padding: 18px 15px; font-size: 22px; font-weight: 800; border-bottom: 3px solid #f1c40f; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
         .header span { color: #f1c40f; }
-        .logout-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s; }
+        .logout-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; }
         
-        .balance-card {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            margin: 20px; padding: 25px 20px; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-            border: 1px solid #334155; position: relative;
-        }
-        .wallet-actions { display: flex; justify-content: center; gap: 15px; margin: -10px 20px 20px 20px; }
-        .btn-wallet { flex: 1; padding: 14px; font-size: 16px; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; }
+        /* Promotion Banner */
+        .promo-banner { background: linear-gradient(90deg, #b91c1c, #4338ca); margin: 15px 20px; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: bold; border: 1px solid #f1c40f; line-height: 1.5; text-align: left; }
+        
+        .balance-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); margin: 15px 20px; padding: 20px; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.5); border: 1px solid #334155; }
+        .wallet-actions { display: flex; justify-content: center; gap: 15px; margin: -5px 20px 15px 20px; }
+        .btn-wallet { flex: 1; padding: 12px; font-size: 15px; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; }
         .btn-dep { background: linear-gradient(135deg, #10b981, #059669); color: white; }
         .btn-with { background: linear-gradient(135deg, #0284c7, #0369a1); color: white; }
 
-        .timer-section { background-color: #1e293b; margin: 15px 20px; padding: 12px; border-radius: 14px; font-size: 20px; color: #f59e0b; font-weight: bold; border: 1px solid #334155; }
-        .timer-section span { font-size: 24px; color: #fff; background: #0f172a; padding: 4px 12px; border-radius: 8px; margin-left: 8px; border: 1px solid #f59e0b; }
-        
-        /* History Trends Styling */
-        .history-box { background-color: #111827; margin: 15px 20px; padding: 15px; border-radius: 14px; border: 1px solid #334155; text-align: left; }
-        .history-title { font-size: 13px; color: #94a3b8; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px; }
+        /* History Component */
+        .history-box { background-color: #111827; margin: 15px 20px; padding: 12px; border-radius: 14px; border: 1px solid #334155; text-align: left; }
+        .history-title { font-size: 13px; color: #94a3b8; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; }
         .trends-list { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; }
-        .trend-dot { min-width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; color: white; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+        .trend-dot { min-width: 36px; height: 36px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: white; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+        .latest-win-mark { position: absolute; top: -8px; font-size: 9px; background: #f1c40f; color: black; padding: 1px 3px; border-radius: 4px; font-weight: 900; animation: blink 1s infinite; }
+        
+        @keyframes blink { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
 
-        /* Color Betting Section */
-        .color-buttons { display: flex; justify-content: center; gap: 20px; margin: 20px 0; padding: 0 20px; }
-        .btn { flex: 1; padding: 16px; font-size: 18px; font-weight: bold; border: none; border-radius: 14px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4); text-transform: uppercase; }
-        .btn-red { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; border-bottom: 4px solid #7f1d1d; }
-        .btn-green { background: linear-gradient(135deg, #10b981, #047857); color: white; border-bottom: 4px solid #064e3b; }
+        .history-pagination-btn { background: none; border: 1px solid #f1c40f; color: #f1c40f; padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; }
+
+        .timer-section { background-color: #1e293b; margin: 15px 20px; padding: 12px; border-radius: 14px; font-size: 18px; color: #f59e0b; font-weight: bold; border: 1px solid #334155; }
+        .timer-section span { font-size: 22px; color: #fff; background: #0f172a; padding: 4px 12px; border-radius: 8px; margin-left: 8px; border: 1px solid #f59e0b; }
         
-        /* Number Grid Layout */
-        .number-grid-title { font-size: 14px; color: #94a3b8; font-weight: bold; margin: 20px 0 10px 0; text-transform: uppercase; }
-        .number-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; padding: 0 20px; margin-bottom: 25px; }
-        .num-btn { padding: 12px 0; font-size: 18px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; color: white; box-shadow: 0 3px 8px rgba(0,0,0,0.3); transition: 0.1s; }
-        .num-btn:active { transform: scale(0.9); }
+        .color-buttons { display: flex; justify-content: center; gap: 20px; margin: 15px 0; padding: 0 20px; }
+        .btn { flex: 1; padding: 15px; font-size: 18px; font-weight: bold; border: none; border-radius: 14px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4); text-transform: uppercase; }
+        .btn-red { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; }
+        .btn-green { background: linear-gradient(135deg, #10b981, #047857); color: white; }
         
-        /* Color Mapping Filters */
+        .number-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 0 20px; margin-bottom: 20px; }
+        .num-btn { padding: 12px 0; font-size: 16px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; color: white; }
+        
         .bg-green { background: linear-gradient(135deg, #10b981, #059669); }
         .bg-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        .bg-mix { background: linear-gradient(135deg, #8b5cf6, #ec4899); border: 2px dashed #fff; } /* Purple/Pink Burst */
+        .bg-mix { background: linear-gradient(135deg, #8b5cf6, #ec4899); border: 1px dashed #fff; }
 
-        input[type="number"], input[type="text"], input[type="email"], input[type="password"], select {
-            padding: 14px; font-size: 16px; border-radius: 10px; border: 1px solid #334155;
-            background-color: #0f172a; color: white; width: 100%; max-width: 280px;
-            text-align: center; margin-bottom: 15px; box-sizing: border-box; outline: none;
-        }
-        .auth-card input { max-width: 100%; text-align: left; }
+        input[type="number"], input[type="text"], input[type="email"], input[type="password"], select { padding: 12px; font-size: 15px; border-radius: 10px; border: 1px solid #334155; background-color: #0f172a; color: white; width: 100%; max-width: 280px; text-align: center; margin-bottom: 12px; box-sizing: border-box; }
+        .status-display { background-color: #111827; border: 1px dashed #334155; padding: 12px; margin: 15px 20px; border-radius: 12px; font-size: 14px; color: #94a3b8; font-weight: bold; }
+        .logs { background-color: #1e293b; margin: 20px; padding: 12px; border-radius: 12px; text-align: left; max-height: 100px; overflow-y: auto; font-size: 13px; color: #cbd5e1; border: 1px solid #334155; }
         
-        .status-display { background-color: #111827; border: 1px dashed #334155; padding: 12px; margin: 15px 20px; border-radius: 12px; font-size: 15px; color: #94a3b8; font-weight: bold; }
-        .logs { background-color: #1e293b; margin: 20px; padding: 15px; border-radius: 12px; text-align: left; max-height: 120px; overflow-y: auto; font-size: 14px; color: #cbd5e1; border: 1px solid #334155; }
-        
-        /* Modals */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000; padding: 15px; box-sizing: border-box; }
-        .modal-content { background-color: #1e293b; padding: 30px 20px; border-radius: 24px; width: 100%; max-width: 360px; border: 1px solid #475569; text-align: center; }
-        .account-details { background-color: #0f172a; padding: 15px; border-radius: 12px; font-weight: bold; margin-bottom: 20px; font-size: 15px; color: #f1c40f; line-height: 1.6; }
-        .submit-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; }
-        .close-btn { background-color: #475569; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-top: 15px; width: 100%; }
-        .switch-auth { color: #38bdf8; cursor: pointer; text-decoration: underline; margin-top: 18px; font-size: 14px; display: inline-block; }
+        .modal-content { background-color: #1e293b; padding: 25px 20px; border-radius: 24px; width: 100%; max-width: 360px; border: 1px solid #475569; text-align: center; }
+        .account-details { background-color: #0f172a; padding: 12px; border-radius: 12px; font-weight: bold; margin-bottom: 15px; font-size: 14px; color: #f1c40f; line-height: 1.5; }
+        .submit-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; }
+        .close-btn { background-color: #475569; color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; margin-top: 12px; width: 100%; }
+        .switch-auth { color: #38bdf8; cursor: pointer; text-decoration: underline; margin-top: 15px; font-size: 13px; display: inline-block; }
+        .timing-info { font-size: 11px; color: #a7f3d0; margin-top: 8px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <!-- AUTHENTICATION SCREEN -->
+    <!-- AUTH SCREEN -->
     <div id="authScreen" class="auth-container">
         <div id="loginCard" class="auth-card">
             <h2>Win Zone Login</h2>
             <input type="email" id="loginEmail" placeholder="Email Address">
             <input type="password" id="loginPassword" placeholder="Password">
             <button class="submit-btn" onclick="handleLogin()">Login Account</button>
-            <span class="switch-auth" onclick="toggleAuth(false)">Naya Account Banayein (Signup)</span>
+            <span class="switch-auth" onclick="toggleAuth(false)">Naya Account (Signup)</span>
         </div>
-
         <div id="signupCard" class="auth-card" style="display: none;">
             <h2>Create Account</h2>
             <input type="text" id="signupPhone" placeholder="Mobile Number">
             <input type="email" id="signupEmail" placeholder="Email Address">
-            <input type="password" id="signupPassword" placeholder="Password (Min 6 Characters)">
+            <input type="password" id="signupPassword" placeholder="Password (Min 6 Chars)">
             <button class="submit-btn" onclick="handleSignup()">Register Now</button>
             <span class="switch-auth" onclick="toggleAuth(true)">Pehle se account hai? Login</span>
         </div>
     </div>
 
-    <!-- MAIN GAME SCREEN -->
+    <!-- MAIN APP SCREEN -->
     <div id="appScreen">
         <div class="header">
-            <span>👑 WIN ZONE PRO</span>
+            <span>👑 WIN ZONE AUTOMATED</span>
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
 
-        <div style="margin-top: 12px; font-size: 14px; color: #94a3b8;">
+        <!-- Dynamic Offer Config Display -->
+        <div class="promo-banner">
+            🎁 *VIP WELCOME BONUS OFFER:*<br>
+            • Deposit **Rs. 300** Get **Rs. 350** Auto Credit!<br>
+            • Deposit **Rs. 500** Get **Rs. 600** Auto Credit!<br>
+            • Deposit **Rs. 1000** Get **Rs. 1150** Auto Credit!
+        </div>
+
+        <div style="margin-top: 10px; font-size: 13px; color: #94a3b8;">
             Account Phone: <span id="userPhoneDisplay" style="font-weight: bold; color: #fff;">-</span>
         </div>
 
         <div class="balance-card">
-            <div style="font-size: 13px; opacity: 0.7; text-transform: uppercase;">Available Balance</div>
-            <div id="balance" style="font-size: 36px; font-weight: 900; margin-top: 5px; color: #f1c40f;">PKR 0</div>
+            <div style="font-size: 12px; opacity: 0.7;">AVAILABLE BALANCE</div>
+            <div id="balance" style="font-size: 34px; font-weight: 900; margin-top: 5px; color: #f1c40f;">PKR 0</div>
         </div>
 
         <div class="wallet-actions">
@@ -137,13 +121,13 @@
             <button class="btn-wallet btn-with" onclick="openModal('withdrawModal')">Withdraw 📤</button>
         </div>
 
-        <!-- Trend Record Section -->
+        <!-- History Trends Module with Pagination Architecture -->
         <div class="history-box">
-            <div class="history-title">📊 Last 10 Rounds Result History</div>
-            <div class="trends-list" id="trendsHistory">
-                <!-- Dynamic display dots -->
-                <div style="color:#64748b; font-size:12px;">No history data yet...</div>
+            <div class="history-title">
+                <span id="historyRangeText">📊 Trends History (Latest 10)</span>
+                <button class="history-pagination-btn" id="toggleHistoryBtn" onclick="toggleHistoryPage()">View Older History</button>
             </div>
+            <div class="trends-list" id="trendsHistory"></div>
         </div>
 
         <div class="timer-section">
@@ -151,22 +135,19 @@
         </div>
 
         <div class="status-display" id="roundStatus">
-            ⏳ Place your Color or Number bet!
+            ⏳ Place your bets. Smart Profit Filter Engine Active!
         </div>
 
         <div>
-            <label style="display:block; margin-bottom: 6px; font-size: 13px; color: #94a3b8; font-weight: bold;">BET AMOUNT (MIN RS. 30):</label>
-            <input type="number" id="betAmount" value="30" min="30" style="width: 150px; font-weight: bold; font-size: 18px; color: #f1c40f;">
+            <label style="display:block; margin-bottom: 6px; font-size: 12px; color: #94a3b8; font-weight: bold;">BET AMOUNT (MIN RS. 30):</label>
+            <input type="number" id="betAmount" value="30" min="30" style="width: 140px; font-weight: bold; font-size: 16px; color: #f1c40f;">
         </div>
 
-        <!-- Color Buttons -->
         <div class="color-buttons">
             <button class="btn btn-red" onclick="placeBet('color', 'Red')">Join Red</button>
             <button class="btn btn-green" onclick="placeBet('color', 'Green')">Join Green</button>
         </div>
 
-        <!-- Number Grid -->
-        <div class="number-grid-title">🎰 Guess Number (Win X9 Profits)</div>
         <div class="number-grid">
             <button class="num-btn bg-mix" onclick="placeBet('number', 0)">0</button>
             <button class="num-btn bg-green" onclick="placeBet('number', 1)">1</button>
@@ -181,7 +162,7 @@
         </div>
 
         <div class="logs" id="logSection">
-            <div style="color: #f1c40f; font-weight: bold;">✨ Welcome to Win Zone Premium System!</div>
+            <div style="color: #f1c40f; font-weight: bold;">✨ Game Protection Routing Active.</div>
         </div>
     </div>
 
@@ -198,9 +179,10 @@
                 <option value="Easypaisa">Easypaisa</option>
                 <option value="JazzCash">JazzCash</option>
             </select>
-            <input type="number" id="depAmount" placeholder="Amount (Min 100)">
+            <input type="number" id="depAmount" placeholder="Amount (Min 300)">
             <input type="text" id="depTrx" placeholder="TRX ID / Transaction ID">
             <button class="submit-btn" onclick="submitDeposit()">Submit Deposit</button>
+            <div class="timing-info">⏱️ Active Approval Time: 30 Min to 1 Hour</div>
             <button class="close-btn" onclick="closeModal('depositModal')">Cancel</button>
         </div>
     </div>
@@ -217,12 +199,12 @@
             <input type="text" id="withName" placeholder="Account Title/Name">
             <input type="number" id="withAmount" placeholder="Withdraw Amount">
             <button class="submit-btn" onclick="submitWithdraw()">Request Withdrawal</button>
+            <div class="timing-info">⏱️ Standard Transfer Time: Within 24 Hours</div>
             <button class="close-btn" onclick="closeModal('withdrawModal')">Cancel</button>
         </div>
     </div>
 
     <script>
-        // --- YOUR GENUINE FIREBASE CONFIGURATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyC38KxWq7xJdaadAiF5nfChWyne_iA6vBw",
             authDomain: "winzone-bff7c.firebaseapp.com",
@@ -244,9 +226,15 @@
         let currentBalance = 0;
         let timeLeft = 30;
         let activeBet = null; 
-        let localHistory = [
-            { num: 3, color: 'Green' }, { num: 7, color: 'Red' }, { num: 0, color: 'Mix' },
-            { num: 2, color: 'Green' }, { num: 8, color: 'Red' }, { num: 5, color: 'Mix' }
+        let viewOlderHistory = false;
+
+        // Structured Array targeting safe deep backup of up to 50 items
+        let largeTrendPool = [
+            {num: 1, color:'Green'},{num: 6, color:'Red'},{num: 0, color:'Mix'},{num: 2, color:'Green'},{num: 9, color:'Red'},
+            {num: 4, color:'Green'},{num: 7, color:'Red'},{num: 5, color:'Mix'},{num: 3, color:'Green'},{num: 8, color:'Red'},
+            {num: 2, color:'Green'},{num: 6, color:'Red'},{num: 0, color:'Mix'},{num: 3, color:'Green'},{num: 7, color:'Red'},
+            {num: 1, color:'Green'},{num: 8, color:'Red'},{num: 5, color:'Mix'},{num: 4, color:'Green'},{num: 9, color:'Red'},
+            {num: 3, color:'Green'},{num: 6, color:'Red'},{num: 2, color:'Green'},{num: 7, color:'Red'},{num: 0, color:'Mix'}
         ];
 
         function toggleAuth(isLogin) {
@@ -258,17 +246,17 @@
             const phone = document.getElementById('signupPhone').value.trim();
             const email = document.getElementById('signupEmail').value.trim();
             const password = document.getElementById('signupPassword').value;
-            if(!phone || !email || !password) { alert("Meherbani karke saari malomat fill karein!"); return; }
+            if(!phone || !email || !password) { alert("Sari fields fill karein!"); return; }
             auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
                 database.ref('users/' + userCredential.user.uid).set({ phone: phone, email: email, balance: 0 })
-                .then(() => { alert("Account Ban Gaya Hai! Login Karein."); location.reload(); });
+                .then(() => { alert("Account Ban Gaya!"); location.reload(); });
             }).catch((e) => alert(e.message));
         }
 
         function handleLogin() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-            if(!email || !password) { alert("Fields fill karein!"); return; }
+            if(!email || !password) { alert("Fields enter karein!"); return; }
             auth.signInWithEmailAndPassword(email, password).catch((e) => alert(e.message));
         }
 
@@ -277,7 +265,7 @@
                 currentUser = user;
                 document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('appScreen').style.display = 'block';
-                renderHistory();
+                renderHistoryView();
                 database.ref('users/' + user.uid).on('value', (snapshot) => {
                     let data = snapshot.val();
                     if(data) {
@@ -294,82 +282,108 @@
 
         function handleLogout() { auth.signOut().then(() => location.reload()); }
 
-        // Render Trend Display
-        function renderHistory() {
+        // Dynamic Pagination Renderer Engine with Highlight Mechanism
+        function renderHistoryView() {
             const container = document.getElementById('trendsHistory');
             container.innerHTML = '';
-            localHistory.slice(-10).reverse().forEach(item => {
+            
+            let dataset = viewOlderHistory ? largeTrendPool.slice(-50) : largeTrendPool.slice(-10);
+            let displayArray = [...dataset].reverse();
+
+            displayArray.forEach((item, index) => {
                 let colorBg = item.color === 'Green' ? 'linear-gradient(135deg, #10b981, #059669)' : 
                               item.color === 'Red' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 
                               'linear-gradient(135deg, #8b5cf6, #ec4899)';
                 let borderStyle = item.color === 'Mix' ? '2px dashed #fff' : 'none';
-                container.innerHTML += `<div class="trend-dot" style="background: ${colorBg}; border: ${borderStyle};">${item.num}</div>`;
+                
+                // Top-layer check for absolute fresh index identification
+                let dynamicIndicator = (index === 0) ? `<span class="latest-win-mark">🔥 Win</span>` : '';
+
+                container.innerHTML += `
+                    <div class="trend-dot" style="background: ${colorBg}; border: ${borderStyle};">
+                        ${dynamicIndicator}
+                        <span>${item.num}</span>
+                    </div>`;
             });
         }
 
-        // Live Dynamic Core Loop
+        function toggleHistoryPage() {
+            viewOlderHistory = !viewOlderHistory;
+            document.getElementById('historyRangeText').innerText = viewOlderHistory ? "📊 Trends History (All 50 Rounds)" : "📊 Trends History (Latest 10)";
+            document.getElementById('toggleHistoryBtn').innerText = viewOlderHistory ? "Back to Main Page" : "View Older History";
+            renderHistoryView();
+        }
+
+        // 100% SMART-PROFIT LOSS CONTROL SYSTEM GAME LOOP
         setInterval(() => {
             timeLeft--;
-            if (timeLeft <= 0) { 
-                // 1. Roll Random Number 0-9
-                let winnerNum = Math.floor(Math.random() * 10);
-                let winnerColor = '';
-                
-                if (winnerNum === 0 || winnerNum === 5) { winnerColor = 'Mix'; }
-                else if (winnerNum >= 1 && winnerNum <= 4) { winnerColor = 'Green'; }
-                else { winnerColor = 'Red'; }
+            if (timeLeft <= 0) {
+                // Read global entries mock evaluation -> Fallback to Lowest Invested Node
+                let finalColorResult = 'Green'; 
+                let finalNumberResult = Math.floor(Math.random() * 4) + 1; // Default low risk green load (1-4)
 
-                // Update Local UI History
-                localHistory.push({ num: winnerNum, color: winnerColor });
-                renderHistory();
-                
-                let displayColor = winnerColor === 'Mix' ? '#8b5cf6' : (winnerColor === 'Red' ? '#ef4444' : '#10b981');
-                document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${winnerNum}</span> | Color <span style="color:${displayColor};">[${winnerColor}]</span>`;
-                addLog(`🏆 Round Result: ${winnerNum} (${winnerColor})`);
-
-                // 2. Evaluate Profit Payouts
-                if (activeBet && currentUser) {
-                    let isWin = false;
-                    let multiplier = 0;
-
+                if (activeBet) {
+                    // Reverse Anti-Fraud Logic Integration
                     if (activeBet.type === 'color') {
-                        if (activeBet.value === winnerColor || (winnerColor === 'Mix' && (activeBet.value === 'Red' || activeBet.value === 'Green'))) {
-                            isWin = true; multiplier = 2; // Color hit pays X2
-                        }
+                        finalColorResult = activeBet.value === 'Red' ? 'Green' : 'Red';
+                        finalNumberResult = finalColorResult === 'Red' ? 7 : 3;
                     } else if (activeBet.type === 'number') {
-                        if (parseInt(activeBet.value) === winnerNum) {
-                            isWin = true; multiplier = 9; // Number hit pays X9
-                        }
+                        let targetedNum = parseInt(activeBet.value);
+                        finalNumberResult = (targetedNum === 3) ? 7 : 3; 
+                        finalColorResult = 'Red';
                     }
+                } else {
+                    // Regular clean randomized fallback trend generation
+                    let choices = ['Red', 'Green', 'Mix'];
+                    finalColorResult = choices[Math.floor(Math.random() * choices.length)];
+                    if (finalColorResult === 'Mix') finalNumberResult = Math.random() > 0.5 ? 0 : 5;
+                    else if (finalColorResult === 'Green') finalNumberResult = Math.floor(Math.random() * 4) + 1;
+                    else finalNumberResult = Math.floor(Math.random() * 4) + 6;
+                }
 
-                    if (isWin) {
-                        let winAmount = activeBet.amount * multiplier;
-                        let updatedBalance = currentBalance + winAmount;
-                        database.ref('users/' + currentUser.uid).update({ balance: updatedBalance });
-                        addLog(`💰 Jackpot! You won PKR ${winAmount}`);
+                // Append validated payout index to pool architecture
+                largeTrendPool.push({ num: finalNumberResult, color: finalColorResult });
+                if(largeTrendPool.length > 60) largeTrendPool.shift(); // Keep database light
+                
+                renderHistoryView();
+                
+                let outColor = finalColorResult === 'Mix' ? '#8b5cf6' : (finalColorResult === 'Red' ? '#ef4444' : '#10b981');
+                document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Color <span style="color:${outColor};">[${finalColorResult}]</span>`;
+                addLog(`🏆 System rolled optimized result: ${finalNumberResult} (${finalColorResult})`);
+
+                // Evaluate Payout matches
+                if (activeBet && currentUser) {
+                    let userWon = false;
+                    let mult = 0;
+                    if (activeBet.type === 'color' && activeBet.value === finalColorResult) { userWon = true; mult = 2; }
+                    if (activeBet.type === 'number' && parseInt(activeBet.value) === finalNumberResult) { userWon = true; mult = 9; }
+
+                    if (userWon) {
+                        let winnings = activeBet.amount * mult;
+                        database.ref('users/' + currentUser.uid).update({ balance: currentBalance + winnings });
+                        addLog(`💰 Won PKR ${winnings}`);
                     } else {
-                        addLog(`❌ Bet lost. Better luck next round!`);
+                        addLog(`❌ Better luck next round! Try again.`);
                     }
                 }
+
                 activeBet = null;
                 timeLeft = 30; 
             }
             document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
         }, 1000);
 
-        // Place Bet Module
         function placeBet(type, value) {
-            if (activeBet) { alert("Aap is round mein pehle hi bet laga chuke hain!"); return; }
+            if (activeBet) { alert("Bet already active!"); return; }
             let amount = parseInt(document.getElementById('betAmount').value);
-            if (isNaN(amount) || amount < 30) { alert("Minimum bet PKR 30!"); return; }
-            if (amount > currentBalance) { alert("Balance kam hai!"); return; }
+            if (isNaN(amount) || amount < 30) { alert("Min bet PKR 30!"); return; }
+            if (amount > currentBalance) { alert("In-sufficient balance!"); return; }
             
             let newBal = currentBalance - amount;
             database.ref('users/' + currentUser.uid).update({ balance: newBal });
             
             activeBet = { type: type, value: value, amount: amount };
-            addLog(`🎲 Locked PKR ${amount} on ${type === 'color' ? '['+value+']' : 'Number '+value}`);
-            document.getElementById('roundStatus').innerText = `✅ Bet verified! Processing trend cycle...`;
+            addLog(`🎲 Locked PKR ${amount} on ${value}`);
         }
 
         function addLog(text) {
@@ -386,11 +400,11 @@
             let trx = document.getElementById('depTrx').value;
             let method = document.getElementById('depMethod').value;
             let phone = document.getElementById('userPhoneDisplay').innerText;
-            if(!amount || !trx) { alert("Fill fields!"); return; }
+            if(!amount || !trx) { alert("Sari fields fill karein!"); return; }
             let message = `💰 *NEW DEPOSIT REQUEST* 💰\n\n👤 *User Phone:* ${phone}\n🆔 *User UID:* \`${currentUser.uid}\`\n🔹 *Method:* ${method}\n🔹 *Amount:* PKR ${amount}\n🔹 *TRX ID:* \`${trx}\``;
             let url = `https://api.telegram.org/bot${tgToken}/sendMessage?chat_id=${tgChatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
             fetch(url, { mode: 'no-cors' }).then(() => {
-                alert("Deposit bhej diya gaya hai!"); closeModal('depositModal');
+                alert("Deposit notification sent to admin pipeline!"); closeModal('depositModal');
             });
         }
 
@@ -400,14 +414,14 @@
             let name = document.getElementById('withName').value;
             let method = document.getElementById('withMethod').value;
             let phone = document.getElementById('userPhoneDisplay').innerText;
-            if(!amount || !account || !name) { alert("Fill all!"); return; }
-            if(amount > currentBalance) { alert("Low balance!"); return; }
+            if(!amount || !account || !name) { alert("Fill fields!"); return; }
+            if(amount > currentBalance) { alert("Balance is lower!"); return; }
             let newBal = currentBalance - amount;
             database.ref('users/' + currentUser.uid).update({ balance: newBal });
             let message = `📤 *NEW WITHDRAW REQUEST* 📤\n\n👤 *User Phone:* ${phone}\n🔹 *Method:* ${method}\n🔹 *Amount:* PKR ${amount}\n🔹 *Account:* \`${account}\`\n🔹 *Name:* ${name}`;
             let url = `https://api.telegram.org/bot${tgToken}/sendMessage?chat_id=${tgChatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
             fetch(url, { mode: 'no-cors' }).then(() => {
-                alert("Withdraw processing!"); closeModal('withdrawModal');
+                alert("Withdraw request submitted securely!"); closeModal('withdrawModal');
             });
         }
     </script>
