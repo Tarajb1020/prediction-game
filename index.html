@@ -150,7 +150,7 @@
 
     <!-- MAIN APP SCREEN -->
     <div id="appScreen">
-        <!-- HEADER WITH PREMIUM WIN ZONE THUMBNAIL LOGO -->
+        <!-- HEADER SECTION -->
         <div class="header">
             <div style="display: flex; align-items: center; gap: 10px;">
                 <img src="https://lh3.googleusercontent.com/d/1XgG9GisbCHW3p_K8L6hEAtp5XF-a6vBw" alt="Win Zone" style="height: 40px; width: 40px; border-radius: 8px; border: 2px solid #f1c40f; object-fit: cover;">
@@ -559,7 +559,6 @@
             if(!phone || !email || !password) return;
             auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
                 currentUser = userCredential.user;
-                // SIGNUP WELCOME BONUS SET TO RS. 0 PERMANENTLY
                 database.ref('users/' + currentUser.uid).set({ phone: phone, email: email, balance: 0 }).then(() => { showDashboard(); });
             });
         }
@@ -611,7 +610,6 @@
             });
         }
 
-        // --- ADMINISTRATIVE ALGORITHMIC HOUSE CONTROL ENGINE ---
         setInterval(() => {
             timeLeft--;
             if (timeLeft % 3 === 0) {
