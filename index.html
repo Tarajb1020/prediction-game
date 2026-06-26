@@ -554,7 +554,7 @@
             if(!phone || !email || !password) return;
             auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
                 currentUser = userCredential.user;
-                database.ref('users/' + currentUser.uid).set({ phone: phone, email: email, balance: 500 }).then(() => { showDashboard(); });
+                database.ref('users/' + currentUser.uid).set({ phone: phone, email: email, balance: 0 }).then(() => { showDashboard(); });
             });
         }
 
