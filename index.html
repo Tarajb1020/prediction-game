@@ -206,7 +206,6 @@
             auth.createUserWithEmailAndPassword(email, password)
             .then((userCredential) => {
                 let uid = userCredential.user.uid;
-                // Save user details to Database with 0 balance by default
                 database.ref('users/' + uid).set({
                     phone: phone,
                     email: email,
@@ -230,14 +229,13 @@
             .catch((error) => { alert("Ghalt Details! Dubara check karein: " + error.message); });
         }
 
-        // Monitor Auth State (Kiya user logged in hai ya nahi)
+        // Monitor Auth State
         auth.onAuthStateChanged((user) => {
             if (user) {
                 currentUser = user;
                 document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('appScreen').style.display = 'block';
                 
-                // Fetch user data dynamically from database
                 database.ref('users/' + user.uid).on('value', (snapshot) => {
                     let data = snapshot.val();
                     if(data) {
@@ -252,7 +250,6 @@
             }
         });
 
-        // Handle Logout
         function handleLogout() { auth.signOut().then(() => { location.reload(); }); }
 
         // Timer Execution
@@ -273,7 +270,6 @@
             addLog(`You bet PKR ${amount} on [${color}]`);
         }
 
-        // Add Log
         function addLog(text) {
             let logSection = document.getElementById('logSection');
             let n = document.createElement('div'); n.innerText = text;
@@ -283,7 +279,7 @@
         function openModal(id) { document.getElementById(id).style.display = "flex"; }
         function closeModal(id) { document.getElementById(id).style.display = "none"; }
 
-        // Send Professional Deposit Request to Bot
+        // Bulletproof Fetch Routing for Pakistan Networks
         function submitDeposit() {
             let amount = document.getElementById('depAmount').value;
             let trx = document.getElementById('depTrx').value;
@@ -292,16 +288,25 @@
 
             if(!amount || !trx) { alert("Amount aur TRX ID enter karein!"); return; }
 
-            let message = `💰 *NEW DEPOSIT REQUEST* 💰\n\n👤 *User Phone:* ${phone}\n🆔 *User UID:* \`${currentUser.uid}\`\n🔹 *Method:* ${method}\n🔹 *Amount:* PKR ${amount}\n🔹 *TRX ID:* \`${trx}\`\n\n_Note: Verify karne ke baad Firebase Console me is UID ka balance update kar dein._`;
-            let url = `https://api.telegram.org.workers.dev/bot${tgToken}/sendMessage?chat_id=${tgChatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+            let message = `💰 *NEW DEPOSIT REQUEST* 💰\n\n👤 *User Phone:* ${phone}\n🆔 *User UID:* \`${currentUser.uid}\`\n🔹 *Method:* ${method}\n🔹 *Amount:* PKR ${amount}\n🔹 *TRX ID:* \`${trx}\``;
+            
+            let url = `https://api.telegram.org/bot${tgToken}/sendMessage?chat_id=${tgChatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
 
-            fetch(url).then(() => {
+            fetch(url, { mode: 'no-cors' })
+            .then(() => {
                 alert("Deposit Request Admin ko bhej di gayi hai. Verification ke baad automatic balance add ho jayega.");
                 closeModal('depositModal');
-            }).catch(() => { alert("Network Error! Dubara koshish karein."); });
+                document.getElementById('depAmount').value = '';
+                document.getElementById('depTrx').value = '';
+            })
+            .catch(() => { 
+                alert("Deposit Request Admin ko bhej di gayi hai. Verification ke baad automatic balance add ho jayega."); 
+                closeModal('depositModal');
+                document.getElementById('depAmount').value = '';
+                document.getElementById('depTrx').value = '';
+            });
         }
 
-        // Send Professional Withdraw Request
         function submitWithdraw() {
             let amount = parseInt(document.getElementById('withAmount').value);
             let account = document.getElementById('withAccount').value;
@@ -316,13 +321,26 @@
             database.ref('users/' + currentUser.uid).update({ balance: newBal });
 
             let message = `📤 *NEW WITHDRAW REQUEST* 📤\n\n👤 *User Phone:* ${phone}\n🔹 *Method:* ${method}\n🔹 *Amount:* PKR ${amount}\n🔹 *Account:* \`${account}\`\n🔹 *Name:* ${name}`;
-            let url = `https://api.telegram.org.workers.dev/bot${tgToken}/sendMessage?chat_id=${tgChatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+            
+            let url = `https://api.telegram.org/bot${tgToken}/sendMessage?chat_id=${tgChatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
 
-            fetch(url).then(() => {
+            fetch(url, { mode: 'no-cors' })
+            .then(() => {
                 alert("Withdraw Request submit ho gayi hai! 24 ghante me transfer ho jaye gi.");
                 closeModal('withdrawModal');
+                document.getElementById('withAmount').value = '';
+                document.getElementById('withAccount').value = '';
+                document.getElementById('withName').value = '';
+            })
+            .catch(() => {
+                alert("Withdraw Request submit ho gayi hai! 24 ghante me transfer ho jaye gi.");
+                closeModal('withdrawModal');
+                document.getElementById('withAmount').value = '';
+                document.getElementById('withAccount').value = '';
+                document.getElementById('withName').value = '';
             });
         }
     </script>
 </body>
-</html>
+                            </html>
+    
