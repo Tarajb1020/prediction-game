@@ -113,8 +113,18 @@
 
         input[type="number"], input[type="text"], input[type="email"], input[type="password"] { padding: 12px; font-size: 15px; border-radius: 10px; border: 1px solid #334155; background-color: #0f172a; color: white; width: 100%; max-width: 280px; text-align: center; margin-bottom: 12px; box-sizing: border-box; }
         .status-display { background-color: #111827; border: 1px dashed #334155; padding: 12px; margin: 15px 20px; border-radius: 12px; font-size: 14px; color: #94a3b8; font-weight: bold; }
-        .logs { background-color: #1e293b; margin: 20px; padding: 12px; border-radius: 12px; text-align: left; max-height: 110px; overflow-y: auto; font-size: 13px; color: #cbd5e1; border: 1px solid #334155; }
         
+        /* NEW DYNAMIC ROUTING UI STYLE */
+        .logs { background-color: #111622; margin: 20px; padding: 15px; border-radius: 16px; text-align: left; max-height: 180px; overflow-y: auto; border: 1px solid #233146; box-shadow: inset 0 4px 12px rgba(0,0,0,0.5); }
+        .routing-header { font-size: 13px; color: #f1c40f; font-weight: bold; border-bottom: 1px solid #233146; padding-bottom: 6px; margin-bottom: 10px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center;}
+        .live-bet-card { display: flex; justify-content: space-between; align-items: center; background: #1c2333; padding: 8px 12px; border-radius: 10px; margin-bottom: 8px; border: 1px solid #2d3b54; }
+        .badge-box { padding: 4px 10px; border-radius: 6px; font-weight: 900; font-size: 11px; text-transform: uppercase; }
+        .badge-big { background: linear-gradient(135deg, #6366f1, #4338ca); color: white; }
+        .badge-small { background: linear-gradient(135deg, #f97316, #ea580c); color: white; }
+        .badge-red { background: #ef4444; color: white; }
+        .badge-green { background: #10b981; color: white; }
+        .badge-num { background: #8b5cf6; color: white; border: 1px solid #fff; padding: 2px 8px; border-radius: 50%; }
+
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000; padding: 15px; box-sizing: border-box; }
         .modal-content { background-color: #1e293b; padding: 25px 20px; border-radius: 24px; width: 100%; max-width: 360px; border: 1px solid #475569; text-align: center; }
         .submit-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; }
@@ -235,8 +245,13 @@
                 <button class="num-btn bg-red" onclick="placeBet('number', 9)">9</button>
             </div>
 
+            <!-- UPGRADED PREMIUM BINGO ROUTING DESIGN -->
             <div class="logs" id="wingoLogSection">
-                <div style="color: #f1c40f; font-weight: bold;">✨ Bingo routing system online.</div>
+                <div class="routing-header">
+                    <span>📡 Bingo Routing Logs Stream</span>
+                    <span style="color:#10b981; animation: blink 1.5s infinite;">● Active</span>
+                </div>
+                <div id="activeBetsPanel"></div>
             </div>
         </div>
 
@@ -347,12 +362,12 @@
         </div>
     </div>
 
-    <!-- WIN/LOSE CELEBRATION MODAL -->
+    <!-- UPGRADED CELEBRATION MODAL UI WITH EXPLICIT CATEGORY STATS -->
     <div id="resultModal" class="modal">
-        <div class="modal-content" id="resultModalContent" style="border: 3px solid #f1c40f; box-shadow: 0 0 30px rgba(241, 196, 15, 0.4); transform: scale(1.05); transition: 0.3s;">
-            <h2 id="resultHeader" style="margin-top: 0; font-size: 32px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;"></h2>
-            <div id="resultDetails" style="font-size: 16px; margin: 20px 0; font-weight: bold; line-height: 1.6;"></div>
-            <button class="submit-btn" style="background: #f1c40f; color: #000; font-size: 16px; font-weight: 900;" onclick="closeModal('resultModal')">CONTINUE PLAYING</button>
+        <div class="modal-content" id="resultModalContent" style="border: 4px solid #f1c40f; box-shadow: 0 0 40px rgba(241, 196, 15, 0.6); transform: scale(1.05); transition: 0.3s;">
+            <h2 id="resultHeader" style="margin-top: 0; font-size: 34px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px;"></h2>
+            <div id="resultDetails" style="font-size: 15px; margin: 20px 0; font-weight: bold; line-height: 1.6;"></div>
+            <button class="submit-btn" style="background: linear-gradient(135deg, #f1c40f, #d4ac0d); color: #000; font-size: 16px; font-weight: 900; letter-spacing: 1px;" onclick="closeModal('resultModal')">CONTINUE PLAYING</button>
         </div>
     </div>
 
@@ -375,7 +390,6 @@
         let currentBalance = 0;
         let timeLeft = 30;
 
-        // FIXED: Shifted from single object to Array to track multiple active bets together!
         let activeWingoBets = [];  
         let largeTrendPool = [];
 
@@ -680,16 +694,13 @@
             }
 
             if (timeLeft <= 0) {
-                // Generate absolute standard result
                 let finalSizeResult = Math.random() > 0.5 ? 'Big' : 'Small';
                 let finalNumberResult = finalSizeResult === 'Big' ? [5,6,7,8,9][Math.floor(Math.random()*5)] : [0,1,2,3,4][Math.floor(Math.random()*5)];
                 let finalColorResult = [2,4,6,8].includes(finalNumberResult) ? 'Red' : [1,3,7,9].includes(finalNumberResult) ? 'Green' : 'Mix';
                 
                 let totalPayout = 0;
-                let winStatus = false;
-                let logDetailsHtml = "";
+                let userPlacings = [];
 
-                // FIXED: Processes all bets inside array simultaneously instead of single item!
                 if (activeWingoBets.length > 0) {
                     activeWingoBets.forEach(bet => {
                         let betWon = false;
@@ -701,66 +712,150 @@
                             betWon = true;
                         } else if (bet.category === 'number' && parseInt(bet.value) === finalNumberResult) {
                             betWon = true;
-                            multiplier = 9; // Number straight hit multiplier
+                            multiplier = 9;
                         }
 
                         if (betWon) {
-                            totalPayout += bet.amount * multiplier;
-                            winStatus = true;
-                            logDetailsHtml += `<div style="color: #10b981; font-weight:900;">🎉 Bet Won! +PKR ${bet.amount * multiplier} on [${bet.value}]</div>`;
+                            let winAmt = bet.amount * multiplier;
+                            totalPayout += winAmt;
+                            userPlacings.push({ cat: bet.category, val: bet.value, amt: bet.amount, won: true, returnAmt: winAmt });
                         } else {
-                            logDetailsHtml += `<div style="color: #ef4444;">❌ Bet Lost! -PKR ${bet.amount} on [${bet.value}]</div>`;
+                            userPlacings.push({ cat: bet.category, val: bet.value, amt: bet.amount, won: false, returnAmt: 0 });
                         }
                     });
 
-                    // Update total accumulated balance instantly to single atomic database node
                     if (totalPayout > 0) {
                         database.ref('users/' + currentUser.uid).child('balance').set(currentBalance + totalPayout);
                     }
-                    document.getElementById('wingoLogSection').innerHTML += logDetailsHtml;
                     
-                    // FIXED: Launch Celebration Modal based on net outcome
-                    triggerResultCelebrationModal(winStatus, finalNumberResult, finalColorResult, finalSizeResult, totalPayout);
+                    // FIXED: Triggers advanced structured win/lose celebration popup!
+                    triggerResultCelebrationModal(userPlacings, finalNumberResult, finalColorResult, finalSizeResult, totalPayout);
                 }
 
                 database.ref('wingo_history').push({ num: finalNumberResult, color: finalColorResult, size: finalSizeResult });
                 
                 document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Size <span style="color:#38bdf8;">[${finalSizeResult}]</span>`;
-                activeWingoBets = []; // Clear array for next round
+                activeWingoBets = []; 
+                document.getElementById('activeBetsPanel').innerHTML = ''; // Routing view reset
                 timeLeft = 30; 
             }
             document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
         }, 1000);
 
-        // FIXED: Places bets seamlessly to array storage without disrupting any overlapping properties
+        // FIXED: ADVANCED MUTUAL EXCLUSION ROUTING ALGORITHM FOR SIDE BETTING
         function placeBet(category, value) {
             let amount = parseInt(document.getElementById('betAmount').value);
             if (isNaN(amount) || amount < 15 || amount > currentBalance) { alert("Check stake/balance!"); return; }
             
+            // 1. Check rules for Big/Small
+            if (category === 'size') {
+                let conflictingSize = value === 'Big' ? 'Small' : 'Big';
+                let hasConflict = activeWingoBets.some(b => b.category === 'size' && b.value === conflictingSize);
+                if (hasConflict) {
+                    alert(`Ghalti! Aap ne pehle hi [${conflictingSize}] par bet lagayi hui hai. Ek waqt me sirf aik side choose kar sakte hain!`);
+                    return;
+                }
+            }
+
+            // 2. Check rules for Red/Green
+            if (category === 'color') {
+                let conflictingColor = value === 'Red' ? 'Green' : 'Red';
+                let hasConflict = activeWingoBets.some(b => b.category === 'color' && b.value === conflictingColor);
+                if (hasConflict) {
+                    alert(`Ghalti! Aap ne pehle hi [${conflictingColor}] par bet lagayi hui hai. Dono colors par sath bet nahi lag sakti!`);
+                    return;
+                }
+                
+                // Rule: Number par lagi ho to color par nahi lag sakti
+                let hasNumberBet = activeWingoBets.some(b => b.category === 'number');
+                if (hasNumberBet) {
+                    alert("Aap ne Direct Number hit choose kiya hai, isliye ab aap Color par bet nahi laga sakte!");
+                    return;
+                }
+            }
+
+            // 3. Check rules for Direct Number Hit
+            if (category === 'number') {
+                // Rule: Color par lagi ho to number par nahi lag sakti
+                let hasColorBet = activeWingoBets.some(b => b.category === 'color');
+                if (hasColorBet) {
+                    alert("Aap pehle hi Color select kar chuke hain. Number par bet lagane ke liye agle round ka wait karein ya color skip karein!");
+                    return;
+                }
+            }
+
+            // Standard Deductions and Array Pushes
             activeWingoBets.push({ category: category, value: value, amount: amount });
             database.ref('users/' + currentUser.uid).update({ balance: currentBalance - amount });
-            document.getElementById('wingoLogSection').innerHTML += `<div>🎲 Confirmed: PKR ${amount} on [${value}]</div>`;
+            
+            // UPDATE BEAUTIFIED BINGO ROUTING PANEL ON STAKE HIT
+            renderLiveRoutingUi();
         }
 
-        // FIXED: Custom function to open high quality interactive Win/Lose Alert Popups
-        function triggerResultCelebrationModal(isWin, num, color, size, payout) {
+        // PREMIUM UI RENDERING ENGINE FOR BINGO LIVE STAKES
+        function renderLiveRoutingUi() {
+            const panel = document.getElementById('activeBetsPanel');
+            panel.innerHTML = '';
+            activeWingoBets.forEach(bet => {
+                let badgeClass = "badge-box ";
+                if(bet.category === 'size') badgeClass += bet.value === 'Big' ? 'badge-big' : 'badge-small';
+                else if(bet.category === 'color') badgeClass += bet.value === 'Red' ? 'badge-red' : 'badge-green';
+                else badgeClass += 'badge-num';
+
+                panel.innerHTML += `
+                    <div class="live-bet-card">
+                        <span class="${badgeClass}">${bet.value}</span>
+                        <span style="color:#94a3b8; font-size:12px;">Category: <b style="color:#fff;">${bet.category.toUpperCase()}</b></span>
+                        <span style="color:#f1c40f; font-weight:900;">PKR ${bet.amount}</span>
+                    </div>
+                `;
+            });
+        }
+
+        // FIXED: PREMIUM STRUCTURED CONGRATULATIONS / LOSS CELEBRATION BOX
+        function triggerResultCelebrationModal(placingsArray, num, color, size, payout) {
             const modal = document.getElementById('resultModal');
             const content = document.getElementById('resultModalContent');
             const header = document.getElementById('resultHeader');
             const details = document.getElementById('resultDetails');
             
-            if (isWin) {
+            let isNetWin = payout > 0;
+            let rowsHtml = "";
+
+            // Loop to structure exact details visually for what was won or lost
+            placingsArray.forEach(p => {
+                let badgeStyle = p.cat === 'size' ? (p.val === 'Big' ? 'badge-big':'badge-small') : p.cat === 'color' ? (p.val === 'Red' ? 'badge-red':'badge-green') : 'badge-num';
+                if(p.won) {
+                    rowsHtml += `
+                        <div style="display:flex; justify-content:space-between; background:rgba(16,185,129,0.15); padding:8px 12px; border-radius:10px; margin-bottom:6px; border:1px solid #10b981;">
+                            <span class="badge-box ${badgeStyle}">${p.val}</span>
+                            <span style="color:#34d399;">🏆 WON (+PKR ${p.returnAmt})</span>
+                        </div>`;
+                } else {
+                    rowsHtml += `
+                        <div style="display:flex; justify-content:space-between; background:rgba(239,68,68,0.15); padding:8px 12px; border-radius:10px; margin-bottom:6px; border:1px solid #ef4444;">
+                            <span class="badge-box ${badgeStyle}">${p.val}</span>
+                            <span style="color:#f87171;">❌ LOST (-PKR ${p.amt})</span>
+                        </div>`;
+                }
+            });
+
+            if (isNetWin) {
                 header.innerText = "🏆 WINNER! 🏆";
                 header.style.color = "#10b981";
                 content.style.borderColor = "#10b981";
                 content.style.background = "linear-gradient(135deg, #1e293b 0%, #064e3b 100%)";
                 details.innerHTML = `
-                    <div style="font-size: 22px; color: #f1c40f; margin-bottom: 12px; font-weight:800;">CONGRATULATIONS!</div>
-                    <p style="margin:5px 0;">🎯 Rolled Number: <span style="color:#f1c40f;">${num}</span></p>
-                    <p style="margin:5px 0;">🎨 Rolled Color: <span style="color:#34d399;">${color}</span></p>
-                    <p style="margin:5px 0;">⚡ Rolled Size: <span style="color:#38bdf8;">${size}</span></p>
+                    <div style="font-size: 22px; color: #f1c40f; margin-bottom: 15px; font-weight:800;">CONGRATULATIONS!</div>
+                    <div style="display:flex; justify-content:space-around; background:#0f172a; padding:10px; border-radius:12px; margin-bottom:15px; border:1px solid #233146;">
+                        <div><small style="color:#94a3b8;display:block;">NUMBER</small><b style="color:#f1c40f;font-size:16px;">${num}</b></div>
+                        <div><small style="color:#94a3b8;display:block;">COLOR</small><b style="color:#34d399;font-size:16px;">${color}</b></div>
+                        <div><small style="color:#94a3b8;display:block;">SIZE</small><b style="color:#38bdf8;font-size:16px;">${size}</b></div>
+                    </div>
+                    <div style="text-align:left; font-size:12px; color:#94a3b8; margin-bottom:8px; font-weight:bold; text-transform:uppercase;">Your Stakes Status:</div>
+                    ${rowsHtml}
                     <hr style="border:0; border-top:1px dashed #334155; margin:15px 0;">
-                    <span style="font-size: 24px; color: #fff;">Net Return: <b style="color:#10b981;">+PKR ${payout}</b></span>
+                    <span style="font-size: 24px; color: #fff;">Total Received: <b style="color:#10b981;">+PKR ${payout}</b></span>
                 `;
             } else {
                 header.innerText = "❌ YOU LOST ❌";
@@ -768,10 +863,14 @@
                 content.style.borderColor = "#ef4444";
                 content.style.background = "linear-gradient(135deg, #1e293b 0%, #451a03 100%)";
                 details.innerHTML = `
-                    <div style="font-size: 18px; color: #94a3b8; margin-bottom: 12px;">Better Luck Next Round!</div>
-                    <p style="margin:5px 0;">🎯 Rolled Number: <span style="color:#f1c40f;">${num}</span></p>
-                    <p style="margin:5px 0;">🎨 Rolled Color: <span style="color:#34d399;">${color}</span></p>
-                    <p style="margin:5px 0;">⚡ Rolled Size: <span style="color:#38bdf8;">${size}</span></p>
+                    <div style="font-size: 18px; color: #94a3b8; margin-bottom: 15px;">Better Luck Next Round!</div>
+                    <div style="display:flex; justify-content:space-around; background:#0f172a; padding:10px; border-radius:12px; margin-bottom:15px; border:1px solid #233146;">
+                        <div><small style="color:#94a3b8;display:block;">NUMBER</small><b style="color:#f1c40f;font-size:16px;">${num}</b></div>
+                        <div><small style="color:#94a3b8;display:block;">COLOR</small><b style="color:#34d399;font-size:16px;">${color}</b></div>
+                        <div><small style="color:#94a3b8;display:block;">SIZE</small><b style="color:#38bdf8;font-size:16px;">${size}</b></div>
+                    </div>
+                    <div style="text-align:left; font-size:12px; color:#94a3b8; margin-bottom:8px; font-weight:bold; text-transform:uppercase;">Your Stakes Status:</div>
+                    ${rowsHtml}
                 `;
             }
             openModal('resultModal');
