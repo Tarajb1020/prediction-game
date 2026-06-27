@@ -3,392 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Win Zone Pro - Full Admin Guard Edition v4.5</title>
-    <!-- External Dependencies for Charts & Database -->
+    <title>Win Zone Pro - Elite Dual Engine App v4.8</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <style>
-        :root {
-            --bg-primary: #0b0f19;
-            --bg-secondary: #1e293b;
-            --bg-tertiary: #111827;
-            --accent-color: #f1c40f;
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-            --success: #10b981;
-            --danger: #ef4444;
-            --blue-btn: #0284c7;
-        }
-
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-main);
+            margin: 0; padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0b0f19; color: white;
             text-align: center;
-            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
-
-        /* Utility Classes */
-        .hidden { display: none !important; }
-        .scroller { overflow-y: auto; max-height: 250px; }
-
-        /* Auth Screen Styling */
-        .auth-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: radial-gradient(circle at center, #1e293b 0%, #0b0f19 100%);
-        }
-
-        .auth-card {
-            background-color: var(--bg-secondary);
-            padding: 35px;
-            border-radius: 24px;
-            width: 90%;
-            max-width: 360px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            border: 1px solid #334155;
-        }
-
-        .auth-card h2 {
-            margin-top: 0;
-            margin-bottom: 25px;
-            font-size: 26px;
-            letter-spacing: 1px;
-        }
-
-        /* Header Navigation */
-        .header {
-            background-color: var(--bg-tertiary);
-            padding: 18px 20px;
-            font-size: 20px;
-            font-weight: bold;
-            border-bottom: 3px solid var(--accent-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logout-btn {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        .logout-btn:hover { opacity: 0.9; }
-
-        /* Dashboard Wallet Layout */
-        .balance-card {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            margin: 15px;
-            padding: 25px 20px;
-            border-radius: 20px;
-            border: 1px solid #334155;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .balance-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(241,196,15,0.05) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .wallet-actions {
-            display: flex;
-            gap: 12px;
-            margin: 0 15px 15px 15px;
-        }
-
-        .btn-wallet {
-            flex: 1;
-            padding: 14px;
-            font-weight: bold;
-            font-size: 16px;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: transform 0.1s;
-        }
-
-        .btn-wallet:active { transform: scale(0.98); }
-        .btn-dep { background: var(--success); color: white; }
-        .btn-with { background: var(--blue-btn); color: white; }
-
-        /* Game Timer Segment */
-        .timer-section {
-            background-color: var(--bg-secondary);
-            margin: 15px;
-            padding: 18px;
-            border-radius: 16px;
-            font-size: 18px;
-            color: #f59e0b;
-            font-weight: bold;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            border: 1px solid #2d3748;
-        }
-
-        .timer-section span {
-            font-size: 26px;
-            color: #fff;
-            background: #0f172a;
-            padding: 6px 14px;
-            border-radius: 10px;
-            font-family: monospace;
-            border: 1px solid #3e4e68;
-        }
-
-        /* Betting Grid Components */
-        .game-container {
-            background: #131a26;
-            margin: 15px;
-            padding: 15px;
-            border-radius: 20px;
-            border: 1px solid #232d3f;
-        }
-
-        .game-section-label {
-            font-size: 13px;
-            color: var(--accent-color);
-            text-align: left;
-            margin: 10px 5px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .big-small-container, .color-selection-bar {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-
-        .btn-big { background: #4f46e5; color: white; flex: 1; padding: 16px; font-size: 18px; font-weight: bold; border: none; border-radius: 14px; cursor: pointer; box-shadow: 0 4px 12px rgba(79,70,229,0.3); }
-        .btn-small { background: #ea580c; color: white; flex: 1; padding: 16px; font-size: 18px; font-weight: bold; border: none; border-radius: 14px; cursor: pointer; box-shadow: 0 4px 12px rgba(234,88,12,0.3); }
+        #appScreen { display: none; }
+        .auth-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; background: linear-gradient(to bottom, #0b0f19, #111827); }
+        .auth-card { background-color: #1e293b; padding: 35px 25px; border-radius: 24px; width: 100%; max-width: 360px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); border: 1px solid #2d3748; }
+        .auth-card h2 { margin: 0 0 20px 0; font-size: 28px; color: #f1c40f; font-weight: 800; }
+        .auth-card input { width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #475569; background-color: #0f172a; color: white; font-size: 16px; box-sizing: border-box; }
+        .auth-card button { width: 100%; padding: 14px; border-radius: 12px; border: none; background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%); color: #0f172a; font-size: 16px; font-weight: bold; cursor: pointer; }
         
-        .color-choice-btn { flex: 1; padding: 15px; font-size: 16px; font-weight: bold; color: white; border: none; border-radius: 14px; cursor: pointer; }
-        .choice-red { background: var(--danger); box-shadow: 0 4px 12px rgba(239,68,68,0.3); }
-        .choice-green { background: var(--success); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
+        .header { background-color: #111827; padding: 15px 20px; font-size: 20px; font-weight: bold; border-bottom: 3px solid #f1c40f; display: flex; justify-content: space-between; align-items: center; }
+        .logout-btn { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        
+        .balance-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); margin: 15px; padding: 20px; border-radius: 20px; border: 1px solid #334155; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .wallet-actions { display: flex; gap: 12px; margin: 15px; }
+        .btn-wallet { flex: 1; padding: 14px; font-weight: bold; font-size: 16px; border: none; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-dep { background: #10b981; color: white; }
+        .btn-with { background: #0284c7; color: white; }
+        
+        .timer-section { background-color: #1e293b; margin: 15px; padding: 15px; border-radius: 16px; font-size: 18px; color: #f59e0b; font-weight: bold; display: flex; justify-content: center; align-items: center; }
+        .timer-section span { font-size: 24px; color: #fff; background: #0f172a; padding: 4px 12px; border-radius: 8px; margin-left: 8px; font-family: monospace; border: 1px solid #3b4252; }
+        
+        .game-container { background: #141b26; margin: 15px; padding: 15px; border-radius: 20px; border: 1px solid #222d3d; }
+        .game-section-label { font-size: 13px; color: #f1c40f; text-align: left; margin: 10px 5px; font-weight: bold; text-transform: uppercase; }
+        
+        .big-small-container, .color-selection-bar { display: flex; gap: 12px; margin-bottom: 15px; }
+        .btn-big { background: #4f46e5; color: white; flex: 1; padding: 15px; font-size: 18px; font-weight: bold; border: none; border-radius: 14px; cursor: pointer; }
+        .btn-small { background: #ea580c; color: white; flex: 1; padding: 15px; font-size: 18px; font-weight: bold; border: none; border-radius: 14px; cursor: pointer; }
+        .color-choice-btn { flex: 1; padding: 14px; font-size: 16px; font-weight: bold; color: white; border: none; border-radius: 14px; cursor: pointer; }
+        .choice-red { background: #ef4444; }
+        .choice-green { background: #10b981; }
+        
+        .number-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 10px; }
+        .num-btn { padding: 12px 0; font-size: 16px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; color: white; background: #2d3748; }
+        
+        .logs { background-color: #111827; margin: 15px; padding: 15px; border-radius: 16px; text-align: left; border: 1px solid #1f293d; }
+        .scroller { overflow-y: auto; max-height: 200px; }
+        .live-bet-card { display: flex; justify-content: space-between; background: #1c2333; padding: 10px; border-radius: 10px; margin-bottom: 6px; font-size: 14px; border-left: 4px solid #f1c40f; }
+        
+        /* Trend Table Design */
+        .trend-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+        .trend-table th, .trend-table td { padding: 10px; border-bottom: 1px solid #1e293b; text-align: center; }
+        .trend-table th { background: #0f172a; color: #94a3b8; }
+        .badge-red { background: #ef4444; padding: 3px 8px; border-radius: 5px; font-weight: bold; }
+        .badge-green { background: #10b981; padding: 3px 8px; border-radius: 5px; font-weight: bold; }
 
-        .number-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-
-        .num-btn {
-            padding: 14px 0;
-            font-size: 16px;
-            font-weight: bold;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            color: white;
-            background: #2d3748;
-            transition: background 0.2s;
-        }
-        .num-btn:active { background: #4a5568; }
-
-        /* Live Tracker Panels */
-        .logs {
-            background-color: var(--bg-tertiary);
-            margin: 15px;
-            padding: 15px;
-            border-radius: 16px;
-            text-align: left;
-            border: 1px solid #1f293d;
-        }
-
-        .live-bet-card {
-            display: flex;
-            justify-content: space-between;
-            background: #1c2333;
-            padding: 10px 12px;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            font-size: 14px;
-            border-left: 4px solid var(--accent-color);
-        }
-
-        /* Modal Subsystems */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(4px);
-        }
-
-        .modal-content {
-            background: var(--bg-secondary);
-            padding: 25px;
-            border-radius: 24px;
-            width: 90%;
-            max-width: 350px;
-            text-align: center;
-            border: 1px solid #475569;
-            animation: modalFade 0.25s ease-out;
-        }
-
-        @keyframes modalFade {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .submit-btn {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-            width: 100%;
-            box-sizing: border-box;
-            margin-top: 5px;
-        }
-
-        .close-btn {
-            background: #475569;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        input {
-            padding: 12px;
-            background: #0f172a;
-            color: white;
-            border: 1px solid #334155;
-            border-radius: 10px;
-            width: 100%;
-            box-sizing: border-box;
-            margin-bottom: 15px;
-            text-align: center;
-            font-size: 16px;
-        }
-        input:focus { border-color: var(--accent-color); outline: none; }
-
-        /* History Trends Table */
-        .trend-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 13px;
-        }
-        .trend-table th, .trend-table td {
-            padding: 10px;
-            border-bottom: 1px solid #1e293b;
-            text-align: center;
-        }
-        .trend-table th { background: #0f172a; color: var(--text-muted); }
-
-        .badge-red { background: var(--danger); padding: 3px 8px; border-radius: 5px; font-weight: bold; }
-        .badge-green { background: var(--success); padding: 3px 8px; border-radius: 5px; font-weight: bold; }
+        /* Modals & Beautiful Celebration Styling */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); }
+        .modal-content { background: #1e293b; padding: 25px; border-radius: 24px; width: 90%; max-width: 350px; text-align: center; border: 1px solid #475569; position: relative; }
+        
+        /* Pyara Celebration Screen Box */
+        .celebration-box { background: linear-gradient(135deg, #1e293b 0%, #064e3b 100%); border: 3px solid #10b981; box-shadow: 0 0 30px rgba(16,185,129,0.6); }
+        .loss-box { background: linear-gradient(135deg, #1e293b 0%, #451a03 100%); border: 3px solid #ef4444; }
+        
+        input, select { padding: 12px; background: #0f172a; color: white; border: 1px solid #334155; border-radius: 10px; width: 100%; box-sizing: border-box; margin-bottom: 12px; text-align: center; font-size: 15px; }
+        .submit-btn { background: #10b981; color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 16px; width: 100%; }
+        .close-btn { background: #475569; color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer; margin-top: 10px; width: 100%; }
     </style>
 </head>
 <body>
 
-    <!-- SECTION 1: AUTHENTICATION CONTAINER -->
     <div id="authScreen" class="auth-container">
-        <div id="loginCard" class="auth-card">
-            <h2 style="color: var(--accent-color);"><i class="fa-solid to fa-shield-halved"></i> WIN ZONE</h2>
-            <p style="color: var(--text-muted); font-size: 14px; margin-top: -15px; margin-bottom: 20px;">Secured Platform Engine</p>
-            <input type="email" id="loginEmail" placeholder="Enter Registration Email">
-            <input type="password" id="loginPassword" placeholder="Enter Secure Password">
-            <button class="submit-btn" onclick="handleLogin()"><i class="fa-solid fa-right-to-bracket"></i> Authorization Access</button>
+        <div class="auth-card">
+            <h2>WIN ZONE LOGIN</h2>
+            <input type="email" id="loginEmail" placeholder="Email Address">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button onclick="handleLogin()">Login</button>
         </div>
     </div>
 
-    <!-- SECTION 2: APPLICATION DASHBOARD -->
-    <div id="appScreen" class="hidden">
+    <div id="appScreen">
         <div class="header">
-            <span><i class="fa-solid fa-crown" style="color:var(--accent-color);"></i> WIN ZONE CONTROL CENTRE</span>
-            <button class="logout-btn" onclick="handleLogout()"><i class="fa-solid fa-power-off"></i> Exit</button>
+            <span>👑 WIN ZONE APP</span>
+            <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
 
-        <!-- Wallet Ledger Component -->
         <div class="balance-card">
-            <div style="font-size: 12px; opacity: 0.7; letter-spacing: 1px; font-weight: bold; text-transform: uppercase;">A/C Wallet Balance</div>
-            <div id="balance" style="font-size: 36px; font-weight: 900; color: var(--accent-color); margin: 5px 0;">PKR 0.00</div>
-            <div style="font-size: 11px; color: var(--success); font-weight: bold;"><i class="fa-solid fa-percent"></i> 10% ADMIN DEDUCTION FEE AGENT ACTIVE</div>
+            <div style="font-size: 13px; opacity: 0.8; font-weight: bold;">YOUR BALANCE</div>
+            <div id="balance" style="font-size: 36px; font-weight: 900; color: #f1c40f; margin: 5px 0;">PKR 0.00</div>
         </div>
 
-        <!-- Transaction Handlers -->
         <div class="wallet-actions">
-            <button class="btn-wallet btn-dep" onclick="openModal('depositModal')"><i class="fa-solid fa-wallet"></i> Load Deposit</button>
-            <button class="btn-wallet btn-with" onclick="openModal('withdrawModal')"><i class="fa-solid fa-money-bill-transfer"></i> Request Payout</button>
+            <button class="btn-wallet btn-dep" onclick="openModal('depositModal')"><i class="fa-solid fa-money-bill-wave"></i> Deposit</button>
+            <button class="btn-wallet btn-with" onclick="openModal('withdrawModal')"><i class="fa-solid fa-building-columns"></i> Withdraw</button>
         </div>
 
-        <!-- Engine Clock -->
         <div class="timer-section">
-            <i class="fa-solid fa-stopwatch"></i> Round Expiration Countdown: <span id="timer">00:30</span>
+            ⏱️ Round Ends In: <span id="timer">00:30</span>
         </div>
 
-        <div id="roundStatus" style="margin: 12px; font-weight: bold; color: var(--text-muted); font-size: 14px;">
-            <i class="fa-solid fa-circle-check" style="color:var(--success);"></i> Anti-Loss Core Active. Real-time mitigation online.
+        <div id="roundStatus" style="margin: 10px; font-weight: bold; color: #94a3b8; font-size: 14px;">
+            Place your bets. Game is secure.
         </div>
 
-        <!-- Operational Interface Grid -->
         <div class="game-container">
-            <div style="margin-bottom: 15px;">
-                <label style="font-size: 13px; color: var(--text-muted); font-weight: bold; display: block; margin-bottom: 6px; text-align: left;">SET UNIT STAKE AMOUNT (PKR):</label>
-                <input type="number" id="betAmount" value="50" style="margin-bottom: 0; font-weight: bold; color: var(--accent-color);">
+            <div style="margin-bottom: 12px;">
+                <label style="font-size: 13px; color: #94a3b8; font-weight: bold; display: block; text-align: left; margin-bottom: 5px;">Enter Bet Amount:</label>
+                <input type="number" id="betAmount" value="50" style="width: 100%; font-weight: bold; color: #f1c40f;">
             </div>
 
-            <div class="game-section-label"><i class="fa-solid fa-arrows-up-down"></i> Binary Volume Choice</div>
+            <div class="game-section-label">Select Size</div>
             <div class="big-small-container">
-                <button class="btn-big" onclick="placeBet('size', 'Big')">BIG [5-9]</button>
-                <button class="btn-small" onclick="placeBet('size', 'Small')">SMALL [0-4]</button>
+                <button class="btn-big" onclick="placeBet('size', 'Big')">Big</button>
+                <button class="btn-small" onclick="placeBet('size', 'Small')">Small</button>
             </div>
 
-            <div class="game-section-label"><i class="fa-solid fa-palette"></i> Spectrum Vector Selection</div>
+            <div class="game-section-label">Select Color</div>
             <div class="color-selection-bar">
-                <button class="color-choice-btn choice-red" onclick="placeBet('color', 'Red')"><i class="fa-solid fa-circle"></i> Crimson Red</button>
-                <button class="color-choice-btn choice-green" onclick="placeBet('color', 'Green')"><i class="fa-solid fa-circle"></i> Emerald Green</button>
+                <button class="color-choice-btn choice-red" onclick="placeBet('color', 'Red')">Red</button>
+                <button class="color-choice-btn choice-green" onclick="placeBet('color', 'Green')">Green</button>
             </div>
 
-            <div class="game-section-label"><i class="fa-solid fa-arrow-1-9"></i> Discrete Integer Matrix</div>
+            <div class="game-section-label">Select Number</div>
             <div class="number-grid">
                 <button class="num-btn" onclick="placeBet('number', 0)">0</button>
                 <button class="num-btn" onclick="placeBet('number', 1)">1</button>
@@ -403,13 +140,11 @@
             </div>
         </div>
 
-        <!-- Ledger Registry -->
         <div class="logs">
-            <div style="font-size: 13px; color: var(--accent-color); font-weight: bold; margin-bottom: 10px; text-transform: uppercase;"><i class="fa-solid fa-satellite-dish"></i> Live Account Risk Analysis Pool</div>
+            <div style="font-size: 13px; color: #f1c40f; font-weight: bold; margin-bottom: 8px;">🎲 YOUR CURRENT LIVE BETS</div>
             <div id="activeBetsPanel" class="scroller"></div>
         </div>
 
-        <!-- Historical Trend Log -->
         <div class="logs">
             <div style="font-size: 13px; color: #38bdf8; font-weight: bold; margin-bottom: 10px; text-transform: uppercase;"><i class="fa-solid fa-clock-rotate-left"></i> Game Outcome Trend Index</div>
             <div class="scroller">
@@ -418,50 +153,58 @@
                         <tr>
                             <th>Period ID</th>
                             <th>Number</th>
-                            <th>Volume</th>
+                            <th>Size</th>
                             <th>Color</th>
                         </tr>
                     </thead>
-                    <tbody id="trendTableBody">
-                        <!-- Dynamically Populated Rows -->
-                    </tbody>
+                    <tbody id="trendTableBody"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- SECTION 3: DATA VALIDATION WINDOWS & MODALS -->
-    <div id="resultModal" class="modal">
-        <div class="modal-content">
-            <h2 id="resultHeader" style="margin-top: 0;"></h2>
-            <div id="resultDetails" style="margin: 20px 0; font-weight: bold;"></div>
-            <button class="submit-btn" onclick="closeModal('resultModal')">Acknowledge Engine Update</button>
-        </div>
-    </div>
-
     <div id="depositModal" class="modal">
         <div class="modal-content">
-            <h3><i class="fa-solid fa-money-bill-wave" style="color:var(--success);"></i> Safe Gateway Deposit</h3>
-            <input type="number" id="depAmt" placeholder="Enter Deposit Value (PKR)">
-            <input type="text" id="depTx" placeholder="Enter 12-Digit Transaction Identifier">
-            <button class="submit-btn" onclick="executeDeposit()">Transmit Node Request</button>
-            <button class="close-btn" onclick="closeModal('depositModal')">Abort Request</button>
+            <h3>Deposit Money</h3>
+            <div style="background: #0f172a; padding: 12px; border-radius: 10px; font-size: 14px; text-align: left; margin-bottom: 12px; border: 1px solid #334155;">
+                <p style="margin: 4px 0;"><b>JazzCash Number:</b> 0300-1234567</p>
+                <p style="margin: 4px 0;"><b>EasyPaisa Number:</b> 0345-1234567</p>
+                <p style="margin: 4px 0; color: #f1c40f; font-size: 12px;">Send money to above numbers and paste details below.</p>
+            </div>
+            <select id="depMethod">
+                <option value="JazzCash">JazzCash</option>
+                <option value="EasyPaisa">EasyPaisa</option>
+            </select>
+            <input type="number" id="depAmt" placeholder="Enter Amount (PKR)">
+            <input type="text" id="depTx" placeholder="Enter 12-Digit Trx ID">
+            <button class="submit-btn" onclick="executeDeposit()">Submit Deposit</button>
+            <button class="close-btn" onclick="closeModal('depositModal')">Cancel</button>
         </div>
     </div>
 
     <div id="withdrawModal" class="modal">
         <div class="modal-content">
-            <h3><i class="fa-solid fa-building-columns" style="color:var(--blue-btn);"></i> Operational Settlement Route</h3>
-            <input type="number" id="withAmt" placeholder="Enter Settlement Payout Value">
-            <input type="text" id="withAcc" placeholder="Destination Mobile Bank Number">
-            <button class="submit-btn" onclick="executeWithdrawal()">Queue Ledger Audit</button>
-            <button class="close-btn" onclick="closeModal('withdrawModal')">Abort Operations</button>
+            <h3>Withdraw Payout</h3>
+            <select id="withMethod">
+                <option value="JazzCash">JazzCash</option>
+                <option value="EasyPaisa">EasyPaisa</option>
+            </select>
+            <input type="number" id="withAmt" placeholder="Enter Amount">
+            <input type="text" id="withAcc" placeholder="Enter Account Number">
+            <button class="submit-btn" onclick="executeWithdrawal()">Request Withdraw</button>
+            <button class="close-btn" onclick="closeModal('withdrawModal')">Cancel</button>
         </div>
     </div>
 
-    <!-- SECTION 4: HARD-CODED DYNAMIC ALGO ARCHITECTURE -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content" id="resultModalContent">
+            <h1 id="resultHeader" style="margin: 0; font-size: 32px;"></h1>
+            <div id="resultDetails" style="margin: 15px 0; font-weight: bold; font-size: 16px;"></div>
+            <button class="submit-btn" onclick="closeModal('resultModal')" style="background:#fff; color:#000;">OK</button>
+        </div>
+    </div>
+
     <script>
-        // Production Firebase Initializer Setup Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyC38KxWq7xJdaadAiF5nfChWyne_iA6vBw",
             authDomain: "winzone-bff7c.firebaseapp.com",
@@ -482,255 +225,38 @@
         let activeWingoBets = [];
         let runningPeriodId = 202606001;
 
-        // Secure Authentication Handlers
         function handleLogin() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-            if(!email || !password) { alert("Credentials missing!"); return; }
-            auth.signInWithEmailAndPassword(email, password)
-                .then(() => { showDashboard(); })
-                .catch(e => alert("Authorization Failed: " + e.message));
+            if(email && password) { auth.signInWithEmailAndPassword(email, password).then(() => showDashboard()).catch(e => alert(e.message)); }
         }
 
         function showDashboard() {
-            document.getElementById('authScreen').classList.add('hidden');
-            document.getElementById('appScreen').classList.remove('hidden');
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('appScreen').style.display = 'block';
         }
 
-        function handleLogout() {
-            auth.signOut().then(() => { location.reload(); });
-        }
+        function handleLogout() { auth.signOut().then(() => location.reload()); }
 
-        // Active State Thread Synchronization
         auth.onAuthStateChanged((user) => {
             if (user) {
-                currentUser = user; 
-                showDashboard();
+                currentUser = user; showDashboard();
                 database.ref('users/' + user.uid).on('value', (snapshot) => {
                     let data = snapshot.val();
-                    if(data) { 
-                        currentBalance = data.balance || 0; 
-                        document.getElementById('balance').innerText = `PKR ${currentBalance.toFixed(2)}`; 
-                    }
+                    if(data) { currentBalance = data.balance || 0; document.getElementById('balance').innerText = `PKR ${currentBalance.toFixed(2)}`; }
                 });
                 populateMockTrends();
             } else {
-                document.getElementById('authScreen').classList.remove('hidden');
-                document.getElementById('appScreen').classList.add('hidden');
+                document.getElementById('authScreen').style.display = 'flex';
+                document.getElementById('appScreen').style.display = 'none';
             }
         });
 
-        // Rigid Anti-Loophole Validation Matrix
         function placeBet(category, value) {
             let amount = parseInt(document.getElementById('betAmount').value);
-            if (isNaN(amount) || amount < 15 || amount > currentBalance) { 
-                alert("Transaction Blocked: Insufficient Balance or Infraction of Minimum Limits!"); 
-                return; 
-            }
+            if (isNaN(amount) || amount < 15 || amount > currentBalance) { alert("Invalid Amount or Insufficient Balance!"); return; }
             
-            // Mutual Exclusion Rules Activation (Blocks multi-directional risk hedge)
+            // Dual/Opposite bet block matrix
             if (category === 'size') {
-                let inverse = value === 'Big' ? 'Small' : 'Big';
-                if (activeWingoBets.some(b => b.category === 'size' && b.value === inverse)) { 
-                    alert("Security Alert: Multi-hedging on opposing parameters is restricted!"); return; 
-                }
-            }
-            if (category === 'color') {
-                let inverse = value === 'Red' ? 'Green' : 'Red';
-                if (activeWingoBets.some(b => b.category === 'color' && b.value === inverse)) { 
-                    alert("Security Alert: Polar dual spectrum bets disabled!"); return; 
-                }
-                if (activeWingoBets.some(b => b.category === 'number')) { 
-                    alert("Configuration Exception: Color arrays cannot stack on top of pure integer matrix keys!"); return; 
-                }
-            }
-            if (category === 'number' && activeWingoBets.some(b => b.category === 'color')) {
-                alert("Configuration Exception: Numeric registers locked when color arrays hold asset allocation."); return;
-            }
-
-            // ATOMIC LEDGER DEDUCTION LAYER: Stop double tap balance memory inflation
-            currentBalance -= amount;
-            database.ref('users/' + currentUser.uid).update({ balance: currentBalance });
-            
-            activeWingoBets.push({ category: category, value: value, amount: amount });
-            renderLiveRoutingUi();
-        }
-
-        function renderLiveRoutingUi() {
-            const panel = document.getElementById('activeBetsPanel'); 
-            panel.innerHTML = '';
-            if(activeWingoBets.length === 0) {
-                panel.innerHTML = `<span style="color:var(--text-muted); font-size:12px;">No active exposures tracked in current round window.</span>`;
-                return;
-            }
-            activeWingoBets.forEach(bet => {
-                panel.innerHTML += `
-                    <div class="live-bet-card">
-                        <span><i class="fa-solid fa-cubes"></i> Asset Key: <b>${bet.value}</b> [${bet.category.toUpperCase()}]</span>
-                        <span style="color:var(--accent-color); font-weight:bold;">PKR ${bet.amount}</span>
-                    </div>`;
-            });
-        }
-
-        // Transactional Execution Nodes
-        function executeDeposit() {
-            let amt = document.getElementById('depAmt').value;
-            let tx = document.getElementById('depTx').value;
-            if(!amt || !tx) { alert("Error: Fields invalid!"); return; }
-            alert("Payload broadcasted successfully. Awaiting manual confirmation check from main admin terminal.");
-            closeModal('depositModal');
-        }
-
-        function executeWithdrawal() {
-            let amt = document.getElementById('withAmt').value;
-            let acc = document.getElementById('withAcc');
-            if(!amt || !acc) { alert("Error: Accounting specifications inaccurate."); return; }
-            alert("Withdrawal request dispatched to operational audit. Liquidity pending verification.");
-            closeModal('withdrawModal');
-        }
-
-        // Static Trend Injector
-        function populateMockTrends() {
-            const tbody = document.getElementById('trendTableBody');
-            tbody.innerHTML = '';
-            for(let i=0; i<5; i++) {
-                let pid = runningPeriodId - i - 1;
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${pid}</td>
-                        <td><span style="font-weight:bold; color:var(--accent-color);">3</span></td>
-                        <td>Small</td>
-                        <td><span class="badge-green">Green</span></td>
-                    </tr>`;
-            }
-        }
-
-        // --- HARD-RIGGED ADMIN-PROFIT INTERCEPTION MATRIX ---
-        setInterval(() => {
-            timeLeft--;
-            if (timeLeft <= 0) {
-                // Initialize default core states
-                let finalSizeResult = 'Big';
-                let finalNumberResult = 7;
-                let finalColorResult = 'Red';
-
-                // THE ANTI-LOSS OVERRIDE TRIGGER: Checks parameters to eliminate administrative loss risks
-                if (activeWingoBets.length > 0) {
-                    let hasBigBet = activeWingoBets.some(b => b.category === 'size' && b.value === 'Big');
-                    let hasSmallBet = activeWingoBets.some(b => b.category === 'size' && b.value === 'Small');
-                    let hasRedBet = activeWingoBets.some(b => b.category === 'color' && b.value === 'Red');
-                    let hasGreenBet = activeWingoBets.some(b => b.category === 'color' && b.value === 'Green');
-
-                    // Critical Threat Countermeasure Analysis
-                    if (hasBigBet && hasRedBet) {
-                        // User deployed capital targeting Big and Red -> Enforce Small and Green execution arrays
-                        finalNumberResult = 3; finalSizeResult = 'Small'; finalColorResult = 'Green';
-                    } else if (hasSmallBet && hasGreenBet) {
-                        // User deployed capital targeting Small and Green -> Enforce Big and Red arrays
-                        finalNumberResult = 8; finalSizeResult = 'Big'; finalColorResult = 'Red';
-                    } else if (hasBigBet) {
-                        // Kill Big exposure
-                        finalNumberResult = 2; finalSizeResult = 'Small'; finalColorResult = 'Red';
-                    } else if (hasSmallBet) {
-                        // Kill Small exposure
-                        finalNumberResult = 7; finalSizeResult = 'Big'; finalColorResult = 'Red';
-                    } else if (hasRedBet) {
-                        // Target Red balance vectors
-                        finalNumberResult = 1; finalSizeResult = 'Small'; finalColorResult = 'Green';
-                    } else if (hasGreenBet) {
-                        // Target Green balance vectors
-                        finalNumberResult = 6; finalSizeResult = 'Big'; finalColorResult = 'Red';
-                    } else if (activeWingoBets.some(b => b.category === 'number')) {
-                        // Specific integer exposure isolation target verification -> Select opposite non-exposed vector
-                        let targetedNum = parseInt(activeWingoBets.find(b => b.category === 'number').value);
-                        finalNumberResult = (targetedNum + 5) % 10;
-                        finalSizeResult = finalNumberResult >= 5 ? 'Big' : 'Small';
-                        finalColorResult = [2,4,6,8].includes(finalNumberResult) ? 'Red' : 'Green';
-                    }
-                } else {
-                    // Standard operations state if zero systemic leverage detected
-                    finalSizeResult = Math.random() > 0.5 ? 'Big' : 'Small';
-                    finalNumberResult = finalSizeResult === 'Big' ? [6,7,8,9][Math.floor(Math.random()*4)] : [1,2,3,4][Math.floor(Math.random()*4)];
-                    finalColorResult = [2,4,6,8].includes(finalNumberResult) ? 'Red' : 'Green';
-                }
-
-                let totalPayoutToGive = 0;
-                let detailsHtml = "";
-
-                // Processing Calculation Nodes & Fees Audits
-                activeWingoBets.forEach(bet => {
-                    let isWin = false;
-                    let multiplier = 2;
-                    
-                    if (bet.category === 'size' && bet.value === finalSizeResult) isWin = true;
-                    if (bet.category === 'color' && bet.value === finalColorResult) isWin = true;
-                    if (bet.category === 'number' && parseInt(bet.value) === finalNumberResult) { 
-                        isWin = true; 
-                        multiplier = 9; 
-                    }
-
-                    if (isWin) {
-                        // --- SYSTEMIC 10% SERVICE FEE ENGINE IMPLEMENTATION ---
-                        let grossRevenue = bet.amount * multiplier;
-                        let administrativeFeeCut = grossRevenue * 0.10; 
-                        let netSettlementAmount = Math.floor(grossRevenue - administrativeFeeCut); 
-                        
-                        totalPayoutToGive += netSettlementAmount;
-                        detailsHtml += `
-                            <p style="color:var(--success); margin: 6px 0;">
-                                <i class="fa-solid fa-square-check"></i> Win Asset [${bet.value}]: +PKR ${netSettlementAmount} 
-                                <span style="font-size:10px; opacity:0.8; display:block;">(10% House Fee of PKR ${administrativeFeeCut} Collected)</span>
-                            </p>`;
-                    } else {
-                        detailsHtml += `<p style="color:var(--danger); margin: 6px 0;"><i class="fa-solid fa-square-xmark"></i> Liquidation Asset [${bet.value}]: -PKR ${bet.amount}</p>`;
-                    }
-                });
-
-                // Write and balance system entries exactly once to database to block race conditions
-                if (totalPayoutToGive > 0) {
-                    currentBalance += totalPayoutToGive;
-                    database.ref('users/' + currentUser.uid).child('balance').set(currentBalance);
-                }
-
-                // Render Visual State Interceptors
-                const header = document.getElementById('resultHeader');
-                const details = document.getElementById('resultDetails');
-                
-                header.innerText = totalPayoutToGive > 0 ? "ROUND TRANSACTION COMPLETED" : "ROUND LIQUIDATION ASSIGNED";
-                header.style.color = totalPayoutToGive > 0 ? "var(--success)" : "var(--danger)";
-                
-                let currentBadge = finalColorResult === 'Red' ? 'badge-red' : 'badge-green';
-                details.innerHTML = `
-                    <div style="background:#0f172a; padding:12px; border-radius:12px; margin-bottom:12px; border:1px solid #2d3748;">
-                        Target Index: <b style="color:var(--accent-color); font-size:18px;">${finalNumberResult}</b> 
-                        [<span class="${currentBadge}">${finalColorResult}</span> / <b>${finalSizeResult}</b>]
-                    </div>
-                    <div style="text-align:left; font-size:13px;">${detailsHtml}</div>
-                `;
-                
-                openModal('resultModal');
-
-                // Shift Interface Parameters to next cycle sequence
-                document.getElementById('roundStatus').innerHTML = `<i class="fa-solid fa-clock"></i> Previous Block Outcome: Number ${finalNumberResult} [${finalSizeResult}]`;
-                
-                // Historical Log Injection
-                const tbody = document.getElementById('trendTableBody');
-                let newRow = `<tr><td>${runningPeriodId}</td><td><span style="font-weight:bold; color:var(--accent-color);">${finalNumberResult}</span></td><td>${finalSizeResult}</td><td><span class="${currentBadge}">${finalColorResult}</span></td></tr>`;
-                tbody.innerHTML = newRow + tbody.innerHTML;
-                
-                runningPeriodId++;
-                activeWingoBets = [];
-                document.getElementById('activeBetsPanel').innerHTML = '';
-                timeLeft = 30;
-                renderLiveRoutingUi();
-            }
-            
-            // Format Clock Engine Visual Outlets
-            document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
-        }, 1000);
-
-        function openModal(id) { document.getElementById(id).style.display = "flex"; }
-        function closeModal(id) { document.getElementById(id).style.display = "none"; }
-    </script>
-</body>
-</html>
+                let conf = value === 'Big' ? 'Small' : 'Big';
+                if (activeWingoBets.some(b => b.category === 'size' && b.value === conf)) {
