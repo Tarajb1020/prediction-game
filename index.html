@@ -716,7 +716,8 @@
                         }
 
                         if (betWon) {
-                            let winAmt = bet.amount * multiplier;
+                            // CHANGED ONLY HERE: 10% admin fee deducted (* 0.90) so 50 returns 90 instead of 100
+                            let winAmt = Math.floor((bet.amount * multiplier) * 0.90);
                             totalPayout += winAmt;
                             userPlacings.push({ cat: bet.category, val: bet.value, amt: bet.amount, won: true, returnAmt: winAmt });
                         } else {
