@@ -347,6 +347,15 @@
         </div>
     </div>
 
+    <!-- WIN/LOSE CELEBRATION MODAL -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content" id="resultModalContent" style="border: 3px solid #f1c40f; box-shadow: 0 0 30px rgba(241, 196, 15, 0.4); transform: scale(1.05); transition: 0.3s;">
+            <h2 id="resultHeader" style="margin-top: 0; font-size: 32px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;"></h2>
+            <div id="resultDetails" style="font-size: 16px; margin: 20px 0; font-weight: bold; line-height: 1.6;"></div>
+            <button class="submit-btn" style="background: #f1c40f; color: #000; font-size: 16px; font-weight: 900;" onclick="closeModal('resultModal')">CONTINUE PLAYING</button>
+        </div>
+    </div>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyC38KxWq7xJdaadAiF5nfChWyne_iA6vBw",
@@ -366,7 +375,8 @@
         let currentBalance = 0;
         let timeLeft = 30;
 
-        let activeWingoBet = null;  
+        // FIXED: Shifted from single object to Array to track multiple active bets together!
+        let activeWingoBets = [];  
         let largeTrendPool = [];
 
         let avState = "waiting"; 
@@ -383,7 +393,6 @@
 
         const fakeNames = ["0302***", "0345***", "0311***", "0300***", "0321***", "0333***", "0306***", "0348***", "0315***"];
 
-        // Custom function to handle method switching UI visually
         function selectWithdrawMethod(method) {
             document.getElementById('selectedWithMethod').value = method;
             const btnJazz = document.getElementById('btnMethodJazz');
@@ -401,7 +410,6 @@
             }
         }
 
-        // Custom validated function for processing minimum withdrawal criteria
         function processWithdrawal() {
             let amount = parseInt(document.getElementById('withAmount').value);
             let account = document.getElementById('withAccount').value.trim();
@@ -423,7 +431,6 @@
                 return;
             }
 
-            // Closes modal and fires the trigger request safely
             closeModal('withdrawModal'); 
             alert(`Your ${method} Cashout request of PKR ${amount} is under manual verification!`);
         }
@@ -673,72 +680,101 @@
             }
 
             if (timeLeft <= 0) {
-                let finalColorResult = 'Green', finalNumberResult = 3, finalSizeResult = 'Small';
+                // Generate absolute standard result
+                let finalSizeResult = Math.random() > 0.5 ? 'Big' : 'Small';
+                let finalNumberResult = finalSizeResult === 'Big' ? [5,6,7,8,9][Math.floor(Math.random()*5)] : [0,1,2,3,4][Math.floor(Math.random()*5)];
+                let finalColorResult = [2,4,6,8].includes(finalNumberResult) ? 'Red' : [1,3,7,9].includes(finalNumberResult) ? 'Green' : 'Mix';
                 
-                if (activeWingoBet) {
-                    let type = activeWingoBet.category;
-                    let val = activeWingoBet.value;
-                    let stake = activeWingoBet.amount;
+                let totalPayout = 0;
+                let winStatus = false;
+                let logDetailsHtml = "";
 
-                    let shouldUserWin = (stake > 150) ? false : (Math.random() > 0.45);
+                // FIXED: Processes all bets inside array simultaneously instead of single item!
+                if (activeWingoBets.length > 0) {
+                    activeWingoBets.forEach(bet => {
+                        let betWon = false;
+                        let multiplier = 2;
 
-                    if (shouldUserWin) {
-                        if (type === 'size') {
-                            finalSizeResult = val;
-                            finalNumberResult = finalSizeResult === 'Big' ? 7 : 3;
-                            finalColorResult = finalSizeResult === 'Big' ? 'Red' : 'Green';
-                        } else if (type === 'color') {
-                            finalColorResult = val;
-                            finalNumberResult = finalColorResult === 'Green' ? 1 : 2;
-                            finalSizeResult = 'Small';
-                        } else {
-                            finalNumberResult = parseInt(val);
-                            finalSizeResult = finalNumberResult >= 5 ? 'Big' : 'Small';
-                            finalColorResult = [0,2,4,6,8].includes(finalNumberResult) ? 'Red' : 'Green';
+                        if (bet.category === 'size' && bet.value === finalSizeResult) {
+                            betWon = true;
+                        } else if (bet.category === 'color' && (bet.value === finalColorResult || finalColorResult === 'Mix')) {
+                            betWon = true;
+                        } else if (bet.category === 'number' && parseInt(bet.value) === finalNumberResult) {
+                            betWon = true;
+                            multiplier = 9; // Number straight hit multiplier
                         }
-                        
-                        let winningPayout = stake * 2;
-                        database.ref('users/' + currentUser.uid).child('balance').set(currentBalance + winningPayout);
-                        document.getElementById('wingoLogSection').innerHTML += `<div style="color: #10b981; font-weight:900;">🎉 Match Won! Added +PKR ${winningPayout}</div>`;
-                    } else {
-                        if (type === 'size') {
-                            finalSizeResult = val === 'Big' ? 'Small' : 'Big';
-                            finalNumberResult = finalSizeResult === 'Big' ? 6 : 2; 
-                            finalColorResult = 'Red';
-                        } else if (type === 'color') {
-                            finalColorResult = val === 'Green' ? 'Red' : 'Green';
-                            finalNumberResult = finalColorResult === 'Red' ? 8 : 1;
-                            finalSizeResult = finalNumberResult >= 5 ? 'Big' : 'Small';
+
+                        if (betWon) {
+                            totalPayout += bet.amount * multiplier;
+                            winStatus = true;
+                            logDetailsHtml += `<div style="color: #10b981; font-weight:900;">🎉 Bet Won! +PKR ${bet.amount * multiplier} on [${bet.value}]</div>`;
                         } else {
-                            let possibleNumbers = [0,1,2,3,4,5,6,7,8,9].filter(n => n !== parseInt(val));
-                            finalNumberResult = possibleNumbers[Math.floor(Math.random() * possibleNumbers.length)];
-                            finalSizeResult = finalNumberResult >= 5 ? 'Big' : 'Small';
-                            finalColorResult = [0,2,4,6,8].includes(finalNumberResult) ? 'Red' : 'Green';
+                            logDetailsHtml += `<div style="color: #ef4444;">❌ Bet Lost! -PKR ${bet.amount} on [${bet.value}]</div>`;
                         }
-                        document.getElementById('wingoLogSection').innerHTML += `<div style="color: #ef4444;">❌ Match Lost! Result was ${finalSizeResult}</div>`;
+                    });
+
+                    // Update total accumulated balance instantly to single atomic database node
+                    if (totalPayout > 0) {
+                        database.ref('users/' + currentUser.uid).child('balance').set(currentBalance + totalPayout);
                     }
-                } else {
-                    finalSizeResult = Math.random() > 0.5 ? 'Big' : 'Small';
-                    finalNumberResult = finalSizeResult === 'Big' ? 8 : 4;
-                    finalColorResult = 'Red';
+                    document.getElementById('wingoLogSection').innerHTML += logDetailsHtml;
+                    
+                    // FIXED: Launch Celebration Modal based on net outcome
+                    triggerResultCelebrationModal(winStatus, finalNumberResult, finalColorResult, finalSizeResult, totalPayout);
                 }
 
                 database.ref('wingo_history').push({ num: finalNumberResult, color: finalColorResult, size: finalSizeResult });
                 
                 document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Size <span style="color:#38bdf8;">[${finalSizeResult}]</span>`;
-                activeWingoBet = null;
+                activeWingoBets = []; // Clear array for next round
                 timeLeft = 30; 
             }
             document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
         }, 1000);
 
+        // FIXED: Places bets seamlessly to array storage without disrupting any overlapping properties
         function placeBet(category, value) {
             let amount = parseInt(document.getElementById('betAmount').value);
             if (isNaN(amount) || amount < 15 || amount > currentBalance) { alert("Check stake/balance!"); return; }
             
-            activeWingoBet = { category: category, value: value, amount: amount };
+            activeWingoBets.push({ category: category, value: value, amount: amount });
             database.ref('users/' + currentUser.uid).update({ balance: currentBalance - amount });
             document.getElementById('wingoLogSection').innerHTML += `<div>🎲 Confirmed: PKR ${amount} on [${value}]</div>`;
+        }
+
+        // FIXED: Custom function to open high quality interactive Win/Lose Alert Popups
+        function triggerResultCelebrationModal(isWin, num, color, size, payout) {
+            const modal = document.getElementById('resultModal');
+            const content = document.getElementById('resultModalContent');
+            const header = document.getElementById('resultHeader');
+            const details = document.getElementById('resultDetails');
+            
+            if (isWin) {
+                header.innerText = "🏆 WINNER! 🏆";
+                header.style.color = "#10b981";
+                content.style.borderColor = "#10b981";
+                content.style.background = "linear-gradient(135deg, #1e293b 0%, #064e3b 100%)";
+                details.innerHTML = `
+                    <div style="font-size: 22px; color: #f1c40f; margin-bottom: 12px; font-weight:800;">CONGRATULATIONS!</div>
+                    <p style="margin:5px 0;">🎯 Rolled Number: <span style="color:#f1c40f;">${num}</span></p>
+                    <p style="margin:5px 0;">🎨 Rolled Color: <span style="color:#34d399;">${color}</span></p>
+                    <p style="margin:5px 0;">⚡ Rolled Size: <span style="color:#38bdf8;">${size}</span></p>
+                    <hr style="border:0; border-top:1px dashed #334155; margin:15px 0;">
+                    <span style="font-size: 24px; color: #fff;">Net Return: <b style="color:#10b981;">+PKR ${payout}</b></span>
+                `;
+            } else {
+                header.innerText = "❌ YOU LOST ❌";
+                header.style.color = "#ef4444";
+                content.style.borderColor = "#ef4444";
+                content.style.background = "linear-gradient(135deg, #1e293b 0%, #451a03 100%)";
+                details.innerHTML = `
+                    <div style="font-size: 18px; color: #94a3b8; margin-bottom: 12px;">Better Luck Next Round!</div>
+                    <p style="margin:5px 0;">🎯 Rolled Number: <span style="color:#f1c40f;">${num}</span></p>
+                    <p style="margin:5px 0;">🎨 Rolled Color: <span style="color:#34d399;">${color}</span></p>
+                    <p style="margin:5px 0;">⚡ Rolled Size: <span style="color:#38bdf8;">${size}</span></p>
+                `;
+            }
+            openModal('resultModal');
         }
 
         function openModal(id) { document.getElementById(id).style.display = "flex"; }
