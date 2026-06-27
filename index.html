@@ -136,6 +136,13 @@
         .pay-box-btn { flex: 1; padding: 12px; font-size: 14px; font-weight: bold; border-radius: 10px; border: 2px solid #334155; background: #0f172a; color: #94a3b8; cursor: pointer; transition: 0.2s; }
         .pay-box-btn.active-jazz { border-color: #f59e0b; color: #fff; background: rgba(245, 158, 11, 0.1); }
         .pay-box-btn.active-easy { border-color: #10b981; color: #fff; background: rgba(16, 185, 129, 0.1); }
+
+        /* INVITATION NEW STYLES */
+        .invite-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); margin: 15px 20px; padding: 15px; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.5); border: 1px dashed #f1c40f; text-align: left; }
+        .invite-title { font-size: 14px; color: #f1c40f; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .invite-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+        .invite-code-box { background: #070a12; padding: 10px; border-radius: 8px; font-weight: bold; color: #fff; border: 1px solid #334155; flex: 1; text-align: center; letter-spacing: 1px; font-size: 14px; }
+        .invite-btn { background: #f1c40f; color: #000; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -177,6 +184,22 @@
         <div class="balance-card">
             <div style="font-size: 12px; opacity: 0.7;">AVAILABLE LIQUIDITY</div>
             <div id="balance" style="font-size: 34px; font-weight: 900; margin-top: 5px; color: #f1c40f;">PKR 0</div>
+        </div>
+
+        <!-- INVITE & EARN OPTION -->
+        <div class="invite-card">
+            <div class="invite-title">
+                <span>🤝 Invite & Earn (Rs. 50 Bonus)</span>
+            </div>
+            <div class="invite-row">
+                <div class="invite-code-box" id="myInviteCode">Generating...</div>
+                <button class="invite-btn" onclick="copyInviteCode()">Copy</button>
+            </div>
+            <div class="invite-row" id="referralInputRow">
+                <input type="text" id="inputReferralCode" placeholder="Enter Referral Code" style="margin-bottom:0; font-size:13px; padding:10px; flex:1; text-align:left;">
+                <button class="invite-btn" style="background:#10b981; color:white;" onclick="applyReferralCode()">Link</button>
+            </div>
+            <div id="referralStatus" style="font-size:11px; color:#34d399; margin-top:5px; font-weight:bold; display:none;">Code Linked Successfully!</div>
         </div>
 
         <div class="wallet-actions">
@@ -634,7 +657,15 @@
             if(!phone || !email || !password) return;
             auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
                 currentUser = userCredential.user;
-                database.ref('users/' + currentUser.uid).set({ phone: phone, email: email, balance: 0 }).then(() => { showDashboard(); });
+                // Auto-generating Unique Invite Code from UID
+                let generatedCode = currentUser.uid.substring(0, 6).toUpperCase();
+                database.ref('users/' + currentUser.uid).set({ 
+                    phone: phone, 
+                    email: email, 
+                    balance: 0,
+                    inviteCode: generatedCode,
+                    referredBy: ""
+                }).then(() => { showDashboard(); });
             });
         }
 
@@ -653,6 +684,22 @@
                         currentBalance = data.balance || 0;
                         document.getElementById('balance').innerText = `PKR ${currentBalance}`;
                         document.getElementById('userPhoneDisplay').innerText = data.phone || 'N/A';
+                        
+                        // Handling invitation fields setup
+                        if(data.inviteCode) {
+                            document.getElementById('myInviteCode').innerText = data.inviteCode;
+                        } else {
+                            let genCode = user.uid.substring(0, 6).toUpperCase();
+                            database.ref('users/' + user.uid).update({ inviteCode: genCode });
+                        }
+
+                        if(data.referredBy && data.referredBy !== "") {
+                            document.getElementById('referralInputRow').style.display = "none";
+                            document.getElementById('referralStatus').style.display = "block";
+                        } else {
+                            document.getElementById('referralInputRow').style.display = "flex";
+                            document.getElementById('referralStatus').style.display = "none";
+                        }
                     }
                 });
             } else {
@@ -660,6 +707,48 @@
                 document.getElementById('appScreen').style.display = 'none';
             }
         });
+
+        // INVITATION LOGICS
+        function copyInviteCode() {
+            let code = document.getElementById('myInviteCode').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                alert("Invitation Code copied: " + code);
+            });
+        }
+
+        function applyReferralCode() {
+            let typedCode = document.getElementById('inputReferralCode').value.trim().toUpperCase();
+            let myOwnCode = document.getElementById('myInviteCode').innerText;
+            
+            if(!typedCode) { alert("Please enter a code!"); return; }
+            if(typedCode === myOwnCode) { alert("You cannot use your own invitation code!"); return; }
+
+            // Searching for code owner in database
+            database.ref('users').once('value', (snapshot) => {
+                let codeFound = false;
+                let targetUserUid = "";
+                let targetUserBalance = 0;
+
+                snapshot.forEach((childSnapshot) => {
+                    let userData = childSnapshot.val();
+                    if(userData.inviteCode === typedCode) {
+                        codeFound = true;
+                        targetUserUid = childSnapshot.key;
+                        targetUserBalance = userData.balance || 0;
+                    }
+                });
+
+                if(codeFound) {
+                    // Update current user's referredBy node
+                    database.ref('users/' + currentUser.uid).update({ referredBy: typedCode });
+                    // Award Rs 50 bonus to the code owner
+                    database.ref('users/' + targetUserUid).update({ balance: targetUserBalance + 50 });
+                    alert("Referral Applied! Rs. 50 bonus sent to the inviter.");
+                } else {
+                    alert("Invalid Invitation Code! Please check again.");
+                }
+            });
+        }
 
         function handleLogout() { auth.signOut().then(() => location.reload()); }
         function applyMultiplier(factor) {
@@ -716,7 +805,6 @@
                         }
 
                         if (betWon) {
-                            // CHANGED ONLY HERE: 10% admin fee deducted (* 0.90) so 50 returns 90 instead of 100
                             let winAmt = Math.floor((bet.amount * multiplier) * 0.90);
                             totalPayout += winAmt;
                             userPlacings.push({ cat: bet.category, val: bet.value, amt: bet.amount, won: true, returnAmt: winAmt });
@@ -729,7 +817,6 @@
                         database.ref('users/' + currentUser.uid).child('balance').set(currentBalance + totalPayout);
                     }
                     
-                    // FIXED: Triggers advanced structured win/lose celebration popup!
                     triggerResultCelebrationModal(userPlacings, finalNumberResult, finalColorResult, finalSizeResult, totalPayout);
                 }
 
@@ -737,18 +824,16 @@
                 
                 document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Size <span style="color:#38bdf8;">[${finalSizeResult}]</span>`;
                 activeWingoBets = []; 
-                document.getElementById('activeBetsPanel').innerHTML = ''; // Routing view reset
+                document.getElementById('activeBetsPanel').innerHTML = ''; 
                 timeLeft = 30; 
             }
             document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
         }, 1000);
 
-        // FIXED: ADVANCED MUTUAL EXCLUSION ROUTING ALGORITHM FOR SIDE BETTING
         function placeBet(category, value) {
             let amount = parseInt(document.getElementById('betAmount').value);
             if (isNaN(amount) || amount < 15 || amount > currentBalance) { alert("Check stake/balance!"); return; }
             
-            // 1. Check rules for Big/Small
             if (category === 'size') {
                 let conflictingSize = value === 'Big' ? 'Small' : 'Big';
                 let hasConflict = activeWingoBets.some(b => b.category === 'size' && b.value === conflictingSize);
@@ -758,7 +843,6 @@
                 }
             }
 
-            // 2. Check rules for Red/Green
             if (category === 'color') {
                 let conflictingColor = value === 'Red' ? 'Green' : 'Red';
                 let hasConflict = activeWingoBets.some(b => b.category === 'color' && b.value === conflictingColor);
@@ -767,7 +851,6 @@
                     return;
                 }
                 
-                // Rule: Number par lagi ho to color par nahi lag sakti
                 let hasNumberBet = activeWingoBets.some(b => b.category === 'number');
                 if (hasNumberBet) {
                     alert("Aap ne Direct Number hit choose kiya hai, isliye ab aap Color par bet nahi laga sakte!");
@@ -775,9 +858,7 @@
                 }
             }
 
-            // 3. Check rules for Direct Number Hit
             if (category === 'number') {
-                // Rule: Color par lagi ho to number par nahi lag sakti
                 let hasColorBet = activeWingoBets.some(b => b.category === 'color');
                 if (hasColorBet) {
                     alert("Aap pehle hi Color select kar chuke hain. Number par bet lagane ke liye agle round ka wait karein ya color skip karein!");
@@ -785,15 +866,12 @@
                 }
             }
 
-            // Standard Deductions and Array Pushes
             activeWingoBets.push({ category: category, value: value, amount: amount });
             database.ref('users/' + currentUser.uid).update({ balance: currentBalance - amount });
             
-            // UPDATE BEAUTIFIED BINGO ROUTING PANEL ON STAKE HIT
             renderLiveRoutingUi();
         }
 
-        // PREMIUM UI RENDERING ENGINE FOR BINGO LIVE STAKES
         function renderLiveRoutingUi() {
             const panel = document.getElementById('activeBetsPanel');
             panel.innerHTML = '';
@@ -813,7 +891,6 @@
             });
         }
 
-        // FIXED: PREMIUM STRUCTURED CONGRATULATIONS / LOSS CELEBRATION BOX
         function triggerResultCelebrationModal(placingsArray, num, color, size, payout) {
             const modal = document.getElementById('resultModal');
             const content = document.getElementById('resultModalContent');
@@ -823,7 +900,6 @@
             let isNetWin = payout > 0;
             let rowsHtml = "";
 
-            // Loop to structure exact details visually for what was won or lost
             placingsArray.forEach(p => {
                 let badgeStyle = p.cat === 'size' ? (p.val === 'Big' ? 'badge-big':'badge-small') : p.cat === 'color' ? (p.val === 'Red' ? 'badge-red':'badge-green') : 'badge-num';
                 if(p.won) {
