@@ -385,7 +385,7 @@
                 <input type="text" id="depTrx" placeholder="Enter 12-Digit TRID" style="max-width: 100%; text-align: left;">
             </div>
 
-            <button class="submit-btn" onclick="closeModal('depositModal'); alert('Your Deposit Request & Track ID has been sent to Admin for manual clearance!');">Submit Deposit Receipt</button>
+            <button class="submit-btn" onclick="createDepositRequest()">Submit Deposit Receipt</button>
             <button class="close-btn" onclick="closeModal('depositModal')">Cancel</button>
         </div>
     </div>
@@ -434,6 +434,37 @@
         let planeX = 30; let planeY = 180;
 
         const fakeNames = ["0302***", "0345***", "0311***", "0300***", "0321***", "0333***", "0306***", "0348***", "0315***"];
+
+        function createDepositRequest() {
+            let amount = document.getElementById('depAmount').value.trim();
+            let trx = document.getElementById('depTrx').value.trim();
+            
+            if(!amount || !trx) {
+                alert("Please enter Amount and Transaction ID!");
+                return;
+            }
+            
+            if(parseInt(amount) < 300) {
+                alert("Minimum deposit limit is Rs. 300");
+                return;
+            }
+
+            database.ref('deposit_requests').push({
+                uid: currentUser.uid,
+                email: currentUser.email,
+                amount: amount,
+                trxId: trx,
+                status: "pending",
+                timestamp: Date.now()
+            }).then(() => {
+                closeModal('depositModal');
+                alert('Your Deposit Request & Track ID has been sent to Admin for manual clearance!');
+                document.getElementById('depAmount').value = '';
+                document.getElementById('depTrx').value = '';
+            }).catch((err) => {
+                alert("Error sending request: " + err.message);
+            });
+        }
 
         // DYNAMIC SECTION ROUTER FUNCTION
         function navigateToSection(sectionId) {
