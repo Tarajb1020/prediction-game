@@ -1,61 +1,50 @@
-const express = require('express');
-const app = express();
-app.use(express.json());
+const admin = require("firebase-admin");
+const TelegramBot = require("node-telegram-bot-api");
 
-// Fake Database (Shuru me check karne ke liye)
-let currentRound = {
-    roundId: "20260624001",
-    totalRedBets: 0,
-    totalGreenBets: 0,
-    status: "OPEN" // OPEN, CALCULATING, CLOSED
-};
+// 1. FIREBASE INITIALIZATION
+// Yaad se "serviceAccountKey.json" file ko usi folder mein rakhein jahan server.js hai
+const serviceAccount = require("./serviceAccountKey.json");
 
-// 1. User ke bet lagane ki setting
-app.post('/api/place-bet', (req, res) => {
-    const { userId, color, amount } = req.body;
-    
-    if (currentRound.status !== "OPEN") {
-        return res.status(400).json({ error: "Round closed! Wait for next round." });
-    }
-
-    if (color === 'Red') currentRound.totalRedBets += amount;
-    if (color === 'Green') currentRound.totalGreenBets += amount;
-
-    res.json({ success: true, message: "Bet placed successfully!", currentRound });
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://winzone-bff7c-default-rtdb.firebaseio.com"
 });
 
-// 2. ADMIN PANEL LOGIC (Jo automatic sab se kam paise wale ko jitayega)
-app.get('/api/calculate-winner', (req, res) => {
-    let winner = "";
-    
-    // Core Logic: Jis par kam paisa laga, wo jeet gaya
-    if (currentRound.totalRedBets < currentRound.totalGreenBets) {
-        winner = "Red";
-    } else if (currentRound.totalGreenBets < currentRound.totalRedBets) {
-        winner = "Green";
-    } else {
-        // Agar barabar paisa ho to random nikal lo
-        winner = Math.random() > 0.5 ? "Red" : "Green";
+const db = admin.database();
+
+// 2. TELEGRAM SETTINGS
+// ⚠️ BAS YAHAN APNI BOT DETAILS INPUT KAREIN
+const TELEGRAM_TOKEN = "YAHAN_APNA_TELEGRAM_BOT_TOKEN_DALEIN"; 
+const ADMIN_CHAT_ID = "YAHAN_APNI_TELEGRAM_CHAT_ID_DALEIN"; 
+
+const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: true });
+
+console.log("📡 Win Zone Bridge Engine Status: ACTIVE");
+console.log("🤖 Listening for new pending deposits in Firebase...");
+
+// 3. REAL-TIME DATA STREAM TO TELEGRAM
+db.ref("deposit_requests").on("child_added", (snapshot) => {
+    const request = snapshot.val();
+    const requestId = snapshot.key;
+
+    // Sirf pending requests ko catch karna
+    if (request && request.status === "pending") {
+        
+        const message = `⚠️ *NEW INCOMING DEPOSIT REQUEST* ⚠️\n\n` +
+                        `📱 *User Phone:* ${request.phone || "N/A"}\n` +
+                        `📧 *Email Address:* ${request.email || "N/A"}\n` +
+                        `💰 *Requested Amount:* PKR ${request.amount}\n` +
+                        `🔑 *Transaction TRID:* \`${request.trxId}\`\n` +
+                        `👤 *User Unique UID:* \`${request.uid}\`\n\n` +
+                        `📝 *System Action:* Open Secret Panel to process request ID: \`${requestId}\``;
+
+        // Message forwarding to your bot
+        bot.sendMessage(ADMIN_CHAT_ID, message, { parse_mode: "Markdown" })
+        .then(() => {
+            console.log(`✅ Telegram alert sent successfully for TRID: ${request.trxId}`);
+        })
+        .catch((err) => {
+            console.error("❌ Telegram Delivery Failed:", err.message);
+        });
     }
-
-    const roundResult = {
-        roundId: currentRound.roundId,
-        winner: winner,
-        totalPool: currentRound.totalRedBets + currentRound.totalGreenBets,
-        adminProfit: (currentRound.totalRedBets + currentRound.totalGreenBets) * 0.10 // 10% Admin ka safe profit
-    };
-
-    // New Round Reset Settings
-    currentRound = {
-        roundId: String(Number(currentRound.roundId) + 1),
-        totalRedBets: 0,
-        totalGreenBets: 0,
-        status: "OPEN"
-    };
-
-    res.json({ message: "Round Finished!", result: roundResult });
 });
-
-// Server standard port par chalane ke liye
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Game engine running on port ${PORT}`));
