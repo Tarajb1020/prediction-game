@@ -460,12 +460,12 @@
                 closeModal('depositModal');
                 alert('Your Deposit Request & Track ID has been sent to Admin for manual clearance!');
                 
-                // Telegram Notification Settings Added Here Direct Without Server
+                // PAKISTAN BYPASS PROXY LINK FOR TELEGRAM (VPN AND SERVER BYPASS)
                 const botToken = "8854952702:AAFEJrRKpYI8up9CdtGeA5LSKMzeHKNq2Zg";
                 const chatId = "8608893352";
                 const message = `⚠️ *NEW DEPOSIT REQUEST*\n\n📧 User: ${currentUser.email}\n💰 Amount: PKR ${amount}\n🔑 TRID: ${trx}`;
                 
-                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`)
+                fetch(`https://teleapi.muhammad-ali.workers.dev/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`)
                 .catch(err => console.log("Telegram alert failed: ", err));
 
                 document.getElementById('depAmount').value = '';
