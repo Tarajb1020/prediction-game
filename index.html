@@ -436,8 +436,16 @@
         const fakeNames = ["0302***", "0345***", "0311***", "0300***", "0321***", "0333***", "0306***", "0348***", "0315***"];
 
         function createDepositRequest() {
-            let amount = document.getElementById('depAmount').value.trim();
-            let trx = document.getElementById('depTrx').value.trim();
+            let amountElement = document.getElementById('depAmount');
+            let trxElement = document.getElementById('depTrx');
+            
+            if(!amountElement || !trxElement) {
+                alert("Critical System Error: HTML Input components missing.");
+                return;
+            }
+
+            let amount = amountElement.value.trim();
+            let trx = trxElement.value.trim();
             
             if(!amount || !trx) {
                 alert("Please enter Amount and Transaction ID!");
@@ -449,6 +457,7 @@
                 return;
             }
 
+            // Database structure configuration safely pushed
             database.ref('deposit_requests').push({
                 uid: currentUser.uid,
                 email: currentUser.email,
@@ -457,6 +466,7 @@
                 status: "pending",
                 timestamp: Date.now()
             }).then(() => {
+                // Safeguard against layout collapse / screen wipeout
                 closeModal('depositModal');
                 alert('Your Deposit Request & Track ID has been sent to Admin for manual clearance!');
                 
@@ -465,12 +475,16 @@
                 const chatId = "8608893352";
                 const message = `⚠️ *NEW DEPOSIT REQUEST*\n\n📧 User: ${currentUser.email}\n💰 Amount: PKR ${amount}\n🔑 TRID: ${trx}`;
                 
+                // Anti-blocking endpoint proxy prevents routing degradation inside localized parameters
                 fetch(`https://api.telegram-proxy.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`)
+                .then(res => console.log("Telegram Proxy Trigger Result:", res.status))
                 .catch(err => console.log("Telegram alert failed: ", err));
 
-                document.getElementById('depAmount').value = '';
-                document.getElementById('depTrx').value = '';
+                // Reset field elements after verification checks
+                if(document.getElementById('depAmount')) document.getElementById('depAmount').value = '';
+                if(document.getElementById('depTrx')) document.getElementById('depTrx').value = '';
             }).catch((err) => {
+                console.error("Firebase Execution Failure: ", err);
                 alert("Error sending request: " + err.message);
             });
         }
