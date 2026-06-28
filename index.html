@@ -12,31 +12,31 @@
         body {
             margin: 0; padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0b0f19; color: white;
+            background: radial-gradient(circle at top, #1e2640 0%, #070b12 100%); color: white;
             text-align: center;
             overflow-x: hidden;
         }
         #appScreen { display: none; }
-        .auth-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; background: linear-gradient(to bottom, #0b0f19, #111827); }
-        .auth-card { background-color: #1e293b; padding: 35px 25px; border-radius: 24px; width: 100%; max-width: 380px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); border: 1px solid #334155; }
-        .auth-card h2 { color: #f1c40f; margin-bottom: 25px; font-size: 26px; font-weight: 800; text-transform: uppercase; }
+        .auth-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; background: linear-gradient(to bottom, #070b12, #0f172a); }
+        .auth-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); padding: 35px 25px; border-radius: 24px; width: 100%; max-width: 380px; box-shadow: 0 20px 50px rgba(0,0,0,0.7); border: 1px solid rgba(241, 196, 15, 0.3); }
+        .auth-card h2 { color: #f1c40f; margin-bottom: 25px; font-size: 26px; font-weight: 800; text-transform: uppercase; text-shadow: 0 2px 10px rgba(241, 196, 15, 0.4); }
         
-        .header { background-color: #111827; padding: 10px 15px; font-size: 18px; font-weight: 800; border-bottom: 3px solid #f1c40f; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-        .header span { color: #f1c40f; }
-        .logout-btn { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: bold; }
+        .header { background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%); padding: 12px 15px; font-size: 18px; font-weight: 800; border-bottom: 3px solid #f1c40f; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
+        .header span { color: #f1c40f; text-shadow: 0 0 8px rgba(241, 196, 15, 0.5); }
+        .logout-btn { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; border: none; padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4); }
         
-        .live-ticker-bar { background: #070a12; color: #34d399; font-size: 11px; font-weight: bold; padding: 4px; border-bottom: 1px solid #1e293b; overflow: hidden; white-space: nowrap; box-sizing: border-box; }
+        .live-ticker-bar { background: #04060a; color: #34d399; font-size: 11px; font-weight: bold; padding: 6px; border-bottom: 1px solid #1e293b; overflow: hidden; white-space: nowrap; box-sizing: border-box; }
         .ticker-inner { display: inline-block; padding-left: 100%; animation: tickerMove 25s linear infinite; }
         @keyframes tickerMove { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-        .game-tabs { display: flex; background: #111827; margin: 8px 10px; padding: 4px; border-radius: 10px; border: 1px solid #334155; gap: 4px; }
-        .tab-btn { flex: 1; padding: 8px 4px; font-size: 12px; font-weight: 800; border: none; border-radius: 8px; background: transparent; color: #94a3b8; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
-        .tab-btn.active { background: #f1c40f; color: #000; box-shadow: 0 3px 10px rgba(241, 196, 15, 0.3); }
+        .game-tabs { display: flex; background: rgba(17, 24, 39, 0.8); margin: 8px 10px; padding: 5px; border-radius: 12px; border: 1px solid #334155; gap: 6px; }
+        .tab-btn { flex: 1; padding: 10px 4px; font-size: 12px; font-weight: 800; border: none; border-radius: 10px; background: transparent; color: #94a3b8; cursor: pointer; text-transform: uppercase; transition: 0.3s ease; }
+        .tab-btn.active { background: linear-gradient(135deg, #f1c40f, #d4ac0d); color: #000; box-shadow: 0 4px 15px rgba(241, 196, 15, 0.4); font-weight: 900; }
 
         .game-wrapper { display: none; }
         .game-wrapper.active { display: block; }
 
-        .balance-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); margin: 8px 10px; padding: 10px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
+        .balance-card { background: linear-gradient(135deg, #25334a 0%, #0f172a 100%); margin: 12px 10px; padding: 15px; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.6); border: 1px solid rgba(241, 196, 15, 0.2); display: flex; justify-content: space-between; align-items: center; }
         
         /* Wingo UI Elements */
         .history-box { background-color: #111827; margin: 8px 10px; padding: 8px; border-radius: 10px; border: 1px solid #334155; text-align: left; }
@@ -59,13 +59,13 @@
         .game-section-label { font-size: 11px; color: #f1c40f; text-align: left; margin: 8px 15px 3px 15px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
 
         .big-small-container { display: flex; justify-content: center; gap: 10px; margin: 2px 0 8px 0; padding: 0 10px; }
-        .btn-big { background: linear-gradient(135deg, #6366f1, #4338ca); color: white; flex: 1; padding: 10px; font-size: 15px; font-weight: 900; border: none; border-radius: 10px; cursor: pointer; text-transform: uppercase; }
-        .btn-small { background: linear-gradient(135deg, #f97316, #ea580c); color: white; flex: 1; padding: 10px; font-size: 15px; font-weight: 900; border: none; border-radius: 10px; cursor: pointer; text-transform: uppercase; }
+        .btn-big { background: linear-gradient(135deg, #6366f1, #4338ca); color: white; flex: 1; padding: 10px; font-size: 15px; font-weight: 900; border: none; border-radius: 10px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3); }
+        .btn-small { background: linear-gradient(135deg, #f97316, #ea580c); color: white; flex: 1; padding: 10px; font-size: 15px; font-weight: 900; border: none; border-radius: 10px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3); }
 
         .color-selection-bar { display: flex; justify-content: center; gap: 10px; margin: 2px 0 8px 0; padding: 0 10px; }
         .color-choice-btn { flex: 1; padding: 8px; font-weight: bold; font-size: 13px; color: white; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
-        .choice-red { background: linear-gradient(135deg, #ef4444, #b91c1c); }
-        .choice-green { background: linear-gradient(135deg, #10b981, #047857); }
+        .choice-red { background: linear-gradient(135deg, #ef4444, #b91c1c); box-shadow: 0 3px 8px rgba(239, 68, 68, 0.3); }
+        .choice-green { background: linear-gradient(135deg, #10b981, #047857); box-shadow: 0 3px 8px rgba(16, 185, 129, 0.3); }
 
         .number-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; padding: 0 10px; margin-bottom: 10px; }
         .num-btn { padding: 8px 0; font-size: 14px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; color: white; }
@@ -110,7 +110,8 @@
         .win-mult-tag { color: #c084fc; background: rgba(192, 132, 252, 0.1); padding: 1px 4px; border-radius: 3px; }
         .win-amt-tag { color: #10b981; }
 
-        input[type="number"], input[type="text"], input[type="email"], input[type="password"] { padding: 10px; font-size: 14px; border-radius: 8px; border: 1px solid #334155; background-color: #0f172a; color: white; width: 100%; max-width: 280px; text-align: center; margin-bottom: 8px; box-sizing: border-box; }
+        input[type="number"], input[type="text"], input[type="email"], input[type="password"] { padding: 12px; font-size: 14px; border-radius: 10px; border: 1px solid #334155; background-color: #0f172a; color: white; width: 100%; max-width: 280px; text-align: center; margin-bottom: 10px; box-sizing: border-box; outline: none; }
+        input:focus { border-color: #f1c40f; box-shadow: 0 0 8px rgba(241, 196, 15, 0.3); }
         .status-display { background-color: #111827; border: 1px dashed #334155; padding: 8px; margin: 8px 10px; border-radius: 10px; font-size: 12px; color: #94a3b8; font-weight: bold; }
         
         .logs { background-color: #111622; margin: 10px; padding: 10px; border-radius: 12px; text-align: left; max-height: 120px; overflow-y: auto; border: 1px solid #233146; box-shadow: inset 0 4px 12px rgba(0,0,0,0.5); }
@@ -123,10 +124,11 @@
         .badge-green { background: #10b981; color: white; }
         .badge-num { background: #8b5cf6; color: white; border: 1px solid #fff; padding: 1px 6px; border-radius: 50%; }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000; padding: 15px; box-sizing: border-box; }
-        .modal-content { background-color: #1e293b; padding: 20px 15px; border-radius: 20px; width: 100%; max-width: 360px; border: 1px solid #475569; text-align: center; }
-        .submit-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
-        .close-btn { background-color: #475569; color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; margin-top: 10px; width: 100%; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 1000; padding: 15px; box-sizing: border-box; }
+        .modal-content { background-color: #151f32; padding: 25px 20px; border-radius: 24px; width: 100%; max-width: 370px; border: 1px solid #334155; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.7); }
+        .submit-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); transition: 0.2s; }
+        .submit-btn:hover { transform: translateY(-1px); }
+        .close-btn { background-color: #334155; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; margin-top: 10px; width: 100%; font-weight: bold; }
         .switch-auth { color: #38bdf8; cursor: pointer; text-decoration: underline; margin-top: 12px; font-size: 12px; display: inline-block; }
 
         .payment-toggle-box { display: flex; gap: 8px; margin-bottom: 12px; }
@@ -134,12 +136,21 @@
         .pay-box-btn.active-jazz { border-color: #f59e0b; color: #fff; background: rgba(245, 158, 11, 0.1); }
         .pay-box-btn.active-easy { border-color: #10b981; color: #fff; background: rgba(16, 185, 129, 0.1); }
 
-        /* SEPARATE SECTION INTERFACE STYLES */
-        .standalone-section { display: none; background: #0f172a; margin: 10px; padding: 15px; border-radius: 14px; border: 1px solid #334155; text-align: left; }
-        .invite-title { font-size: 13px; color: #f1c40f; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .invite-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
-        .invite-code-box { background: #070a12; padding: 8px; border-radius: 6px; font-weight: bold; color: #fff; border: 1px solid #334155; flex: 1; text-align: center; letter-spacing: 0.5px; font-size: 13px; }
-        .invite-btn { background: #f1c40f; color: #000; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; }
+        /* SEPARATE SECTION INTERFACE STYLES WITH PRO UPGRADE */
+        .standalone-section { display: none; background: linear-gradient(145deg, #131b2e 0%, #0d1322 100%); margin: 12px 10px; padding: 20px; border-radius: 16px; border: 1px solid rgba(241, 196, 15, 0.15); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: left; }
+        .invite-title { font-size: 14px; color: #f1c40f; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; letter-spacing: 0.5px; }
+        .invite-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; }
+        .invite-code-box { background: #070a12; padding: 10px; border-radius: 8px; font-weight: bold; color: #fff; border: 1px solid #334155; flex: 1; text-align: center; letter-spacing: 1px; font-size: 15px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.5); }
+        .invite-btn { background: linear-gradient(135deg, #f1c40f, #d4ac0d); color: #000; border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-weight: 900; font-size: 11px; text-transform: uppercase; box-shadow: 0 3px 8px rgba(241, 196, 15, 0.3); }
+        
+        /* SOCIAL MEDIA PLATFORMS GRID UI */
+        .social-share-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 15px 0; }
+        .social-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 5px; border-radius: 10px; border: none; color: white; font-weight: bold; font-size: 11px; cursor: pointer; text-transform: uppercase; transition: transform 0.2s; }
+        .social-btn:active { transform: scale(0.95); }
+        .share-wa { background: linear-gradient(135deg, #25D366, #128C7E); box-shadow: 0 3px 8px rgba(37, 211, 102, 0.3); }
+        .share-tg { background: linear-gradient(135deg, #0088cc, #006699); box-shadow: 0 3px 8px rgba(0, 136, 204, 0.3); }
+        .share-fb { background: linear-gradient(135deg, #1877F2, #145dbf); box-shadow: 0 3px 8px rgba(24, 119, 242, 0.3); }
+        .rules-badge-note { background: rgba(241, 196, 15, 0.1); border: 1px dashed #f1c40f; padding: 10px; border-radius: 8px; color: #f59e0b; font-size: 11px; font-weight: bold; text-align: center; line-height: 1.4; margin-top: 12px; }
     </style>
 </head>
 <body>
@@ -322,7 +333,21 @@
                 <div class="invite-code-box" id="myInviteCode">Generating...</div>
                 <button class="invite-btn" onclick="copyInviteCode()">Copy Code</button>
             </div>
-            <hr style="border:0; border-top:1px solid #1e293b; margin:12px 0;">
+            
+            <!-- EXCLUSIVE SOCIAL MEDIA DIRECT SHARE GATEWAY -->
+            <div class="invite-title" style="margin-top:15px;"><span>⚡ Direct Instant Share</span></div>
+            <div class="social-share-grid">
+                <button class="social-btn share-wa" onclick="shareToSocial('whatsapp')">WhatsApp</button>
+                <button class="social-btn share-tg" onclick="shareToSocial('telegram')">Telegram</button>
+                <button class="social-btn share-fb" onclick="shareToSocial('facebook')">Facebook</button>
+            </div>
+
+            <!-- EXPLICIT MANDATORY BONUS VERIFICATION CONDITION NOTICE -->
+            <div class="rules-badge-note">
+                📢 <b>INVITATION BONUS FEE NOTE:</b> Invite 50 Ropy but user recharge kare ga phir milen gay. Real-time dynamic track validation is active.
+            </div>
+
+            <hr style="border:0; border-top:1px solid #1e293b; margin:15px 0;">
             <div class="invite-title"><span>Link Invitation Uid</span></div>
             <div class="invite-row" id="referralInputRow">
                 <input type="text" id="inputReferralCode" placeholder="Enter Friend's Code" style="margin-bottom:0; font-size:13px; padding:8px; flex:1; text-align:left;">
@@ -420,9 +445,6 @@
 
         let activeWingoBets = [];  
         let largeTrendPool = [];
-        
-        // Locked Preview Storage Variable to hold 10-second data safely
-        let preCalculatedRoundData = null;
 
         let avState = "waiting"; 
         let avMultiplier = 1.00;
@@ -487,6 +509,7 @@
             });
         }
 
+        // DYNAMIC SECTION ROUTER FUNCTION
         function navigateToSection(sectionId) {
             document.getElementById('sectionHome').style.display = "none";
             document.getElementById('sectionInvite').style.display = "none";
@@ -794,6 +817,20 @@
             });
         }
 
+        /* DYNAMIC DEEP SHARE HUB GENERATOR */
+        function shareToSocial(platform) {
+            let code = document.getElementById('myInviteCode').innerText;
+            let shareText = encodeURIComponent(`🔥 Join Win Zone Pro Platform! Use my unique registration Invitation code: ${code} to earn an Instant Rs. 50 bonus tracking credit when you submit your first system account recharge active load! Link here: ${window.location.href}`);
+            
+            if(platform === 'whatsapp') {
+                window.open(`https://api.whatsapp.com/send?text=${shareText}`, '_blank');
+            } else if(platform === 'telegram') {
+                window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${shareText}`, '_blank');
+            } else if(platform === 'facebook') {
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank');
+            }
+        }
+
         function applyReferralCode() {
             let typedCode = document.getElementById('inputReferralCode').value.trim().toUpperCase();
             let myOwnCode = document.getElementById('myInviteCode').innerText;
@@ -849,7 +886,6 @@
             });
         }
 
-        // TIMER INTEGRATION & ADVANCED OUTCOME SYNCHRONIZATION ENGINE
         setInterval(() => {
             timeLeft--;
             if (timeLeft % 3 === 0) {
@@ -857,93 +893,52 @@
                 if(document.getElementById('wingoLivePool')) document.getElementById('wingoLivePool').innerText = `🔥 ${randomWingoUsers.toLocaleString()} dynamic players active`;
             }
 
-            // CRITICAL FIX: 10 SECONDS FREEZE AND AUTO PREVIEW WRITE OPERATION
-            if (timeLeft === 10) {
-                let tempSize = Math.random() > 0.5 ? 'Big' : 'Small';
-                let tempNum = tempSize === 'Big' ? [5,6,7,8,9][Math.floor(Math.random()*5)] : [0,1,2,3,4][Math.floor(Math.random()*5)];
-                
-                // Save it locally so the final block uses exactly this prediction
-                preCalculatedRoundData = {
-                    num: tempNum,
-                    size: tempSize
-                };
-
-                // Admin now sees BOTH the number and size option properly inside Firebase console
-                database.ref('admin_controls/auto_preview').set({ 
-                    num: tempNum,
-                    size: tempSize,
-                    message: `Round Outcome Locked: ${tempSize} (${tempNum})`
-                });
-            }
-
             if (timeLeft <= 0) {
-                let finalSizeResult = 'Big';
-                let finalNumberResult = 5;
-
-                // Recover the exactly predicted 10-second data fallback
-                if (preCalculatedRoundData) {
-                    finalNumberResult = preCalculatedRoundData.num;
-                    finalSizeResult = preCalculatedRoundData.size;
-                } else {
-                    finalSizeResult = Math.random() > 0.5 ? 'Big' : 'Small';
-                    finalNumberResult = finalSizeResult === 'Big' ? [5,6,7,8,9][Math.floor(Math.random()*5)] : [0,1,2,3,4][Math.floor(Math.random()*5)];
-                }
+                let finalSizeResult = Math.random() > 0.5 ? 'Big' : 'Small';
+                let finalNumberResult = finalSizeResult === 'Big' ? [5,6,7,8,9][Math.floor(Math.random()*5)] : [0,1,2,3,4][Math.floor(Math.random()*5)];
+                let finalColorResult = [2,4,6,8].includes(finalNumberResult) ? 'Red' : [1,3,7,9].includes(finalNumberResult) ? 'Green' : 'Mix';
                 
-                // ADMIN OVERRIDE CHECK (If admin forced a separate result via admin_controls/forced_result)
-                database.ref('admin_controls/forced_result').once('value', (snapshot) => {
-                    let forcedVal = snapshot.val();
-                    if (forcedVal && forcedVal !== "none") {
-                        finalNumberResult = parseInt(forcedVal);
-                        finalSizeResult = finalNumberResult >= 5 ? 'Big' : 'Small';
-                    }
-                    
-                    let finalColorResult = [2,4,6,8].includes(finalNumberResult) ? 'Red' : [1,3,7,9].includes(finalNumberResult) ? 'Green' : 'Mix';
-                    let totalPayout = 0;
-                    let userPlacings = [];
+                let totalPayout = 0;
+                let userPlacings = [];
 
-                    if (activeWingoBets.length > 0) {
-                        activeWingoBets.forEach(bet => {
-                            let betWon = false;
-                            let multiplier = 2;
+                if (activeWingoBets.length > 0) {
+                    activeWingoBets.forEach(bet => {
+                        let betWon = false;
+                        let multiplier = 2;
 
-                            if (bet.category === 'size' && bet.value === finalSizeResult) {
-                                betWon = true;
-                            } else if (bet.category === 'color' && (bet.value === finalColorResult || finalColorResult === 'Mix')) {
-                                betWon = true;
-                            } else if (bet.category === 'number' && parseInt(bet.value) === finalNumberResult) {
-                                betWon = true;
-                                multiplier = 9;
-                            }
-
-                            if (betWon) {
-                                let winAmt = Math.floor((bet.amount * multiplier) * 0.90);
-                                totalPayout += winAmt;
-                                userPlacings.push({ cat: bet.category, val: bet.value, amt: bet.amount, won: true, returnAmt: winAmt });
-                            } else {
-                                userPlacings.push({ cat: bet.category, val: bet.value, amt: bet.amount, won: false, returnAmt: 0 });
-                            }
-                        });
-
-                        if (totalPayout > 0) {
-                            database.ref('users/' + currentUser.uid).child('balance').set(currentBalance + totalPayout);
+                        if (bet.category === 'size' && bet.value === finalSizeResult) {
+                            betWon = true;
+                        } else if (bet.category === 'color' && (bet.value === finalColorResult || finalColorResult === 'Mix')) {
+                            betWon = true;
+                        } else if (bet.category === 'number' && parseInt(bet.value) === finalNumberResult) {
+                            betWon = true;
+                            multiplier = 9;
                         }
-                        
-                        triggerResultCelebrationModal(userPlacings, finalNumberResult, finalColorResult, finalSizeResult, totalPayout);
-                    }
 
-                    database.ref('wingo_history').push({ num: finalNumberResult, color: finalColorResult, size: finalSizeResult });
+                        if (betWon) {
+                            let winAmt = Math.floor((bet.amount * multiplier) * 0.90);
+                            totalPayout += winAmt;
+                            userPlacings.push({ cat: bet.category, val: bet.value, amt: bet.amount, won: true, returnAmt: winAmt });
+                        } else {
+                            userPlacings.push({ cat: bet.category, val: bet.value, amt: bet.amount, won: false, returnAmt: 0 });
+                        }
+                    });
+
+                    if (totalPayout > 0) {
+                        database.ref('users/' + currentUser.uid).child('balance').set(currentBalance + totalPayout);
+                    }
                     
-                    if(document.getElementById('roundStatus')) document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Size <span style="color:#38bdf8;">[${finalSizeResult}]</span>`;
-                    
-                    // Reset storage hooks safely for upcoming round sequence
-                    activeWingoBets = []; 
-                    preCalculatedRoundData = null;
-                    document.getElementById('activeBetsPanel').innerHTML = ''; 
-                    timeLeft = 30;
-                });
-            } else {
-                if(document.getElementById('timer')) document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
+                    triggerResultCelebrationModal(userPlacings, finalNumberResult, finalColorResult, finalSizeResult, totalPayout);
+                }
+
+                database.ref('wingo_history').push({ num: finalNumberResult, color: finalColorResult, size: finalSizeResult });
+                
+                if(document.getElementById('roundStatus')) document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Size <span style="color:#38bdf8;">[${finalSizeResult}]</span>`;
+                activeWingoBets = []; 
+                document.getElementById('activeBetsPanel').innerHTML = ''; 
+                timeLeft = 30; 
             }
+            if(document.getElementById('timer')) document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
         }, 1000);
 
         function placeBet(category, value) {
@@ -1007,6 +1002,7 @@
             });
         }
 
+        /* COMPRESSED COMPACT LAYOUT - REMOVED SCROLL REQ FOR ALL ACTIVE SELECTION LOGS */
         function triggerResultCelebrationModal(placingsArray, num, color, size, payout) {
             const modal = document.getElementById('resultModal');
             const content = document.getElementById('resultModalContent');
@@ -1014,21 +1010,21 @@
             const details = document.getElementById('resultDetails');
             
             let isNetWin = payout > 0;
-            let rowsHtml = "";
+            let gridItemsHtml = "";
 
             placingsArray.forEach(p => {
                 let badgeStyle = p.cat === 'size' ? (p.val === 'Big' ? 'badge-big':'badge-small') : p.cat === 'color' ? (p.val === 'Red' ? 'badge-red':'badge-green') : 'badge-num';
                 if(p.won) {
-                    rowsHtml += `
-                        <div style="display:flex; justify-content:space-between; background:rgba(16,185,129,0.15); padding:6px 10px; border-radius:8px; margin-bottom:4px; border:1px solid #10b981;">
-                            <span class="badge-box ${badgeStyle}">${p.val}</span>
-                            <span style="color:#34d399;">🏆 WON (+PKR ${p.returnAmt})</span>
+                    gridItemsHtml += `
+                        <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(16,185,129,0.15); padding:4px 8px; border-radius:6px; border:1px solid #10b981; font-size:11px;">
+                            <span class="badge-box ${badgeStyle}" style="padding:2px 5px; font-size:9px;">${p.val}</span>
+                            <span style="color:#34d399; font-weight:bold;">+${p.returnAmt}</span>
                         </div>`;
                 } else {
-                    rowsHtml += `
-                        <div style="display:flex; justify-content:space-between; background:rgba(239,68,68,0.15); padding:6px 10px; border-radius:8px; margin-bottom:4px; border:1px solid #ef4444;">
-                            <span class="badge-box ${badgeStyle}">${p.val}</span>
-                            <span style="color:#f87171;">❌ LOST (-PKR ${p.amt})</span>
+                    gridItemsHtml += `
+                        <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(239,68,68,0.15); padding:4px 8px; border-radius:6px; border:1px solid #ef4444; font-size:11px;">
+                            <span class="badge-box ${badgeStyle}" style="padding:2px 5px; font-size:9px;">${p.val}</span>
+                            <span style="color:#f87171; font-weight:bold;">-${p.amt}</span>
                         </div>`;
                 }
             });
@@ -1037,33 +1033,37 @@
                 header.innerText = "🏆 WINNER! 🏆";
                 header.style.color = "#10b981";
                 content.style.borderColor = "#10b981";
-                content.style.background = "linear-gradient(135deg, #1e293b 0%, #064e3b 100%)";
+                content.style.background = "linear-gradient(135deg, #151f32 0%, #064e3b 100%)";
                 details.innerHTML = `
-                    <div style="font-size: 18px; color: #f1c40f; margin-bottom: 10px; font-weight:800;">CONGRATULATIONS!</div>
-                    <div style="display:flex; justify-content:space-around; background:#0f172a; padding:8px; border-radius:10px; margin-bottom:10px; border:1px solid #233146;">
-                        <div><small style="color:#94a3b8;display:block;">NUMBER</small><b style="color:#f1c40f;font-size:14px;">${num}</b></div>
-                        <div><small style="color:#94a3b8;display:block;">COLOR</small><b style="color:#34d399;font-size:14px;">${color}</b></div>
-                        <div><small style="color:#94a3b8;display:block;">SIZE</small><b style="color:#38bdf8;font-size:14px;">${size}</b></div>
+                    <div style="font-size: 16px; color: #f1c40f; margin-bottom: 8px; font-weight:800;">CONGRATULATIONS!</div>
+                    <div style="display:flex; justify-content:space-around; background:#0f172a; padding:6px; border-radius:10px; margin-bottom:8px; border:1px solid #233146;">
+                        <div><small style="color:#94a3b8;display:block;font-size:9px;">NUM</small><b style="color:#f1c40f;font-size:12px;">${num}</b></div>
+                        <div><small style="color:#94a3b8;display:block;font-size:9px;">COLOR</small><b style="color:#34d399;font-size:12px;">${color}</b></div>
+                        <div><small style="color:#94a3b8;display:block;font-size:9px;">SIZE</small><b style="color:#38bdf8;font-size:12px;">${size}</b></div>
                     </div>
-                    <div style="text-align:left; font-size:11px; color:#94a3b8; margin-bottom:6px; font-weight:bold; text-transform:uppercase;">Stakes Status:</div>
-                    ${rowsHtml}
-                    <hr style="border:0; border-top:1px dashed #334155; margin:10px 0;">
-                    <span style="font-size: 20px; color: #fff;">Total Received: <b style="color:#10b981;">+PKR ${payout}</b></span>
+                    <div style="text-align:left; font-size:10px; color:#94a3b8; margin-bottom:4px; font-weight:bold; text-transform:uppercase;">Stakes Summary:</div>
+                    <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:4px; max-height:100px; overflow-y:auto; padding-right:2px;">
+                        ${gridItemsHtml}
+                    </div>
+                    <hr style="border:0; border-top:1px dashed #334155; margin:8px 0;">
+                    <span style="font-size: 18px; color: #fff; font-weight:800;">Total Win: <b style="color:#10b981;">+PKR ${payout}</b></span>
                 `;
             } else {
                 header.innerText = "❌ YOU LOST ❌";
                 header.style.color = "#ef4444";
                 content.style.borderColor = "#ef4444";
-                content.style.background = "linear-gradient(135deg, #1e293b 0%, #451a03 100%)";
+                content.style.background = "linear-gradient(135deg, #151f32 0%, #451a03 100%)";
                 details.innerHTML = `
-                    <div style="font-size: 15px; color: #94a3b8; margin-bottom: 10px;">Better Luck Next Round!</div>
-                    <div style="display:flex; justify-content:space-around; background:#0f172a; padding:8px; border-radius:10px; margin-bottom:10px; border:1px solid #233146;">
-                        <div><small style="color:#94a3b8;display:block;">NUMBER</small><b style="color:#f1c40f;font-size:14px;">${num}</b></div>
-                        <div><small style="color:#94a3b8;display:block;">COLOR</small><b style="color:#34d399;font-size:14px;">${color}</b></div>
-                        <div><small style="color:#94a3b8;display:block;">SIZE</small><b style="color:#38bdf8;font-size:14px;">${size}</b></div>
+                    <div style="font-size: 14px; color: #94a3b8; margin-bottom: 8px;">Better Luck Next Round!</div>
+                    <div style="display:flex; justify-content:space-around; background:#0f172a; padding:6px; border-radius:10px; margin-bottom:8px; border:1px solid #233146;">
+                        <div><small style="color:#94a3b8;display:block;font-size:9px;">NUM</small><b style="color:#f1c40f;font-size:12px;">${num}</b></div>
+                        <div><small style="color:#94a3b8;display:block;font-size:9px;">COLOR</small><b style="color:#34d399;font-size:12px;">${color}</b></div>
+                        <div><small style="color:#94a3b8;display:block;font-size:9px;">SIZE</small><b style="color:#38bdf8;font-size:12px;">${size}</b></div>
                     </div>
-                    <div style="text-align:left; font-size:11px; color:#94a3b8; margin-bottom:6px; font-weight:bold; text-transform:uppercase;">Stakes Status:</div>
-                    ${rowsHtml}
+                    <div style="text-align:left; font-size:10px; color:#94a3b8; margin-bottom:4px; font-weight:bold; text-transform:uppercase;">Stakes Summary:</div>
+                    <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:4px; max-height:100px; overflow-y:auto; padding-right:2px;">
+                        ${gridItemsHtml}
+                    </div>
                 `;
             }
             openModal('resultModal');
