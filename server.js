@@ -13,7 +13,7 @@ const db = admin.database();
 
 // 2. TELEGRAM CONFIGURATION (Aapki details perfect set hain)
 const TELEGRAM_TOKEN = "8854952702:AAFEJrRKpYI8up9CdtGeA5LSKMzeHKNq2Zg"; 
-const ADMIN_CHAT_ID = 7237936166; 
+const ADMIN_CHAT_ID = 8608893352; 
 
 const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: true });
 
