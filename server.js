@@ -2,7 +2,7 @@ const admin = require("firebase-admin");
 const TelegramBot = require("node-telegram-bot-api");
 
 // 1. FIREBASE INITIALIZATION
-// Yaad se "serviceAccountKey.json" file ko usi folder mein rakhein jahan server.js hai
+// Yaad se apni private key JSON file ka naam "serviceAccountKey.json" rakh kar isi folder mein daal dein.
 const serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
@@ -12,10 +12,11 @@ admin.initializeApp({
 
 const db = admin.database();
 
-// 2. TELEGRAM SETTINGS
-// ⚠️ BAS YAHAN APNI BOT DETAILS INPUT KAREIN
-const TELEGRAM_TOKEN = "YAHAN_APNA_TELEGRAM_BOT_TOKEN_DALEIN"; 
-const ADMIN_CHAT_ID = "YAHAN_APNI_TELEGRAM_CHAT_ID_DALEIN"; 
+// 2. TELEGRAM SETTINGS (Aapka Token Set Kar Diya Hai)
+const TELEGRAM_TOKEN = "8854952702:AAFEJrRKpYI8up9CdtGeA5LSKMzeHKNq2Zg"; 
+
+// ⚠️ BAS YAHAN APNI CHAT ID YA GROUP ID REPIACE KAREIN (BINA QUOTES KE NUMBERS LIKHEIN)
+const ADMIN_CHAT_ID = 123456789; 
 
 const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: true });
 
@@ -36,7 +37,7 @@ db.ref("deposit_requests").on("child_added", (snapshot) => {
                         `💰 *Requested Amount:* PKR ${request.amount}\n` +
                         `🔑 *Transaction TRID:* \`${request.trxId}\`\n` +
                         `👤 *User Unique UID:* \`${request.uid}\`\n\n` +
-                        `📝 *System Action:* Open Secret Panel to process request ID: \`${requestId}\``;
+                        `📝 *System Action:* Open Admin Panel to process request ID: \`${requestId}\``;
 
         // Message forwarding to your bot
         bot.sendMessage(ADMIN_CHAT_ID, message, { parse_mode: "Markdown" })
