@@ -2,7 +2,6 @@ const admin = require("firebase-admin");
 const TelegramBot = require("node-telegram-bot-api");
 
 // 1. FIREBASE INITIALIZATION
-// Yaad se apni private key JSON file ka naam "serviceAccountKey.json" rakh kar isi folder mein daal dein.
 const serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
@@ -12,23 +11,21 @@ admin.initializeApp({
 
 const db = admin.database();
 
-// 2. TELEGRAM SETTINGS (Aapka Token Set Kar Diya Hai)
+// 2. TELEGRAM CONFIGURATION (Aapki details perfect set hain)
 const TELEGRAM_TOKEN = "8854952702:AAFEJrRKpYI8up9CdtGeA5LSKMzeHKNq2Zg"; 
-
-// ⚠️ BAS YAHAN APNI CHAT ID YA GROUP ID REPIACE KAREIN (BINA QUOTES KE NUMBERS LIKHEIN)
-const ADMIN_CHAT_ID = 123456789; 
+const ADMIN_CHAT_ID = 7237936166; 
 
 const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: true });
 
 console.log("📡 Win Zone Bridge Engine Status: ACTIVE");
 console.log("🤖 Listening for new pending deposits in Firebase...");
 
-// 3. REAL-TIME DATA STREAM TO TELEGRAM
+// 3. REAL-TIME DATA LOG TRACKER
 db.ref("deposit_requests").on("child_added", (snapshot) => {
     const request = snapshot.val();
     const requestId = snapshot.key;
 
-    // Sirf pending requests ko catch karna
+    // Sirf pending deposit requests ko uthana
     if (request && request.status === "pending") {
         
         const message = `⚠️ *NEW INCOMING DEPOSIT REQUEST* ⚠️\n\n` +
@@ -37,9 +34,9 @@ db.ref("deposit_requests").on("child_added", (snapshot) => {
                         `💰 *Requested Amount:* PKR ${request.amount}\n` +
                         `🔑 *Transaction TRID:* \`${request.trxId}\`\n` +
                         `👤 *User Unique UID:* \`${request.uid}\`\n\n` +
-                        `📝 *System Action:* Open Admin Panel to process request ID: \`${requestId}\``;
+                        `📝 *System Action:* Request ID \`${requestId}\` updated in cloud db.`;
 
-        // Message forwarding to your bot
+        // Telegram Message Delivery
         bot.sendMessage(ADMIN_CHAT_ID, message, { parse_mode: "Markdown" })
         .then(() => {
             console.log(`✅ Telegram alert sent successfully for TRID: ${request.trxId}`);
