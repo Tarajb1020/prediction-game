@@ -859,52 +859,69 @@
                 if(document.getElementById('wingoLivePool')) document.getElementById('wingoLivePool').innerText = `🔥 ${randomWingoUsers.toLocaleString()} dynamic players active`;
             }
 
+            // EXCLUSIVE TARGET INTERPOLATION FOR PREVIEW TERMINAL (TRIGGER AT LAST 10 SECONDS)
+            if (timeLeft === 10) {
+                let tempSize = Math.random() > 0.5 ? 'Big' : 'Small';
+                let tempNum = tempSize === 'Big' ? [5,6,7,8,9][Math.floor(Math.random()*5)] : [0,1,2,3,4][Math.floor(Math.random()*5)];
+                database.ref('admin_controls/auto_preview').set({ num: tempNum });
+            }
+
             if (timeLeft <= 0) {
                 let finalSizeResult = Math.random() > 0.5 ? 'Big' : 'Small';
                 let finalNumberResult = finalSizeResult === 'Big' ? [5,6,7,8,9][Math.floor(Math.random()*5)] : [0,1,2,3,4][Math.floor(Math.random()*5)];
-                let finalColorResult = [2,4,6,8].includes(finalNumberResult) ? 'Red' : [1,3,7,9].includes(finalNumberResult) ? 'Green' : 'Mix';
                 
-                let totalPayout = 0;
-                let userPlacings = [];
-
-                if (activeWingoBets.length > 0) {
-                    activeWingoBets.forEach(bet => {
-                        let betWon = false;
-                        let multiplier = 2;
-
-                        if (bet.category === 'size' && bet.value === finalSizeResult) {
-                            betWon = true;
-                        } else if (bet.category === 'color' && (bet.value === finalColorResult || finalColorResult === 'Mix')) {
-                            betWon = true;
-                        } else if (bet.category === 'number' && parseInt(bet.value) === finalNumberResult) {
-                            betWon = true;
-                            multiplier = 9;
-                        }
-
-                        if (betWon) {
-                            let winAmt = Math.floor((bet.amount * multiplier) * 0.90);
-                            totalPayout += winAmt;
-                            userPlacings.push({ cat: bet.category, val: bet.value, amt: bet.amount, won: true, returnAmt: winAmt });
-                        } else {
-                            userPlacings.push({ cat: bet.category, val: bet.value, amt: bet.amount, won: false, returnAmt: 0 });
-                        }
-                    });
-
-                    if (totalPayout > 0) {
-                        database.ref('users/' + currentUser.uid).child('balance').set(currentBalance + totalPayout);
+                // MAIN DATABASE OVERRIDE RESOLUTION STEP (ADMIN CONTROL INPUT BYPASS VALUE)
+                database.ref('admin_controls/forced_result').once('value', (snapshot) => {
+                    let forcedVal = snapshot.val();
+                    if (forcedVal && forcedVal !== "none") {
+                        finalNumberResult = parseInt(forcedVal);
+                        finalSizeResult = finalNumberResult >= 5 ? 'Big' : 'Small';
                     }
                     
-                    triggerResultCelebrationModal(userPlacings, finalNumberResult, finalColorResult, finalSizeResult, totalPayout);
-                }
+                    let finalColorResult = [2,4,6,8].includes(finalNumberResult) ? 'Red' : [1,3,7,9].includes(finalNumberResult) ? 'Green' : 'Mix';
+                    let totalPayout = 0;
+                    let userPlacings = [];
 
-                database.ref('wingo_history').push({ num: finalNumberResult, color: finalColorResult, size: finalSizeResult });
-                
-                if(document.getElementById('roundStatus')) document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Size <span style="color:#38bdf8;">[${finalSizeResult}]</span>`;
-                activeWingoBets = []; 
-                document.getElementById('activeBetsPanel').innerHTML = ''; 
-                timeLeft = 30; 
+                    if (activeWingoBets.length > 0) {
+                        activeWingoBets.forEach(bet => {
+                            let betWon = false;
+                            let multiplier = 2;
+
+                            if (bet.category === 'size' && bet.value === finalSizeResult) {
+                                betWon = true;
+                            } else if (bet.category === 'color' && (bet.value === finalColorResult || finalColorResult === 'Mix')) {
+                                betWon = true;
+                            } else if (bet.category === 'number' && parseInt(bet.value) === finalNumberResult) {
+                                betWon = true;
+                                multiplier = 9;
+                            }
+
+                            if (betWon) {
+                                let winAmt = Math.floor((bet.amount * multiplier) * 0.90);
+                                totalPayout += winAmt;
+                                userPlacings.push({ cat: bet.category, val: bet.value, amt: bet.amount, won: true, returnAmt: winAmt });
+                            } else {
+                                userPlacings.push({ cat: bet.category, val: bet.value, amt: bet.amount, won: false, returnAmt: 0 });
+                            }
+                        });
+
+                        if (totalPayout > 0) {
+                            database.ref('users/' + currentUser.uid).child('balance').set(currentBalance + totalPayout);
+                        }
+                        
+                        triggerResultCelebrationModal(userPlacings, finalNumberResult, finalColorResult, finalSizeResult, totalPayout);
+                    }
+
+                    database.ref('wingo_history').push({ num: finalNumberResult, color: finalColorResult, size: finalSizeResult });
+                    
+                    if(document.getElementById('roundStatus')) document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Size <span style="color:#38bdf8;">[${finalSizeResult}]</span>`;
+                    activeWingoBets = []; 
+                    document.getElementById('activeBetsPanel').innerHTML = ''; 
+                    timeLeft = 30;
+                });
+            } else {
+                if(document.getElementById('timer')) document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
             }
-            if(document.getElementById('timer')) document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
         }, 1000);
 
         function placeBet(category, value) {
