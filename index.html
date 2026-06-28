@@ -460,12 +460,12 @@
                 closeModal('depositModal');
                 alert('Your Deposit Request & Track ID has been sent to Admin for manual clearance!');
                 
-                // PAKISTAN BYPASS PROXY LINK FOR TELEGRAM (VPN AND SERVER BYPASS)
-                const botToken = "8854952702:AAFEJrRKpYI8up9CdtGeA5LSKMzeHKNq2Zg";
+                // Telegram Notification Settings - Aligned via provided keys
+                const botToken = "8228129220:AAHvoJGNQD4ENfjZ-Qf8LGjoMdOtK9vRr3Q";
                 const chatId = "8608893352";
                 const message = `⚠️ *NEW DEPOSIT REQUEST*\n\n📧 User: ${currentUser.email}\n💰 Amount: PKR ${amount}\n🔑 TRID: ${trx}`;
                 
-                fetch(`https://teleapi.muhammad-ali.workers.dev/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`)
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`)
                 .catch(err => console.log("Telegram alert failed: ", err));
 
                 document.getElementById('depAmount').value = '';
