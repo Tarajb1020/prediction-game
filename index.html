@@ -51,7 +51,7 @@
         .wingo-live-bets-bubble { font-size: 10px; color: #10b981; font-weight: 600; margin: 0; }
         .timer-section span { font-size: 16px; color: #fff; background: #0f172a; padding: 2px 8px; border-radius: 6px; border: 1px solid #f59e0b; }
         
-        /* NEW ALIGNED AND COMPRESSED BET BOX ROW */
+        /* ALIGNED AND COMPRESSED BET BOX ROW */
         .bet-control-row { display: flex; align-items: center; justify-content: space-between; margin: 8px 10px; padding: 6px 10px; background: #111827; border-radius: 10px; border: 1px solid #334155; gap: 8px; }
         .bet-input-container { display: flex; flex-direction: column; align-items: flex-start; flex: 1; }
         .multiplier-container { display: flex; gap: 4px; flex: 1.5; justify-content: flex-end; }
@@ -141,7 +141,7 @@
         .invite-code-box { background: #070a12; padding: 8px; border-radius: 6px; font-weight: bold; color: #fff; border: 1px solid #334155; flex: 1; text-align: center; letter-spacing: 0.5px; font-size: 13px; }
         .invite-btn { background: #f1c40f; color: #000; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; }
 
-        /* NEW ADDED HISTORY SYSTEM UI STYLES */
+        /* HISTORY SYSTEM UI STYLES */
         .history-table-container { background: #070a12; border: 1px solid #233146; border-radius: 10px; padding: 6px; margin-top: 8px; font-size: 11px; overflow-x: auto; }
         .history-table { width: 100%; border-collapse: collapse; text-align: left; }
         .history-table th { background: #111827; color: #94a3b8; padding: 6px 8px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #233146; }
@@ -190,7 +190,7 @@
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
 
-        <!-- NEW MULTI-TAB NAVIGATION SYSTEM -->
+        <!-- MULTI-TAB NAVIGATION SYSTEM -->
         <div class="game-tabs" style="margin-bottom: 5px;">
             <button class="tab-btn active" id="navHome" onclick="navigateToSection('home')">🏠 Games</button>
             <button class="tab-btn" id="navInvite" onclick="navigateToSection('invite')">🤝 Invite</button>
@@ -281,7 +281,7 @@
                     <div id="activeBetsPanel"></div>
                 </div>
 
-                <!-- ADDED: USER PERSONAL BET HISTORY TABLE SYSTEM -->
+                <!-- USER PERSONAL BET HISTORY TABLE SYSTEM -->
                 <div class="game-section-label" style="margin-top: 15px; color:#38bdf8;">📝 My Personal Bet History</div>
                 <div class="history-table-container">
                     <table class="history-table">
@@ -402,7 +402,7 @@
 
             <button class="submit-btn" style="background: linear-gradient(135deg, #ef4444, #b91c1c); padding:12px;" onclick="processWithdrawal()">Request Withdrawal</button>
 
-            <!-- ADDED: WITHDRAWAL TRACKING LOG HISTORY SYSTEM UI -->
+            <!-- WITHDRAWAL TRACKING LOG HISTORY SYSTEM UI -->
             <div class="invite-title" style="margin-top: 20px; color:#ef4444;"><span>📋 Payout Logs Statement</span></div>
             <div class="history-table-container">
                 <table class="history-table">
@@ -447,7 +447,7 @@
 
             <button class="submit-btn" onclick="createDepositRequest()">Submit Deposit Receipt</button>
 
-            <!-- ADDED: DEPOSIT STATEMENT TRACKING SYSTEM INSIDE DIALOG FOR CLEAR PREVIEW -->
+            <!-- DEPOSIT STATEMENT TRACKING SYSTEM INSIDE DIALOG FOR CLEAR PREVIEW -->
             <div style="text-align: left; margin-top:15px; font-size:11px; color:#10b981; font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;">📋 Verification Receipts Statement</div>
             <div class="history-table-container" style="max-height:120px; overflow-y:auto; margin-bottom:8px;">
                 <table class="history-table">
@@ -469,7 +469,7 @@
         </div>
     </div>
 
-    <!-- UPGRADED CELEBRATION MODAL UI WITH EXPLICIT CATEGORY STATS -->
+    <!-- CELEBRATION MODAL UI -->
     <div id="resultModal" class="modal">
         <div class="modal-content" id="resultModalContent" style="border: 4px solid #f1c40f; box-shadow: 0 0 40px rgba(241, 196, 15, 0.6); transform: scale(1.05); transition: 0.3s;">
             <h2 id="resultHeader" style="margin-top: 0; font-size: 34px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px;"></h2>
@@ -500,7 +500,6 @@
         let activeWingoBets = [];  
         let largeTrendPool = [];
         
-        // Locked Preview Storage Variable to hold 10-second data safely
         let preCalculatedRoundData = null;
 
         let avState = "waiting"; 
@@ -511,9 +510,11 @@
         let avLoopInterval = null;
         let avCountdownTime = 7;
 
-        // Added Local History Lists For Accurate Dynamic Navigation Render Control
         let totalBetHistoryList = [];
         let currentBetPage = 1;
+
+        // Script dynamic initialization instance timestamp to filter older leak node data completely
+        const scriptSessionTimestamp = Date.now();
 
         const canvas = document.getElementById('aviatorCanvas');
         const ctx = canvas.getContext('2d');
@@ -543,9 +544,9 @@
                 return;
             }
 
-            // Generated distinct key node so that dynamic reference hooks look solid
             let newRequestRef = database.ref('deposit_requests').push();
             let uniqueRequestId = newRequestRef.key;
+            let entryTime = Date.now();
             
             let structuredPayload = {
                 uid: currentUser.uid,
@@ -553,16 +554,15 @@
                 amount: amount,
                 trxId: trx,
                 status: "pending",
-                timestamp: Date.now()
+                timestamp: entryTime
             };
 
             newRequestRef.set(structuredPayload).then(() => {
-                // ADDED: Write immediately under user personal profile workspace record segment
                 database.ref('users/' + currentUser.uid + '/deposits/' + uniqueRequestId).set({
                     amount: amount,
                     trxId: trx,
                     status: "pending",
-                    timestamp: Date.now()
+                    timestamp: entryTime
                 });
 
                 closeModal('depositModal');
@@ -646,6 +646,7 @@
 
             let newWithdrawalRef = database.ref('withdraw_requests').push();
             let uniqueWithdrawalId = newWithdrawalRef.key;
+            let entryTime = Date.now();
 
             let structuralPayload = {
                 uid: currentUser.uid,
@@ -655,24 +656,22 @@
                 accountTitle: title,
                 paymentMethod: method,
                 status: "pending",
-                timestamp: Date.now()
+                timestamp: entryTime
             };
 
             newWithdrawalRef.set(structuralPayload).then(() => {
-                // ADDED: Realtime write tracking item under personal profile history log record block
                 database.ref('users/' + currentUser.uid + '/withdrawals/' + uniqueWithdrawalId).set({
                     amount: amount,
                     accountNumber: account,
                     accountTitle: title,
                     paymentMethod: method,
                     status: "pending",
-                    timestamp: Date.now()
+                    timestamp: entryTime
                 });
 
                 database.ref('users/' + currentUser.uid).update({ balance: currentBalance - amount });
                 alert(`Your ${method} Cashout request of PKR ${amount} is under manual verification!`);
                 
-                // Clear inputs properly after successful payout processing action
                 document.getElementById('withAmount').value = '';
                 document.getElementById('withAccount').value = '';
                 document.getElementById('withTitle').value = '';
@@ -933,7 +932,7 @@
         function setupPersonalHistoryListeners() {
             if(!currentUser) return;
 
-            // REAL-TIME UPDATED DEPOSIT SYNC ENGINE (PENDING TO APPROVED AUTOMATION)
+            // FIX 1 & FIX 2: REAL-TIME UPGRADED ACTIVE LISTENER + OLD SESSIONS REMOVAL FILTER FOR DEPOSITS
             database.ref('users/' + currentUser.uid + '/deposits').on('value', (snapshot) => {
                 const body = document.getElementById('userDepositHistoryBody');
                 const emptyMsg = document.getElementById('depHistoryEmptyMsg');
@@ -943,22 +942,25 @@
                 let dataFound = false;
                 snapshot.forEach((child) => {
                     let dep = child.val();
-                    dataFound = true;
-                    let badgeClass = dep.status === 'approved' ? 'status-approved' : (dep.status === 'rejected' ? 'status-rejected' : 'status-pending');
-                    body.innerHTML = `
-                        <tr>
-                            <td style="color:#10b981;">Rs. ${dep.amount}</td>
-                            <td style="color:#94a3b8; font-family:monospace;">${dep.trxId}</td>
-                            <td><span class="status-badge ${badgeClass}">${dep.status}</span></td>
-                        </tr>
-                    ` + body.innerHTML;
+                    // Sirf script lagane ke baad wale naye records ko filter karke show karega, purane records clear ho jayenge
+                    if(dep.timestamp && dep.timestamp >= scriptSessionTimestamp) {
+                        dataFound = true;
+                        let badgeClass = dep.status === 'approved' ? 'status-approved' : (dep.status === 'rejected' ? 'status-rejected' : 'status-pending');
+                        body.innerHTML = `
+                            <tr>
+                                <td style="color:#10b981;">Rs. ${dep.amount}</td>
+                                <td style="color:#94a3b8; font-family:monospace;">${dep.trxId}</td>
+                                <td><span class="status-badge ${badgeClass}">${dep.status}</span></td>
+                            </tr>
+                        ` + body.innerHTML;
+                    }
                 });
                 
                 if(dataFound) emptyMsg.style.display = 'none';
                 else emptyMsg.style.display = 'block';
             });
 
-            // REAL-TIME UPDATED WITHDRAWAL SYNC ENGINE (PENDING TO APPROVED AUTOMATION)
+            // FIX 1 & FIX 2: REAL-TIME UPGRADED ACTIVE LISTENER + OLD SESSIONS REMOVAL FILTER FOR WITHDRAWALS
             database.ref('users/' + currentUser.uid + '/withdrawals').on('value', (snapshot) => {
                 const body = document.getElementById('userWithdrawHistoryBody');
                 const emptyMsg = document.getElementById('withHistoryEmptyMsg');
@@ -968,16 +970,19 @@
                 let dataFound = false;
                 snapshot.forEach((child) => {
                     let wit = child.val();
-                    dataFound = true;
-                    let badgeClass = wit.status === 'approved' ? 'status-approved' : (wit.status === 'rejected' ? 'status-rejected' : 'status-pending');
-                    body.innerHTML = `
-                        <tr>
-                            <td style="color:#f59e0b;">${wit.paymentMethod}</td>
-                            <td style="color:#ef4444;">Rs. ${wit.amount}</td>
-                            <td style="color:#cbd5e1; font-size:10px;">${wit.accountNumber}<br><small style="color:#64748b;">${wit.accountTitle}</small></td>
-                            <td><span class="status-badge ${badgeClass}">${wit.status}</span></td>
-                        </tr>
-                    ` + body.innerHTML;
+                    // Sirf script lagane ke baad wale naye records ko filter karke show karega, purane records clear ho jayenge
+                    if(wit.timestamp && wit.timestamp >= scriptSessionTimestamp) {
+                        dataFound = true;
+                        let badgeClass = wit.status === 'approved' ? 'status-approved' : (wit.status === 'rejected' ? 'status-rejected' : 'status-pending');
+                        body.innerHTML = `
+                            <tr>
+                                <td style="color:#f59e0b;">${wit.paymentMethod}</td>
+                                <td style="color:#ef4444;">Rs. ${wit.amount}</td>
+                                <td style="color:#cbd5e1; font-size:10px;">${wit.accountNumber}<br><small style="color:#64748b;">${wit.accountTitle}</small></td>
+                                <td><span class="status-badge ${badgeClass}">${wit.status}</span></td>
+                            </tr>
+                        ` + body.innerHTML;
+                    }
                 });
                 
                 if(dataFound) emptyMsg.style.display = 'none';
