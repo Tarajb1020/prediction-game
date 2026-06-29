@@ -140,6 +140,22 @@
         .invite-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
         .invite-code-box { background: #070a12; padding: 8px; border-radius: 6px; font-weight: bold; color: #fff; border: 1px solid #334155; flex: 1; text-align: center; letter-spacing: 0.5px; font-size: 13px; }
         .invite-btn { background: #f1c40f; color: #000; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; }
+
+        /* NEW ADDED HISTORY SYSTEM UI STYLES */
+        .history-table-container { background: #070a12; border: 1px solid #233146; border-radius: 10px; padding: 6px; margin-top: 8px; font-size: 11px; overflow-x: auto; }
+        .history-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .history-table th { background: #111827; color: #94a3b8; padding: 6px 8px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #233146; }
+        .history-table td { padding: 8px; border-bottom: 1px solid #111827; font-weight: 600; }
+        .history-empty-msg { padding: 15px; text-align: center; color: #475569; font-weight: bold; font-size: 12px; text-transform: uppercase; }
+        .status-badge { padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; text-transform: uppercase; }
+        .status-pending { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid #f59e0b; }
+        .status-approved { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid #10b981; }
+        .status-rejected { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef4444; }
+        
+        .pagination-row { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; padding: 4px; }
+        .page-nav-btn { background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: bold; transition: 0.2s; }
+        .page-nav-btn.active { background: #f1c40f; color: #000; border-color: #f1c40f; }
+        .page-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -264,6 +280,31 @@
                     </div>
                     <div id="activeBetsPanel"></div>
                 </div>
+
+                <!-- ADDED: USER PERSONAL BET HISTORY TABLE SYSTEM -->
+                <div class="game-section-label" style="margin-top: 15px; color:#38bdf8;">📝 My Personal Bet History</div>
+                <div class="history-table-container">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Select</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Result</th>
+                                <th>Payout</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userBetHistoryBody">
+                            <!-- Injected dynamically via JS code -->
+                        </tbody>
+                    </table>
+                    <div id="betHistoryEmptyMsg" class="history-empty-msg">No stake history logged yet</div>
+                </div>
+                <!-- Pagination Buttons Row -->
+                <div class="pagination-row">
+                    <button type="button" class="page-nav-btn active" id="btnBetPage1" onclick="changeBetPage(1)">Page 1</button>
+                    <button type="button" class="page-nav-btn" id="btnBetPage2" onclick="changeBetPage(2)">Page 2</button>
+                </div>
             </div>
 
             <!-- GAME 2: AVIATOR WRAPPER -->
@@ -360,33 +401,71 @@
             </div>
 
             <button class="submit-btn" style="background: linear-gradient(135deg, #ef4444, #b91c1c); padding:12px;" onclick="processWithdrawal()">Request Withdrawal</button>
+
+            <!-- ADDED: WITHDRAWAL TRACKING LOG HISTORY SYSTEM UI -->
+            <div class="invite-title" style="margin-top: 20px; color:#ef4444;"><span>📋 Payout Logs Statement</span></div>
+            <div class="history-table-container">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Amount</th>
+                            <th>Account/Title</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userWithdrawHistoryBody">
+                        <!-- Injected via Realtime Database Stream -->
+                    </tbody>
+                </table>
+                <div id="withHistoryEmptyMsg" class="history-empty-msg">No cashouts requested yet</div>
+            </div>
         </div>
     </div>
 
     <!-- MODALS -->
     <!-- DEPOSIT MODAL -->
     <div id="depositModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 390px;">
             <h3 style="color: #10b981; margin-bottom: 5px; text-transform: uppercase;">Deposit Funds</h3>
             
-            <div style="background: #0f172a; padding: 12px; border-radius: 12px; border: 1px solid #f59e0b; margin-bottom: 15px; text-align: center;">
+            <div style="background: #0f172a; padding: 12px; border-radius: 12px; border: 1px solid #f59e0b; margin-bottom: 12px; text-align: center;">
                 <p style="margin: 0; font-size: 12px; color: #f59e0b; font-weight: bold; text-transform: uppercase;">⚡ JAZZCASH ACCOUNT DETAILS</p>
                 <p style="margin: 6px 0 2px 0; font-size: 19px; color: #fff; font-weight: 900; letter-spacing: 1px;">03336448249</p>
                 <p style="margin: 0; font-size: 13px; color: #34d399; font-weight: bold;">Title: Nazar Hussain</p>
             </div>
 
-            <div style="text-align: left; margin-bottom: 12px;">
+            <div style="text-align: left; margin-bottom: 8px;">
                 <label style="font-size: 11px; color: #94a3b8; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Deposit Amount:</label>
                 <input type="number" id="depAmount" placeholder="Min Rs. 300" style="max-width: 100%; text-align: left;">
             </div>
 
-            <div style="text-align: left; margin-bottom: 15px;">
+            <div style="text-align: left; margin-bottom: 12px;">
                 <label style="font-size: 11px; color: #94a3b8; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Transaction ID / Track ID:</label>
                 <input type="text" id="depTrx" placeholder="Enter 12-Digit TRID" style="max-width: 100%; text-align: left;">
             </div>
 
             <button class="submit-btn" onclick="createDepositRequest()">Submit Deposit Receipt</button>
-            <button class="close-btn" onclick="closeModal('depositModal')">Cancel</button>
+
+            <!-- ADDED: DEPOSIT STATEMENT TRACKING SYSTEM INSIDE DIALOG FOR CLEAR PREVIEW -->
+            <div style="text-align: left; margin-top:15px; font-size:11px; color:#10b981; font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;">📋 Verification Receipts Statement</div>
+            <div class="history-table-container" style="max-height:120px; overflow-y:auto; margin-bottom:8px;">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Amount</th>
+                            <th>TRID</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userDepositHistoryBody">
+                        <!-- Loaded dynamically via real time nodes -->
+                    </tbody>
+                </table>
+                <div id="depHistoryEmptyMsg" class="history-empty-msg" style="padding:8px;">No deposits logged</div>
+            </div>
+
+            <button class="close-btn" onclick="closeModal('depositModal')" style="margin-top:0;">Cancel</button>
         </div>
     </div>
 
@@ -432,6 +511,10 @@
         let avLoopInterval = null;
         let avCountdownTime = 7;
 
+        // Added Local History Lists For Accurate Dynamic Navigation Render Control
+        let totalBetHistoryList = [];
+        let currentBetPage = 1;
+
         const canvas = document.getElementById('aviatorCanvas');
         const ctx = canvas.getContext('2d');
         let planeX = 30; let planeY = 180;
@@ -460,14 +543,28 @@
                 return;
             }
 
-            database.ref('deposit_requests').push({
+            // Generated distinct key node so that dynamic reference hooks look solid
+            let newRequestRef = database.ref('deposit_requests').push();
+            let uniqueRequestId = newRequestRef.key;
+            
+            let structuredPayload = {
                 uid: currentUser.uid,
                 email: currentUser.email,
                 amount: amount,
                 trxId: trx,
                 status: "pending",
                 timestamp: Date.now()
-            }).then(() => {
+            };
+
+            newRequestRef.set(structuredPayload).then(() => {
+                // ADDED: Write immediately under user personal profile workspace record segment
+                database.ref('users/' + currentUser.uid + '/deposits/' + uniqueRequestId).set({
+                    amount: amount,
+                    trxId: trx,
+                    status: "pending",
+                    timestamp: Date.now()
+                });
+
                 closeModal('depositModal');
                 alert('Your Deposit Request & Track ID has been sent to Admin for manual clearance!');
                 
@@ -547,7 +644,10 @@
                 return;
             }
 
-            database.ref('withdraw_requests').push({
+            let newWithdrawalRef = database.ref('withdraw_requests').push();
+            let uniqueWithdrawalId = newWithdrawalRef.key;
+
+            let structuralPayload = {
                 uid: currentUser.uid,
                 email: currentUser.email,
                 amount: amount,
@@ -556,9 +656,26 @@
                 paymentMethod: method,
                 status: "pending",
                 timestamp: Date.now()
-            }).then(() => {
+            };
+
+            newWithdrawalRef.set(structuralPayload).then(() => {
+                // ADDED: Realtime write tracking item under personal profile history log record block
+                database.ref('users/' + currentUser.uid + '/withdrawals/' + uniqueWithdrawalId).set({
+                    amount: amount,
+                    accountNumber: account,
+                    accountTitle: title,
+                    paymentMethod: method,
+                    status: "pending",
+                    timestamp: Date.now()
+                });
+
                 database.ref('users/' + currentUser.uid).update({ balance: currentBalance - amount });
                 alert(`Your ${method} Cashout request of PKR ${amount} is under manual verification!`);
+                
+                // Clear inputs properly after successful payout processing action
+                document.getElementById('withAmount').value = '';
+                document.getElementById('withAccount').value = '';
+                document.getElementById('withTitle').value = '';
             }).catch((err) => {
                 console.error("Firebase Withdrawal Entry Failure: ", err);
                 alert("Error sending request: " + err.message);
@@ -737,6 +854,7 @@
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('appScreen').style.display = 'block';
             listenWingoTrends();
+            setupPersonalHistoryListeners(); // Added to kick start user private account database observers
             setTimeout(() => { triggerCanvasFix(); startBufferCountdown(); }, 1000);
         }
 
@@ -800,6 +918,119 @@
                 document.getElementById('appScreen').style.display = 'none';
             }
         });
+
+        // ADDED: REALTIME DATABASE OBSERVERS FOR USER DEPOSITS, WITHDRAWALS & BET LOGGING
+        function setupPersonalHistoryListeners() {
+            if(!currentUser) return;
+
+            // 1. Listen for personal deposit records
+            database.ref('users/' + currentUser.uid + '/deposits').on('value', (snapshot) => {
+                const body = document.getElementById('userDepositHistoryBody');
+                const emptyMsg = document.getElementById('depHistoryEmptyMsg');
+                if(!body) return;
+                body.innerHTML = '';
+                
+                let dataFound = false;
+                snapshot.forEach((child) => {
+                    let dep = child.val();
+                    dataFound = true;
+                    let badgeClass = dep.status === 'approved' ? 'status-approved' : (dep.status === 'rejected' ? 'status-rejected' : 'status-pending');
+                    body.innerHTML = `
+                        <tr>
+                            <td style="color:#10b981;">Rs. ${dep.amount}</td>
+                            <td style="color:#94a3b8; font-family:monospace;">${dep.trxId}</td>
+                            <td><span class="status-badge ${badgeClass}">${dep.status}</span></td>
+                        </tr>
+                    ` + body.innerHTML;
+                });
+                
+                if(dataFound) emptyMsg.style.display = 'none';
+                else emptyMsg.style.display = 'block';
+            });
+
+            // 2. Listen for personal withdrawal records
+            database.ref('users/' + currentUser.uid + '/withdrawals').on('value', (snapshot) => {
+                const body = document.getElementById('userWithdrawHistoryBody');
+                const emptyMsg = document.getElementById('withHistoryEmptyMsg');
+                if(!body) return;
+                body.innerHTML = '';
+                
+                let dataFound = false;
+                snapshot.forEach((child) => {
+                    let wit = child.val();
+                    dataFound = true;
+                    let badgeClass = wit.status === 'approved' ? 'status-approved' : (wit.status === 'rejected' ? 'status-rejected' : 'status-pending');
+                    body.innerHTML = `
+                        <tr>
+                            <td style="color:#f59e0b;">${wit.paymentMethod}</td>
+                            <td style="color:#ef4444;">Rs. ${wit.amount}</td>
+                            <td style="color:#cbd5e1; font-size:10px;">${wit.accountNumber}<br><small style="color:#64748b;">${wit.accountTitle}</small></td>
+                            <td><span class="status-badge ${badgeClass}">${wit.status}</span></td>
+                        </tr>
+                    ` + body.innerHTML;
+                });
+                
+                if(dataFound) emptyMsg.style.display = 'none';
+                else emptyMsg.style.display = 'block';
+            });
+
+            // 3. Listen for personal stake records (Bingo game history tracking payload stream)
+            database.ref('users/' + currentUser.uid + '/bets').on('value', (snapshot) => {
+                totalBetHistoryList = [];
+                snapshot.forEach((child) => {
+                    totalBetHistoryList.push(child.val());
+                });
+                // Sort by latest timestamp item
+                totalBetHistoryList.sort((a,b) => b.timestamp - a.timestamp);
+                renderBetHistoryPagination();
+            });
+        }
+
+        // ADDED: PAGINATION ENGINE FOR RENDERING 15-20 ROUNDS SPLIT ACROSS PAGE 1 AND PAGE 2
+        function renderBetHistoryPagination() {
+            const body = document.getElementById('userBetHistoryBody');
+            const emptyMsg = document.getElementById('betHistoryEmptyMsg');
+            if(!body) return;
+            body.innerHTML = '';
+
+            if(totalBetHistoryList.length === 0) {
+                emptyMsg.style.display = 'block';
+                return;
+            }
+            emptyMsg.style.display = 'none';
+
+            let itemsPerPage = 10; // 10 items on page 1, next 10 items on page 2 (Total Max 20 records checked)
+            let startIndex = (currentBetPage - 1) * itemsPerPage;
+            let endIndex = startIndex + itemsPerPage;
+            let pageItems = totalBetHistoryList.slice(startIndex, endIndex);
+
+            pageItems.forEach((bet) => {
+                let badgeStyle = bet.category === 'size' ? (bet.value === 'Big' ? 'badge-big':'badge-small') : bet.category === 'color' ? (bet.value === 'Red' ? 'badge-red':'badge-green') : 'badge-num';
+                let outcomeDisplay = bet.isWin ? `<span style="color:#10b981;">🏆 WIN</span>` : `<span style="color:#ef4444;">❌ LOSE</span>`;
+                let rewardDisplay = bet.isWin ? `<b style="color:#10b981;">+${bet.payout}</b>` : `<span style="color:#475569;">0</span>`;
+                
+                body.innerHTML += `
+                    <tr>
+                        <td><span class="badge-box ${badgeStyle}">${bet.value}</span></td>
+                        <td style="text-transform:uppercase; color:#94a3b8; font-size:10px;">${bet.category}</td>
+                        <td style="color:#fff;">Rs. ${bet.amount}</td>
+                        <td>${outcomeDisplay}</td>
+                        <td>${rewardDisplay}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function changeBetPage(pageNumber) {
+            currentBetPage = pageNumber;
+            document.getElementById('btnBetPage1').classList.remove('active');
+            document.getElementById('btnBetPage2').classList.remove('active');
+            
+            if(pageNumber === 1) document.getElementById('btnBetPage1').classList.add('active');
+            else document.getElementById('btnBetPage2').classList.add('active');
+            
+            renderBetHistoryPagination();
+        }
 
         function copyInviteCode() {
             let code = document.getElementById('myInviteCode').innerText;
@@ -929,13 +1160,24 @@
                                 multiplier = 9;
                             }
 
+                            let winAmt = 0;
                             if (betWon) {
-                                let winAmt = Math.floor((bet.amount * multiplier) * 0.90);
+                                winAmt = Math.floor((bet.amount * multiplier) * 0.90);
                                 totalPayout += winAmt;
                                 userPlacings.push({ cat: bet.category, val: bet.value, amt: bet.amount, won: true, returnAmt: winAmt });
                             } else {
                                 userPlacings.push({ cat: bet.category, val: bet.value, amt: bet.amount, won: false, returnAmt: 0 });
                             }
+
+                            // ADDED: Write the round conclusion metrics into user's private node structure history log branch
+                            database.ref('users/' + currentUser.uid + '/bets').push({
+                                category: bet.category,
+                                value: bet.value,
+                                amount: bet.amount,
+                                isWin: betWon,
+                                payout: winAmt,
+                                timestamp: Date.now()
+                            });
                         });
 
                         if (totalPayout > 0) {
