@@ -475,7 +475,7 @@
                 const chatId = "8608893352";
                 const message = `⚠️ *NEW DEPOSIT REQUEST*\n\n📧 User: ${currentUser.email}\n💰 Amount: PKR ${amount}\n🔑 TRID: ${trx}`;
                 
-                fetch(`https://api.telegram-proxy.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`)
+                fetch(`https://api.telegram-proxy.org/bot${botToken}/sendMessage?chat_id=${chatId}/&text=${encodeURIComponent(message)}&parse_mode=Markdown`)
                 .then(res => console.log("Telegram Proxy Trigger Result:", res.status))
                 .catch(err => console.log("Telegram alert failed: ", err));
 
@@ -547,8 +547,22 @@
                 return;
             }
 
-            database.ref('users/' + currentUser.uid).update({ balance: currentBalance - amount });
-            alert(`Your ${method} Cashout request of PKR ${amount} is under manual verification!`);
+            database.ref('withdraw_requests').push({
+                uid: currentUser.uid,
+                email: currentUser.email,
+                amount: amount,
+                accountNumber: account,
+                accountTitle: title,
+                paymentMethod: method,
+                status: "pending",
+                timestamp: Date.now()
+            }).then(() => {
+                database.ref('users/' + currentUser.uid).update({ balance: currentBalance - amount });
+                alert(`Your ${method} Cashout request of PKR ${amount} is under manual verification!`);
+            }).catch((err) => {
+                console.error("Firebase Withdrawal Entry Failure: ", err);
+                alert("Error sending request: " + err.message);
+            });
         }
 
         function rotateGlobalTicker() {
