@@ -430,9 +430,8 @@
             <h3 style="color: #10b981; margin-bottom: 5px; text-transform: uppercase;">Deposit Funds</h3>
             
             <div style="background: #0f172a; padding: 12px; border-radius: 12px; border: 1px solid #f59e0b; margin-bottom: 12px; text-align: center;">
-                <p style="margin: 0; font-size: 12px; color: #f59e0b; font-weight: bold; text-transform: uppercase;">⚡ JAZZCASH ACCOUNT DETAILS</p>
-                <p style="margin: 6px 0 2px 0; font-size: 19px; color: #fff; font-weight: 900; letter-spacing: 1px;">00000</p>
-                <p style="margin: 0; font-size: 13px; color: #34d399; font-weight: bold;">Title: Nazar Hussain</p>
+                <p style="margin: 0; font-size: 12px; color: #f59e0b; font-weight: bold; text-transform: uppercase;">⚡ SCAN QR CODE TO DEPOSIT</p>
+                <img src="IMG-20260629-WA0040.jpg" alt="Deposit QR Code" style="max-width: 180px; width: 100%; height: auto; margin: 10px auto; display: block; border-radius: 8px; border: 2px solid #fff;">
             </div>
 
             <div style="text-align: left; margin-bottom: 8px;">
@@ -555,7 +554,7 @@
             };
 
             newRequestRef.set(structuredPayload).then(() => {
-                database.ref('users/' + currentUser.uid + '/deposits_v2/' + uniqueRequestId).set({
+                database.ref('users/' + currentUser.uid + '/deposits/' + uniqueRequestId).set({
                     amount: amount,
                     trxId: trx,
                     status: "pending",
@@ -657,7 +656,7 @@
             };
 
             newWithdrawalRef.set(structuralPayload).then(() => {
-                database.ref('users/' + currentUser.uid + '/withdrawals_v2/' + uniqueWithdrawalId).set({
+                database.ref('users/' + currentUser.uid + '/withdrawals/' + uniqueWithdrawalId).set({
                     amount: amount,
                     accountNumber: account,
                     accountTitle: title,
@@ -929,8 +928,8 @@
         function setupPersonalHistoryListeners() {
             if(!currentUser) return;
 
-            // REAL-TIME DEPOSIT LIVE STREAM (UPGRADED TO V2 NODE - PORANI HISTORY KHATAM)
-            database.ref('users/' + currentUser.uid + '/deposits_v2').on('value', (snapshot) => {
+            // REAL-TIME DEPOSIT LIVE STREAM & REFRESH FIX (POORI PURANI HISTORY SEPARATE RESET)
+            database.ref('users/' + currentUser.uid + '/deposits').on('value', (snapshot) => {
                 const body = document.getElementById('userDepositHistoryBody');
                 const emptyMsg = document.getElementById('depHistoryEmptyMsg');
                 if(!body) return;
@@ -956,8 +955,8 @@
                 else emptyMsg.style.display = 'block';
             });
 
-            // REAL-TIME WITHDRAWAL LIVE STREAM (UPGRADED TO V2 NODE - PORANI HISTORY KHATAM)
-            database.ref('users/' + currentUser.uid + '/withdrawals_v2').on('value', (snapshot) => {
+            // REAL-TIME WITHDRAWAL LIVE STREAM & REFRESH FIX (POORI PURANI HISTORY SEPARATE RESET)
+            database.ref('users/' + currentUser.uid + '/withdrawals').on('value', (snapshot) => {
                 const body = document.getElementById('userWithdrawHistoryBody');
                 const emptyMsg = document.getElementById('withHistoryEmptyMsg');
                 if(!body) return;
