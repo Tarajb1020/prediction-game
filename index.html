@@ -427,18 +427,12 @@
     <!-- DEPOSIT MODAL -->
     <div id="depositModal" class="modal">
         <div class="modal-content" style="max-width: 390px;">
-            <h3 style="color: #10b981; margin-bottom: 5px; text-transform: uppercase;">Deposit Funds</h3>
+            <h3 style="color: #10b981; margin-bottom: 15px; text-transform: uppercase;">Deposit Funds</h3>
             
-            <!-- QR CODE COMPONENT ADDED AS REQUESTED -->
-            <div style="margin-bottom: 12px; text-align: center;">
-                <img src="IMG-20260629-WA0040_2.jpg" alt="Deposit QR Code" style="max-width: 160px; width: 100%; border: 4px solid #f59e0b; border-radius: 10px; background-color: #fff; padding: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-                <p style="margin: 4px 0 0 0; font-size: 10px; color: #94a3b8; font-weight: bold; text-transform: uppercase;">Scan QR Code to Pay</p>
-            </div>
-
-            <div style="background: #0f172a; padding: 12px; border-radius: 12px; border: 1px solid #f59e0b; margin-bottom: 12px; text-align: center;">
-                <p style="margin: 0; font-size: 12px; color: #f59e0b; font-weight: bold; text-transform: uppercase;">⚡ JAZZCASH ACCOUNT DETAILS</p>
-                <p style="margin: 6px 0 2px 0; font-size: 19px; color: #fff; font-weight: 900; letter-spacing: 1px;">03336448249</p>
-                <p style="margin: 0; font-size: 13px; color: #34d399; font-weight: bold;">Title: Nazar Hussain</p>
+            <!-- FIXED FULL WIDTH QR CODE VIEW AT TOP CENTER -->
+            <div style="margin-bottom: 20px; text-align: center; width: 100%;">
+                <img src="IMG-20260629-WA0040_2.jpg" alt="Deposit QR Code" style="width: 100%; max-width: 260px; height: auto; border: 4px solid #f59e0b; border-radius: 12px; background-color: #fff; padding: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.6); display: block; margin: 0 auto;">
+                <p style="margin: 8px 0 0 0; font-size: 11px; color: #f59e0b; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">📸 Scan QR Code To Pay</p>
             </div>
 
             <div style="text-align: left; margin-bottom: 8px;">
@@ -935,7 +929,7 @@
         function setupPersonalHistoryListeners() {
             if(!currentUser) return;
 
-            // REAL-TIME DEPOSIT LIVE STREAM & REFRESH FIX (POORI PURANI HISTORY SEPARATE RESET)
+            // REAL-TIME DEPOSIT LIVE STREAM
             database.ref('users/' + currentUser.uid + '/deposits').on('value', (snapshot) => {
                 const body = document.getElementById('userDepositHistoryBody');
                 const emptyMsg = document.getElementById('depHistoryEmptyMsg');
@@ -962,7 +956,7 @@
                 else emptyMsg.style.display = 'block';
             });
 
-            // REAL-TIME WITHDRAWAL LIVE STREAM & REFRESH FIX (POORI PURANI HISTORY SEPARATE RESET)
+            // REAL-TIME WITHDRAWAL LIVE STREAM
             database.ref('users/' + currentUser.uid + '/withdrawals').on('value', (snapshot) => {
                 const body = document.getElementById('userWithdrawHistoryBody');
                 const emptyMsg = document.getElementById('withHistoryEmptyMsg');
