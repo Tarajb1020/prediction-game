@@ -555,7 +555,7 @@
             };
 
             newRequestRef.set(structuredPayload).then(() => {
-                database.ref('users/' + currentUser.uid + '/deposits/' + uniqueRequestId).set({
+                database.ref('users/' + currentUser.uid + '/deposits_v2/' + uniqueRequestId).set({
                     amount: amount,
                     trxId: trx,
                     status: "pending",
@@ -657,7 +657,7 @@
             };
 
             newWithdrawalRef.set(structuralPayload).then(() => {
-                database.ref('users/' + currentUser.uid + '/withdrawals/' + uniqueWithdrawalId).set({
+                database.ref('users/' + currentUser.uid + '/withdrawals_v2/' + uniqueWithdrawalId).set({
                     amount: amount,
                     accountNumber: account,
                     accountTitle: title,
@@ -929,8 +929,8 @@
         function setupPersonalHistoryListeners() {
             if(!currentUser) return;
 
-            // REAL-TIME DEPOSIT LIVE STREAM & REFRESH FIX (POORI PURANI HISTORY SEPARATE RESET)
-            database.ref('users/' + currentUser.uid + '/deposits').on('value', (snapshot) => {
+            // REAL-TIME DEPOSIT LIVE STREAM (UPGRADED TO V2 NODE - PORANI HISTORY KHATAM)
+            database.ref('users/' + currentUser.uid + '/deposits_v2').on('value', (snapshot) => {
                 const body = document.getElementById('userDepositHistoryBody');
                 const emptyMsg = document.getElementById('depHistoryEmptyMsg');
                 if(!body) return;
@@ -956,8 +956,8 @@
                 else emptyMsg.style.display = 'block';
             });
 
-            // REAL-TIME WITHDRAWAL LIVE STREAM & REFRESH FIX (POORI PURANI HISTORY SEPARATE RESET)
-            database.ref('users/' + currentUser.uid + '/withdrawals').on('value', (snapshot) => {
+            // REAL-TIME WITHDRAWAL LIVE STREAM (UPGRADED TO V2 NODE - PORANI HISTORY KHATAM)
+            database.ref('users/' + currentUser.uid + '/withdrawals_v2').on('value', (snapshot) => {
                 const body = document.getElementById('userWithdrawHistoryBody');
                 const emptyMsg = document.getElementById('withHistoryEmptyMsg');
                 if(!body) return;
