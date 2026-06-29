@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Win Zone Pro - Elite Dual Engine App v3.4</title>
-    <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -104,7 +103,7 @@
         .aviator-status-footer { background: #07080a; border: 1px solid #27272a; color: #94a3b8; font-size: 10px; font-weight: bold; padding: 6px; border-radius: 6px; text-transform: uppercase; }
 
         .aviator-players-panel { background: #111218; border: 1px solid #1f2937; margin: 8px 10px 10px 10px; border-radius: 10px; padding: 8px; text-align: left; }
-        .panel-header-title { font-size: 11px; color: #94a3b8; font-weight: 800; border-bottom: 1px solid #27272a; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase; display: flex; justify-content: space-between; }
+        .panel-header-title { font-size: 11px; color: #94a3b8; font-weight: 800; border-bottom: 1px solid #27272a; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
         .live-winner-row { display: flex; justify-content: space-between; font-size: 11px; padding: 4px 0; border-bottom: 1px dashed #1e293b; font-weight: bold; }
         .win-user-tag { color: #cbd5e1; }
         .win-mult-tag { color: #c084fc; background: rgba(192, 132, 252, 0.1); padding: 1px 4px; border-radius: 3px; }
@@ -164,7 +163,6 @@
         <div class="ticker-inner" id="tickerText">Loading transaction logs...</div>
     </div>
 
-    <!-- AUTH SCREEN -->
     <div id="authScreen" class="auth-container">
         <div id="loginCard" class="auth-card">
             <h2>Win Zone Login</h2>
@@ -183,14 +181,12 @@
         </div>
     </div>
 
-    <!-- MAIN APP SCREEN -->
     <div id="appScreen">
         <div class="header">
             <span>👑 WIN ZONE AUTOMATED v3.4</span>
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
 
-        <!-- NEW MULTI-TAB NAVIGATION SYSTEM -->
         <div class="game-tabs" style="margin-bottom: 5px;">
             <button class="tab-btn active" id="navHome" onclick="navigateToSection('home')">🏠 Games</button>
             <button class="tab-btn" id="navInvite" onclick="navigateToSection('invite')">🤝 Invite</button>
@@ -208,14 +204,12 @@
             </div>
         </div>
 
-        <!-- SECTION 1: HOME GAMES CONTENT -->
         <div id="sectionHome" style="display: block;">
             <div class="game-tabs">
                 <button class="tab-btn active" id="tabWingo" onclick="switchGame('wingo')">Bingo (Big/Small)</button>
                 <button class="tab-btn" id="tabAviator" onclick="switchGame('aviator')">Aviator Real Trap</button>
             </div>
 
-            <!-- GAME 1: WINGO WRAPPER -->
             <div id="wingoEngineWrapper" class="game-wrapper active">
                 <div class="history-box">
                     <div class="history-title">
@@ -233,7 +227,6 @@
                     ⏳ Place stakes. Smart routing algorithm active.
                 </div>
 
-                <!-- ALIGNED HORIZONTAL BET COMPONENT -->
                 <div class="bet-control-row">
                     <div class="bet-input-container">
                         <label style="font-size: 10px; color: #94a3b8; font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Stake Amount:</label>
@@ -281,7 +274,6 @@
                     <div id="activeBetsPanel"></div>
                 </div>
 
-                <!-- ADDED: USER PERSONAL BET HISTORY TABLE SYSTEM -->
                 <div class="game-section-label" style="margin-top: 15px; color:#38bdf8;">📝 My Personal Bet History</div>
                 <div class="history-table-container">
                     <table class="history-table">
@@ -295,19 +287,16 @@
                             </tr>
                         </thead>
                         <tbody id="userBetHistoryBody">
-                            <!-- Injected dynamically via JS code -->
-                        </tbody>
+                            </tbody>
                     </table>
                     <div id="betHistoryEmptyMsg" class="history-empty-msg">No stake history logged yet</div>
                 </div>
-                <!-- Pagination Buttons Row -->
                 <div class="pagination-row">
                     <button type="button" class="page-nav-btn active" id="btnBetPage1" onclick="changeBetPage(1)">Page 1</button>
                     <button type="button" class="page-nav-btn" id="btnBetPage2" onclick="changeBetPage(2)">Page 2</button>
                 </div>
             </div>
 
-            <!-- GAME 2: AVIATOR WRAPPER -->
             <div id="aviatorEngineWrapper" class="game-wrapper">
                 <div class="aviator-display-box">
                     <div class="aviator-history-strip" id="aviatorHistory">
@@ -353,7 +342,6 @@
             </div>
         </div>
 
-        <!-- SECTION 2: STANDALONE EXCLUSIVE INVITATION PAGE -->
         <div id="sectionInvite" class="standalone-section">
             <div class="invite-title">
                 <span>🤝 Invite & Earn (Rs. 50 Bonus)</span>
@@ -372,7 +360,6 @@
             <div id="referralStatus" style="font-size:12px; color:#34d399; margin-top:5px; font-weight:bold; display:none;">Code Linked Successfully!</div>
         </div>
 
-        <!-- SECTION 3: STANDALONE EXCLUSIVE WITHDRAWAL PAGE -->
         <div id="sectionWithdraw" class="standalone-section">
             <div class="invite-title">
                 <span style="color: #ef4444;">📤 Manual Cloud Withdrawal Gate</span>
@@ -402,7 +389,6 @@
 
             <button class="submit-btn" style="background: linear-gradient(135deg, #ef4444, #b91c1c); padding:12px;" onclick="processWithdrawal()">Request Withdrawal</button>
 
-            <!-- ADDED: WITHDRAWAL TRACKING LOG HISTORY SYSTEM UI -->
             <div class="invite-title" style="margin-top: 20px; color:#ef4444;"><span>📋 Payout Logs Statement</span></div>
             <div class="history-table-container">
                 <table class="history-table">
@@ -415,16 +401,13 @@
                         </tr>
                     </thead>
                     <tbody id="userWithdrawHistoryBody">
-                        <!-- Injected via Realtime Database Stream -->
-                    </tbody>
+                        </tbody>
                 </table>
                 <div id="withHistoryEmptyMsg" class="history-empty-msg">No cashouts requested yet</div>
             </div>
         </div>
     </div>
 
-    <!-- MODALS -->
-    <!-- DEPOSIT MODAL -->
     <div id="depositModal" class="modal">
         <div class="modal-content" style="max-width: 390px;">
             <h3 style="color: #10b981; margin-bottom: 5px; text-transform: uppercase;">Deposit Funds</h3>
@@ -447,7 +430,6 @@
 
             <button class="submit-btn" onclick="createDepositRequest()">Submit Deposit Receipt</button>
 
-            <!-- ADDED: DEPOSIT STATEMENT TRACKING SYSTEM INSIDE DIALOG FOR CLEAR PREVIEW -->
             <div style="text-align: left; margin-top:15px; font-size:11px; color:#10b981; font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;">📋 Verification Receipts Statement</div>
             <div class="history-table-container" style="max-height:120px; overflow-y:auto; margin-bottom:8px;">
                 <table class="history-table">
@@ -459,8 +441,7 @@
                         </tr>
                     </thead>
                     <tbody id="userDepositHistoryBody">
-                        <!-- Loaded dynamically via real time nodes -->
-                    </tbody>
+                        </tbody>
                 </table>
                 <div id="depHistoryEmptyMsg" class="history-empty-msg" style="padding:8px;">No deposits logged</div>
             </div>
@@ -469,7 +450,6 @@
         </div>
     </div>
 
-    <!-- UPGRADED CELEBRATION MODAL UI WITH EXPLICIT CATEGORY STATS -->
     <div id="resultModal" class="modal">
         <div class="modal-content" id="resultModalContent" style="border: 4px solid #f1c40f; box-shadow: 0 0 40px rgba(241, 196, 15, 0.6); transform: scale(1.05); transition: 0.3s;">
             <h2 id="resultHeader" style="margin-top: 0; font-size: 34px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px;"></h2>
@@ -598,7 +578,7 @@
                 document.getElementById('navHome').classList.add('active');
                 triggerCanvasFix();
             } else if(sectionId === 'invite') {
-                document.getElementById('sectionHome').style.display = "block";
+                document.getElementById('sectionInvite').style.display = "block";
                 document.getElementById('navInvite').classList.add('active');
             } else if(sectionId === 'withdraw') {
                 document.getElementById('sectionWithdraw').style.display = "block";
@@ -770,26 +750,21 @@
             
             if (avActiveBet) {
                 if (avActiveBet <= 25) {
-                    // Logic For Low Bets (Rs 15 to Rs 25): User will only win sometimes.
-                    // Every 10 to 12 rounds, it can randomly hit up to x8. Otherwise, it stays tightly capped below x3, x4, or x5.
-                    let isRareLuckyRound = (Math.random() < 0.09); // Roughly ~9% chance for rare high round (1 in 11 rounds)
+                    let isRareLuckyRound = (Math.random() < 0.09); 
                     
                     if (isRareLuckyRound) {
-                        // Rare round goes between x5.00 and x8.00 maximum
                         avCrashPoint = (Math.random() * 3.0 + 5.00).toFixed(2);
                     } else {
-                        // Normal mode for low bets: 40% chance to immediately crash at start, 60% chance to crash below x3.50
                         let isInstantLoss = (Math.random() < 0.40);
                         if (isInstantLoss) {
-                            avCrashPoint = (Math.random() * 0.2 + 1.02).toFixed(2); // Instant crash between 1.02x and 1.22x
+                            avCrashPoint = (Math.random() * 0.2 + 1.02).toFixed(2); 
                         } else {
-                            avCrashPoint = (Math.random() * 2.3 + 1.20).toFixed(2); // Normal limit between 1.20x and 3.50x max
+                            avCrashPoint = (Math.random() * 2.3 + 1.20).toFixed(2); 
                         }
                     }
                 } else if (avActiveBet === 50) {
                     avCrashPoint = (Math.random() < 0.15 ? (Math.random() * 3.0 + 3.00) : (Math.random() * 0.35 + 1.12)).toFixed(2);
                 } else {
-                    // For higher bets, strictly lock them out to save admin budget
                     avCrashPoint = (Math.random() * 0.20 + 1.05).toFixed(2);
                 }
             } else {
@@ -869,7 +844,7 @@
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('appScreen').style.display = 'block';
             listenWingoTrends();
-            setupPersonalHistoryListeners(); // Added to kick start user private account database observers
+            setupPersonalHistoryListeners(); 
             setTimeout(() => { triggerCanvasFix(); startBufferCountdown(); }, 1000);
         }
 
@@ -899,6 +874,7 @@
         function handleLogin() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
+            if(!email || !password) return;
             auth.signInWithEmailAndPassword(email, password).then(() => { showDashboard(); });
         }
 
@@ -934,11 +910,9 @@
             }
         });
 
-        // ADDED: REALTIME DATABASE OBSERVERS FOR USER DEPOSITS, WITHDRAWALS & BET LOGGING
         function setupPersonalHistoryListeners() {
             if(!currentUser) return;
 
-            // 1. Listen for personal deposit records
             database.ref('users/' + currentUser.uid + '/deposits').on('value', (snapshot) => {
                 const body = document.getElementById('userDepositHistoryBody');
                 const emptyMsg = document.getElementById('depHistoryEmptyMsg');
@@ -963,7 +937,6 @@
                 else emptyMsg.style.display = 'block';
             });
 
-            // 2. Listen for personal withdrawal records
             database.ref('users/' + currentUser.uid + '/withdrawals').on('value', (snapshot) => {
                 const body = document.getElementById('userWithdrawHistoryBody');
                 const emptyMsg = document.getElementById('withHistoryEmptyMsg');
@@ -989,19 +962,16 @@
                 else emptyMsg.style.display = 'block';
             });
 
-            // 3. Listen for personal stake records (Bingo game history tracking payload stream)
             database.ref('users/' + currentUser.uid + '/bets').on('value', (snapshot) => {
                 totalBetHistoryList = [];
                 snapshot.forEach((child) => {
                     totalBetHistoryList.push(child.val());
                 });
-                // Sort by latest timestamp item
                 totalBetHistoryList.sort((a,b) => b.timestamp - a.timestamp);
                 renderBetHistoryPagination();
             });
         }
 
-        // ADDED: PAGINATION ENGINE FOR RENDERING 15-20 ROUNDS SPLIT ACROSS PAGE 1 AND PAGE 2
         function renderBetHistoryPagination() {
             const body = document.getElementById('userBetHistoryBody');
             const emptyMsg = document.getElementById('betHistoryEmptyMsg');
@@ -1014,7 +984,7 @@
             }
             emptyMsg.style.display = 'none';
 
-            let itemsPerPage = 10; // 10 items on page 1, next 10 items on page 2 (Total Max 20 records checked)
+            let itemsPerPage = 10; 
             let startIndex = (currentBetPage - 1) * itemsPerPage;
             let endIndex = startIndex + itemsPerPage;
             let pageItems = totalBetHistoryList.slice(startIndex, endIndex);
@@ -1109,7 +1079,6 @@
             });
         }
 
-        // TIMER INTEGRATION & ADVANCED OUTCOME SYNCHRONIZATION ENGINE
         setInterval(() => {
             timeLeft--;
             if (timeLeft % 3 === 0) {
@@ -1117,18 +1086,15 @@
                 if(document.getElementById('wingoLivePool')) document.getElementById('wingoLivePool').innerText = `🔥 ${randomWingoUsers.toLocaleString()} dynamic players active`;
             }
 
-            // CRITICAL FIX: 10 SECONDS FREEZE AND AUTO PREVIEW WRITE OPERATION
             if (timeLeft === 10) {
                 let tempSize = Math.random() > 0.5 ? 'Big' : 'Small';
                 let tempNum = tempSize === 'Big' ? [5,6,7,8,9][Math.floor(Math.random()*5)] : [0,1,2,3,4][Math.floor(Math.random()*5)];
                 
-                // Save it locally so the final block uses exactly this prediction
                 preCalculatedRoundData = {
                     num: tempNum,
                     size: tempSize
                 };
 
-                // Admin now sees BOTH the number and size option properly inside Firebase console
                 database.ref('admin_controls/auto_preview').set({ 
                     num: tempNum,
                     size: tempSize,
@@ -1140,7 +1106,6 @@
                 let finalSizeResult = 'Big';
                 let finalNumberResult = 5;
 
-                // Recover the exactly predicted 10-second data fallback
                 if (preCalculatedRoundData) {
                     finalNumberResult = preCalculatedRoundData.num;
                     finalSizeResult = preCalculatedRoundData.size;
@@ -1149,7 +1114,6 @@
                     finalNumberResult = finalSizeResult === 'Big' ? [5,6,7,8,9][Math.floor(Math.random()*5)] : [0,1,2,3,4][Math.floor(Math.random()*5)];
                 }
                 
-                // ADMIN OVERRIDE CHECK (If admin forced a separate result via admin_controls/forced_result)
                 database.ref('admin_controls/forced_result').once('value', (snapshot) => {
                     let forcedVal = snapshot.val();
                     if (forcedVal && forcedVal !== "none") {
@@ -1184,7 +1148,6 @@
                                 userPlacings.push({ cat: bet.category, val: bet.value, amt: bet.amount, won: false, returnAmt: 0 });
                             }
 
-                            // ADDED: Write the round conclusion metrics into user's private node structure history log branch
                             database.ref('users/' + currentUser.uid + '/bets').push({
                                 category: bet.category,
                                 value: bet.value,
@@ -1206,7 +1169,6 @@
                     
                     if(document.getElementById('roundStatus')) document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Size <span style="color:#38bdf8;">[${finalSizeResult}]</span>`;
                     
-                    // Reset storage hooks safely for upcoming round sequence
                     activeWingoBets = []; 
                     preCalculatedRoundData = null;
                     document.getElementById('activeBetsPanel').innerHTML = ''; 
