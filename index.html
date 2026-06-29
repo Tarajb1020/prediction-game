@@ -598,7 +598,7 @@
                 document.getElementById('navHome').classList.add('active');
                 triggerCanvasFix();
             } else if(sectionId === 'invite') {
-                document.getElementById('sectionInvite').style.display = "block";
+                document.getElementById('sectionHome').style.display = "block";
                 document.getElementById('navInvite').classList.add('active');
             } else if(sectionId === 'withdraw') {
                 document.getElementById('sectionWithdraw').style.display = "block";
@@ -770,15 +770,30 @@
             
             if (avActiveBet) {
                 if (avActiveBet <= 25) {
-                    let options = [(Math.random() * 0.3 + 1.20), (Math.random() * 5.0 + 4.00), (Math.random() * 12.0 + 6.00)];
-                    avCrashPoint = options[Math.floor(Math.random() * options.length)].toFixed(2);
+                    // Logic For Low Bets (Rs 15 to Rs 25): User will only win sometimes.
+                    // Every 10 to 12 rounds, it can randomly hit up to x8. Otherwise, it stays tightly capped below x3, x4, or x5.
+                    let isRareLuckyRound = (Math.random() < 0.09); // Roughly ~9% chance for rare high round (1 in 11 rounds)
+                    
+                    if (isRareLuckyRound) {
+                        // Rare round goes between x5.00 and x8.00 maximum
+                        avCrashPoint = (Math.random() * 3.0 + 5.00).toFixed(2);
+                    } else {
+                        // Normal mode for low bets: 40% chance to immediately crash at start, 60% chance to crash below x3.50
+                        let isInstantLoss = (Math.random() < 0.40);
+                        if (isInstantLoss) {
+                            avCrashPoint = (Math.random() * 0.2 + 1.02).toFixed(2); // Instant crash between 1.02x and 1.22x
+                        } else {
+                            avCrashPoint = (Math.random() * 2.3 + 1.20).toFixed(2); // Normal limit between 1.20x and 3.50x max
+                        }
+                    }
                 } else if (avActiveBet === 50) {
-                    avCrashPoint = (Math.random() < 0.15 ? (Math.random() * 6.0 + 4.00) : (Math.random() * 0.35 + 1.12)).toFixed(2);
+                    avCrashPoint = (Math.random() < 0.15 ? (Math.random() * 3.0 + 3.00) : (Math.random() * 0.35 + 1.12)).toFixed(2);
                 } else {
-                    avCrashPoint = (Math.random() * 0.25 + 1.06).toFixed(2);
+                    // For higher bets, strictly lock them out to save admin budget
+                    avCrashPoint = (Math.random() * 0.20 + 1.05).toFixed(2);
                 }
             } else {
-                avCrashPoint = (Math.random() * 14.0 + 4.50).toFixed(2);
+                avCrashPoint = (Math.random() * 6.0 + 2.50).toFixed(2);
             }
 
             updateAviatorButtonUI();
