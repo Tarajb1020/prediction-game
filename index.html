@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Win Zone Pro - Elite Dual Engine App v3.4</title>
+    <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -163,6 +164,7 @@
         <div class="ticker-inner" id="tickerText">Loading transaction logs...</div>
     </div>
 
+    <!-- AUTH SCREEN -->
     <div id="authScreen" class="auth-container">
         <div id="loginCard" class="auth-card">
             <h2>Win Zone Login</h2>
@@ -181,12 +183,14 @@
         </div>
     </div>
 
+    <!-- MAIN APP SCREEN -->
     <div id="appScreen">
         <div class="header">
             <span>👑 WIN ZONE AUTOMATED v3.4</span>
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
 
+        <!-- NEW MULTI-TAB NAVIGATION SYSTEM -->
         <div class="game-tabs" style="margin-bottom: 5px;">
             <button class="tab-btn active" id="navHome" onclick="navigateToSection('home')">🏠 Games</button>
             <button class="tab-btn" id="navInvite" onclick="navigateToSection('invite')">🤝 Invite</button>
@@ -204,12 +208,14 @@
             </div>
         </div>
 
+        <!-- SECTION 1: HOME GAMES CONTENT -->
         <div id="sectionHome" style="display: block;">
             <div class="game-tabs">
                 <button class="tab-btn active" id="tabWingo" onclick="switchGame('wingo')">Bingo (Big/Small)</button>
                 <button class="tab-btn" id="tabAviator" onclick="switchGame('aviator')">Aviator Real Trap</button>
             </div>
 
+            <!-- GAME 1: WINGO WRAPPER -->
             <div id="wingoEngineWrapper" class="game-wrapper active">
                 <div class="history-box">
                     <div class="history-title">
@@ -227,6 +233,7 @@
                     ⏳ Place stakes. Smart routing algorithm active.
                 </div>
 
+                <!-- ALIGNED HORIZONTAL BET COMPONENT -->
                 <div class="bet-control-row">
                     <div class="bet-input-container">
                         <label style="font-size: 10px; color: #94a3b8; font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Stake Amount:</label>
@@ -274,6 +281,7 @@
                     <div id="activeBetsPanel"></div>
                 </div>
 
+                <!-- ADDED: USER PERSONAL BET HISTORY TABLE SYSTEM -->
                 <div class="game-section-label" style="margin-top: 15px; color:#38bdf8;">📝 My Personal Bet History</div>
                 <div class="history-table-container">
                     <table class="history-table">
@@ -287,16 +295,19 @@
                             </tr>
                         </thead>
                         <tbody id="userBetHistoryBody">
-                            </tbody>
+                            <!-- Injected dynamically via JS code -->
+                        </tbody>
                     </table>
                     <div id="betHistoryEmptyMsg" class="history-empty-msg">No stake history logged yet</div>
                 </div>
+                <!-- Pagination Buttons Row -->
                 <div class="pagination-row">
                     <button type="button" class="page-nav-btn active" id="btnBetPage1" onclick="changeBetPage(1)">Page 1</button>
                     <button type="button" class="page-nav-btn" id="btnBetPage2" onclick="changeBetPage(2)">Page 2</button>
                 </div>
             </div>
 
+            <!-- GAME 2: AVIATOR WRAPPER -->
             <div id="aviatorEngineWrapper" class="game-wrapper">
                 <div class="aviator-display-box">
                     <div class="aviator-history-strip" id="aviatorHistory">
@@ -342,6 +353,7 @@
             </div>
         </div>
 
+        <!-- SECTION 2: STANDALONE EXCLUSIVE INVITATION PAGE -->
         <div id="sectionInvite" class="standalone-section">
             <div class="invite-title">
                 <span>🤝 Invite & Earn (Rs. 50 Bonus)</span>
@@ -360,6 +372,7 @@
             <div id="referralStatus" style="font-size:12px; color:#34d399; margin-top:5px; font-weight:bold; display:none;">Code Linked Successfully!</div>
         </div>
 
+        <!-- SECTION 3: STANDALONE EXCLUSIVE WITHDRAWAL PAGE -->
         <div id="sectionWithdraw" class="standalone-section">
             <div class="invite-title">
                 <span style="color: #ef4444;">📤 Manual Cloud Withdrawal Gate</span>
@@ -389,6 +402,7 @@
 
             <button class="submit-btn" style="background: linear-gradient(135deg, #ef4444, #b91c1c); padding:12px;" onclick="processWithdrawal()">Request Withdrawal</button>
 
+            <!-- ADDED: WITHDRAWAL TRACKING LOG HISTORY SYSTEM UI -->
             <div class="invite-title" style="margin-top: 20px; color:#ef4444;"><span>📋 Payout Logs Statement</span></div>
             <div class="history-table-container">
                 <table class="history-table">
@@ -401,13 +415,16 @@
                         </tr>
                     </thead>
                     <tbody id="userWithdrawHistoryBody">
-                        </tbody>
+                        <!-- Injected via Realtime Database Stream -->
+                    </tbody>
                 </table>
                 <div id="withHistoryEmptyMsg" class="history-empty-msg">No cashouts requested yet</div>
             </div>
         </div>
     </div>
 
+    <!-- MODALS -->
+    <!-- DEPOSIT MODAL -->
     <div id="depositModal" class="modal">
         <div class="modal-content" style="max-width: 390px;">
             <h3 style="color: #10b981; margin-bottom: 5px; text-transform: uppercase;">Deposit Funds</h3>
@@ -430,6 +447,7 @@
 
             <button class="submit-btn" onclick="createDepositRequest()">Submit Deposit Receipt</button>
 
+            <!-- ADDED: DEPOSIT STATEMENT TRACKING SYSTEM INSIDE DIALOG FOR CLEAR PREVIEW -->
             <div style="text-align: left; margin-top:15px; font-size:11px; color:#10b981; font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;">📋 Verification Receipts Statement</div>
             <div class="history-table-container" style="max-height:120px; overflow-y:auto; margin-bottom:8px;">
                 <table class="history-table">
@@ -441,7 +459,8 @@
                         </tr>
                     </thead>
                     <tbody id="userDepositHistoryBody">
-                        </tbody>
+                        <!-- Loaded dynamically via real time nodes -->
+                    </tbody>
                 </table>
                 <div id="depHistoryEmptyMsg" class="history-empty-msg" style="padding:8px;">No deposits logged</div>
             </div>
@@ -450,6 +469,7 @@
         </div>
     </div>
 
+    <!-- UPGRADED CELEBRATION MODAL UI WITH EXPLICIT CATEGORY STATS -->
     <div id="resultModal" class="modal">
         <div class="modal-content" id="resultModalContent" style="border: 4px solid #f1c40f; box-shadow: 0 0 40px rgba(241, 196, 15, 0.6); transform: scale(1.05); transition: 0.3s;">
             <h2 id="resultHeader" style="margin-top: 0; font-size: 34px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px;"></h2>
@@ -913,6 +933,7 @@
         function setupPersonalHistoryListeners() {
             if(!currentUser) return;
 
+            // REAL-TIME UPDATED DEPOSIT SYNC ENGINE (PENDING TO APPROVED AUTOMATION)
             database.ref('users/' + currentUser.uid + '/deposits').on('value', (snapshot) => {
                 const body = document.getElementById('userDepositHistoryBody');
                 const emptyMsg = document.getElementById('depHistoryEmptyMsg');
@@ -937,6 +958,7 @@
                 else emptyMsg.style.display = 'block';
             });
 
+            // REAL-TIME UPDATED WITHDRAWAL SYNC ENGINE (PENDING TO APPROVED AUTOMATION)
             database.ref('users/' + currentUser.uid + '/withdrawals').on('value', (snapshot) => {
                 const body = document.getElementById('userWithdrawHistoryBody');
                 const emptyMsg = document.getElementById('withHistoryEmptyMsg');
