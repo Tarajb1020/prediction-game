@@ -2,265 +2,244 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Win Zone Pro - Elite Dual Engine App v3.4</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Win Zone Pro - Elite v4.0</title>
     <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
             margin: 0; padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0b0f19; color: white;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0a0e17; color: white;
             text-align: center;
             overflow-x: hidden;
+            min-height: 100vh;
         }
+        .glass { background: rgba(30,41,59,0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes pulse { 0%,100% { opacity:0.4; } 50% { opacity:1; } }
+        @keyframes ballBounce { 0% { transform:translateY(0) scale(1); } 25% { transform:translateY(-40px) scale(0.95); } 50% { transform:translateY(0) scale(1); } 75% { transform:translateY(-25px) scale(0.98); } 100% { transform:translateY(0) scale(1); } }
+        @keyframes tickerMove { 0% { transform:translate3d(0,0,0); } 100% { transform:translate3d(-100%,0,0); } }
+        @keyframes glowPulse { 0%,100% { box-shadow:0 0 10px rgba(241,196,15,0.2); } 50% { box-shadow:0 0 30px rgba(241,196,15,0.5); } }
+        @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
         #appScreen { display: none; }
-        .auth-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; background: linear-gradient(to bottom, #0b0f19, #111827); }
-        .auth-card { background-color: #1e293b; padding: 35px 25px; border-radius: 24px; width: 100%; max-width: 380px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); border: 1px solid #334155; }
-        .auth-card h2 { color: #f1c40f; margin-bottom: 25px; font-size: 26px; font-weight: 800; text-transform: uppercase; }
-        
-        .header { background-color: #111827; padding: 10px 15px; font-size: 18px; font-weight: 800; border-bottom: 3px solid #f1c40f; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-        .header span { color: #f1c40f; }
-        .logout-btn { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: bold; }
-        
-        .live-ticker-bar { background: #070a12; color: #34d399; font-size: 11px; font-weight: bold; padding: 4px; border-bottom: 1px solid #1e293b; overflow: hidden; white-space: nowrap; box-sizing: border-box; }
-        .ticker-inner { display: inline-block; padding-left: 100%; animation: tickerMove 25s linear infinite; }
-        @keyframes tickerMove { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
-
-        .game-tabs { display: flex; background: #111827; margin: 8px 10px; padding: 4px; border-radius: 10px; border: 1px solid #334155; gap: 4px; }
-        .tab-btn { flex: 1; padding: 8px 4px; font-size: 12px; font-weight: 800; border: none; border-radius: 8px; background: transparent; color: #94a3b8; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
-        .tab-btn.active { background: #f1c40f; color: #000; box-shadow: 0 3px 10px rgba(241, 196, 15, 0.3); }
-
-        .game-wrapper { display: none; }
-        .game-wrapper.active { display: block; }
-
-        .balance-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); margin: 8px 10px; padding: 10px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
-        
-        /* Wingo UI Elements */
-        .history-box { background-color: #111827; margin: 8px 10px; padding: 8px; border-radius: 10px; border: 1px solid #334155; text-align: left; }
-        .history-title { font-size: 11px; color: #94a3b8; font-weight: bold; text-transform: uppercase; margin-bottom: 6px; display: flex; justify-content: space-between; }
-        .trends-list { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 3px; }
-        .trend-dot { min-width: 32px; height: 32px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: white; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.3); line-height: 1.1; }
-        .latest-win-mark { position: absolute; top: -6px; font-size: 8px; background: #f1c40f; color: black; padding: 1px 2px; border-radius: 3px; font-weight: 900; animation: blink 1s infinite; }
-        
-        @keyframes blink { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
-
-        .timer-section { background-color: #1e293b; margin: 8px 10px; padding: 8px; border-radius: 10px; font-size: 14px; color: #f59e0b; font-weight: bold; border: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
-        .wingo-live-bets-bubble { font-size: 10px; color: #10b981; font-weight: 600; margin: 0; }
-        .timer-section span { font-size: 16px; color: #fff; background: #0f172a; padding: 2px 8px; border-radius: 6px; border: 1px solid #f59e0b; }
-        
-        /* ALIGNED AND COMPRESSED BET BOX ROW */
-        .bet-control-row { display: flex; align-items: center; justify-content: space-between; margin: 8px 10px; padding: 6px 10px; background: #111827; border-radius: 10px; border: 1px solid #334155; gap: 8px; }
-        .bet-input-container { display: flex; flex-direction: column; align-items: flex-start; flex: 1; }
-        .multiplier-container { display: flex; gap: 4px; flex: 1.5; justify-content: flex-end; }
-        .mult-btn { flex: 1; background-color: #1e293b; border: 1px solid #475569; color: white; padding: 10px 0; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; }
-        .game-section-label { font-size: 11px; color: #f1c40f; text-align: left; margin: 8px 15px 3px 15px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        .big-small-container { display: flex; justify-content: center; gap: 10px; margin: 2px 0 8px 0; padding: 0 10px; }
-        .btn-big { background: linear-gradient(135deg, #6366f1, #4338ca); color: white; flex: 1; padding: 10px; font-size: 15px; font-weight: 900; border: none; border-radius: 10px; cursor: pointer; text-transform: uppercase; }
-        .btn-small { background: linear-gradient(135deg, #f97316, #ea580c); color: white; flex: 1; padding: 10px; font-size: 15px; font-weight: 900; border: none; border-radius: 10px; cursor: pointer; text-transform: uppercase; }
-
-        .color-selection-bar { display: flex; justify-content: center; gap: 10px; margin: 2px 0 8px 0; padding: 0 10px; }
-        .color-choice-btn { flex: 1; padding: 8px; font-weight: bold; font-size: 13px; color: white; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
-        .choice-red { background: linear-gradient(135deg, #ef4444, #b91c1c); }
-        .choice-green { background: linear-gradient(135deg, #10b981, #047857); }
-
-        .number-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; padding: 0 10px; margin-bottom: 10px; }
-        .num-btn { padding: 8px 0; font-size: 14px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; color: white; }
-        .bg-green { background: linear-gradient(135deg, #10b981, #059669); }
-        .bg-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        .bg-mix { background: linear-gradient(135deg, #8b5cf6, #ec4899); border: 1px dashed #fff; }
-
-        /* AVIATOR UI ELEMENTS */
-        .aviator-display-box { background: #101116; border: 1px solid #1f2937; border-radius: 12px; margin: 8px 10px; padding: 6px; position: relative; }
-        .aviator-history-strip { display: flex; gap: 4px; overflow-x: auto; padding: 4px; margin-bottom: 6px; background: #07080a; border-radius: 6px; font-size: 10px; font-weight: bold; border: 1px solid #1e293b; }
-        .aviator-history-item { background: #1c1326; color: #c084fc; padding: 2px 6px; border-radius: 10px; border: 1px solid #581c87; min-width: 36px; text-align: center; }
-        
-        .aviator-canvas-container { position: relative; background: radial-gradient(circle at bottom left, #2c0919 0%, #0e0f14 100%); border-radius: 10px; width: 100%; height: 160px; border: 1px solid #27272a; overflow: hidden; }
-        #aviatorCanvas { width: 100%; height: 100%; display: block; }
-        
-        .live-multiplier { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 38px; font-weight: 900; color: #fff; font-family: sans-serif; pointer-events: none; }
-        .aviator-alert-overlay { position: absolute; top: 65%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; font-weight: 800; text-transform: uppercase; padding: 4px 12px; border-radius: 50px; display: none; pointer-events: none; }
-        .flew-away-text { color: #ffffff; background: #cb1c45; border: 1px solid #ef4444; box-shadow: 0 0 12px #cb1c45; }
-        .waiting-text { color: #f59e0b; background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; font-size: 13px; }
-
-        .aviator-live-badge { position: absolute; bottom: 8px; right: 10px; background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: bold; color: #10b981; display: flex; align-items: center; gap: 4px; pointer-events: none; }
-        .aviator-live-badge span { width: 5px; height: 5px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse 1s infinite; }
-
-        .aviator-control-dashboard { display: grid; grid-template-columns: 1fr; gap: 8px; margin: 8px 10px; padding: 8px; background: #14151b; border-radius: 12px; border: 1px solid #242631; }
-        .aviator-box-panel { background: #1b1c22; padding: 8px; border-radius: 10px; border: 1px solid #2e313e; display: flex; flex-direction: column; gap: 6px; }
-        
-        .av-bet-controls { display: flex; align-items: center; justify-content: space-between; background: #0d0e12; padding: 4px 10px; border-radius: 6px; border: 1px solid #1f2937; }
-        .av-bet-controls span { font-size: 11px; color: #94a3b8; font-weight: bold; }
-        .av-bet-controls input { width: 80px; padding: 4px; font-weight: 900; margin: 0; color: #26e67f; font-size: 13px; border: none; background: transparent; text-align: right; }
-
-        .av-main-action-btn { width: 100%; padding: 10px; font-size: 15px; font-weight: 900; border-radius: 8px; border: none; cursor: pointer; text-transform: uppercase; color: white; display: block; box-sizing: border-box; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
-        .av-btn-green { background: linear-gradient(to bottom, #2cde76, #11914f); border-bottom: 3px solid #08592f; }
-        .av-btn-orange { background: linear-gradient(to bottom, #ff9000, #cc4b00); border-bottom: 3px solid #802a00; }
-        .av-btn-grey { background: #27272a; color: #71717a; cursor: not-allowed; border-bottom: 3px solid #18181b; }
-
-        .aviator-status-footer { background: #07080a; border: 1px solid #27272a; color: #94a3b8; font-size: 10px; font-weight: bold; padding: 6px; border-radius: 6px; text-transform: uppercase; }
-
-        .aviator-players-panel { background: #111218; border: 1px solid #1f2937; margin: 8px 10px 10px 10px; border-radius: 10px; padding: 8px; text-align: left; }
-        .panel-header-title { font-size: 11px; color: #94a3b8; font-weight: 800; border-bottom: 1px solid #27272a; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
-        .live-winner-row { display: flex; justify-content: space-between; font-size: 11px; padding: 4px 0; border-bottom: 1px dashed #1e293b; font-weight: bold; }
-        .win-user-tag { color: #cbd5e1; }
-        .win-mult-tag { color: #c084fc; background: rgba(192, 132, 252, 0.1); padding: 1px 4px; border-radius: 3px; }
-        .win-amt-tag { color: #10b981; }
-
-        input[type="number"], input[type="text"], input[type="email"], input[type="password"] { padding: 10px; font-size: 14px; border-radius: 8px; border: 1px solid #334155; background-color: #0f172a; color: white; width: 100%; max-width: 280px; text-align: center; margin-bottom: 8px; box-sizing: border-box; }
-        .status-display { background-color: #111827; border: 1px dashed #334155; padding: 8px; margin: 8px 10px; border-radius: 10px; font-size: 12px; color: #94a3b8; font-weight: bold; }
-        
-        .logs { background-color: #111622; margin: 10px; padding: 10px; border-radius: 12px; text-align: left; max-height: 120px; overflow-y: auto; border: 1px solid #233146; box-shadow: inset 0 4px 12px rgba(0,0,0,0.5); }
-        .routing-header { font-size: 11px; color: #f1c40f; font-weight: bold; border-bottom: 1px solid #233146; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center;}
-        .live-bet-card { display: flex; justify-content: space-between; align-items: center; background: #1c2333; padding: 6px 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #2d3b54; }
-        .badge-box { padding: 3px 8px; border-radius: 4px; font-weight: 900; font-size: 10px; text-transform: uppercase; }
-        .badge-big { background: linear-gradient(135deg, #6366f1, #4338ca); color: white; }
-        .badge-small { background: linear-gradient(135deg, #f97316, #ea580c); color: white; }
-        .badge-red { background: #ef4444; color: white; }
-        .badge-green { background: #10b981; color: white; }
-        .badge-num { background: #8b5cf6; color: white; border: 1px solid #fff; padding: 1px 6px; border-radius: 50%; }
-
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000; padding: 15px; box-sizing: border-box; }
-        .modal-content { background-color: #1e293b; padding: 20px 15px; border-radius: 20px; width: 100%; max-width: 360px; border: 1px solid #475569; text-align: center; }
-        .submit-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
-        .close-btn { background-color: #475569; color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; margin-top: 10px; width: 100%; }
-        .switch-auth { color: #38bdf8; cursor: pointer; text-decoration: underline; margin-top: 12px; font-size: 12px; display: inline-block; }
-
-        .payment-toggle-box { display: flex; gap: 8px; margin-bottom: 12px; }
-        .pay-box-btn { flex: 1; padding: 10px; font-size: 13px; font-weight: bold; border-radius: 8px; border: 2px solid #334155; background: #0f172a; color: #94a3b8; cursor: pointer; transition: 0.2s; }
-        .pay-box-btn.active-jazz { border-color: #f59e0b; color: #fff; background: rgba(245, 158, 11, 0.1); }
-        .pay-box-btn.active-easy { border-color: #10b981; color: #fff; background: rgba(16, 185, 129, 0.1); }
-
-        /* SEPARATE SECTION INTERFACE STYLES */
-        .standalone-section { display: none; background: #0f172a; margin: 10px; padding: 15px; border-radius: 14px; border: 1px solid #334155; text-align: left; }
-        .invite-title { font-size: 13px; color: #f1c40f; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .invite-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
-        .invite-code-box { background: #070a12; padding: 8px; border-radius: 6px; font-weight: bold; color: #fff; border: 1px solid #334155; flex: 1; text-align: center; letter-spacing: 0.5px; font-size: 13px; }
-        .invite-btn { background: #f1c40f; color: #000; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; }
-
-        /* HISTORY SYSTEM UI STYLES */
-        .history-table-container { background: #070a12; border: 1px solid #233146; border-radius: 10px; padding: 6px; margin-top: 8px; font-size: 11px; overflow-x: auto; }
-        .history-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .history-table th { background: #111827; color: #94a3b8; padding: 6px 8px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #233146; }
-        .history-table td { padding: 8px; border-bottom: 1px solid #111827; font-weight: 600; }
-        .history-empty-msg { padding: 15px; text-align: center; color: #475569; font-weight: bold; font-size: 12px; text-transform: uppercase; }
-        .status-badge { padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; text-transform: uppercase; }
-        .status-pending { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid #f59e0b; }
-        .status-approved { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid #10b981; }
-        .status-rejected { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef4444; }
-        
-        .pagination-row { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; padding: 4px; }
-        .page-nav-btn { background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: bold; transition: 0.2s; }
-        .page-nav-btn.active { background: #f1c40f; color: #000; border-color: #f1c40f; }
-        .page-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .auth-container { display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:100vh; padding:20px; background: radial-gradient(ellipse at top, #111827 0%, #0a0e17 70%); }
+        .auth-card { background: rgba(30,41,59,0.8); backdrop-filter:blur(16px); padding:35px 25px; border-radius:28px; width:100%; max-width:380px; border:1px solid rgba(255,255,255,0.06); }
+        .auth-card h2 { color: #f1c40f; margin-bottom: 25px; font-size: 24px; font-weight: 800; letter-spacing: 1px; }
+        input { padding:12px 14px; font-size:15px; border-radius:12px; border:1px solid rgba(51,65,85,0.5); background: rgba(15,23,42,0.8); color:white; width:100%; max-width:280px; text-align:center; margin-bottom:10px; box-sizing:border-box; transition:0.3s; }
+        input:focus { outline:none; border-color:#f1c40f; }
+        .btn-primary { background: linear-gradient(135deg, #f1c40f, #d4ac0d); color:#000; border:none; padding:12px 20px; border-radius:12px; cursor:pointer; font-weight:800; font-size:15px; width:100%; transition:0.3s; text-transform:uppercase; }
+        .btn-primary:active { transform:scale(0.97); }
+        .switch-auth { color:#38bdf8; cursor:pointer; text-decoration:underline; margin-top:12px; font-size:12px; display:inline-block; }
+        .header { background:rgba(17,24,39,0.95); backdrop-filter:blur(10px); padding:10px 16px; font-size:15px; font-weight:800; border-bottom:2px solid #f1c40f; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+        .header span { color:#f1c40f; }
+        .logout-btn { background:#ef4444; color:white; border:none; padding:7px 14px; border-radius:8px; cursor:pointer; font-size:11px; font-weight:bold; }
+        .live-ticker-bar { background:#070a12; color:#34d399; font-size:10px; font-weight:bold; padding:5px; border-bottom:1px solid #1e293b; overflow:hidden; white-space:nowrap; }
+        .ticker-inner { display:inline-block; padding-left:100%; animation:tickerMove 30s linear infinite; }
+        .game-tabs { display:flex; background:rgba(17,24,39,0.8); margin:10px 12px; padding:4px; border-radius:14px; border:1px solid rgba(51,65,85,0.2); gap:4px; backdrop-filter:blur(8px); }
+        .tab-btn { flex:1; padding:10px 4px; font-size:11px; font-weight:800; border:none; border-radius:10px; background:transparent; color:#94a3b8; cursor:pointer; text-transform:uppercase; transition:0.3s; }
+        .tab-btn.active { background:linear-gradient(135deg, #f1c40f, #d4ac0d); color:#000; }
+        .balance-card { background:linear-gradient(135deg, rgba(30,41,59,0.8), rgba(15,23,42,0.9)); backdrop-filter:blur(12px); margin:8px 12px; padding:14px 16px; border-radius:18px; border:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between; align-items:center; }
+        .game-wrapper { display:none; animation: slideUp 0.4s ease; }
+        .game-wrapper.active { display:block; }
+        .history-box { background:rgba(17,24,39,0.6); backdrop-filter:blur(8px); margin:8px 12px; padding:10px 12px; border-radius:14px; border:1px solid rgba(51,65,85,0.2); text-align:left; }
+        .history-title { font-size:10px; color:#94a3b8; font-weight:bold; text-transform:uppercase; margin-bottom:8px; display:flex; justify-content:space-between; }
+        .trends-list { display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; }
+        .trends-list::-webkit-scrollbar { display:none; }
+        .trend-dot { min-width:36px; height:36px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:9px; font-weight:bold; color:white; position:relative; flex-shrink:0; }
+        .latest-win-mark { position:absolute; top:-8px; font-size:7px; background:#f1c40f; color:black; padding:2px 4px; border-radius:4px; font-weight:900; animation:pulse 1s infinite; }
+        .timer-section { background:rgba(30,41,59,0.6); backdrop-filter:blur(8px); margin:8px 12px; padding:10px 14px; border-radius:14px; font-size:13px; color:#f59e0b; font-weight:bold; border:1px solid rgba(51,65,85,0.2); display:flex; justify-content:space-between; align-items:center; }
+        .timer-section span { font-size:18px; color:#fff; background:rgba(15,23,42,0.8); padding:4px 12px; border-radius:8px; border:1px solid #f59e0b; font-family:monospace; }
+        #bettingClosedOverlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px); z-index:500; justify-content:center; align-items:center; flex-direction:column; }
+        #bettingClosedOverlay.show { display:flex; animation: fadeIn 0.3s ease; }
+        .closed-ball { width:80px; height:80px; background:radial-gradient(circle at 35% 35%, #f1c40f, #d4ac0d); border-radius:50%; animation: ballBounce 0.6s ease infinite; box-shadow:0 0 60px rgba(241,196,15,0.3); margin-bottom:20px; }
+        .closed-text { font-size:24px; font-weight:900; color:#f1c40f; text-transform:uppercase; letter-spacing:2px; text-shadow:0 0 30px rgba(241,196,15,0.3); }
+        .closed-sub { font-size:13px; color:#94a3b8; margin-top:6px; }
+        .bet-control-row { display:flex; align-items:center; justify-content:space-between; margin:8px 12px; padding:8px 12px; background:rgba(17,24,39,0.6); backdrop-filter:blur(8px); border-radius:14px; border:1px solid rgba(51,65,85,0.2); gap:10px; }
+        .bet-input-container { display:flex; flex-direction:column; align-items:flex-start; flex:1; }
+        .bet-input-container label { font-size:9px; color:#94a3b8; font-weight:bold; text-transform:uppercase; margin-bottom:4px; }
+        .bet-input-container input { width:100%; max-width:120px; font-weight:bold; font-size:20px; color:#f1c40f; margin:0; padding:6px 8px; text-align:left; }
+        .multiplier-container { display:flex; gap:4px; flex:1.5; justify-content:flex-end; }
+        .mult-btn { flex:1; background:rgba(30,41,59,0.6); border:1px solid rgba(71,85,105,0.3); color:white; padding:10px 0; border-radius:8px; font-weight:bold; font-size:11px; cursor:pointer; }
+        .game-section-label { font-size:10px; color:#f1c40f; text-align:left; margin:12px 16px 6px 16px; font-weight:bold; text-transform:uppercase; }
+        .big-small-container { display:flex; justify-content:center; gap:12px; margin:2px 0 10px 0; padding:0 12px; }
+        .btn-big, .btn-small { flex:1; padding:14px; font-size:16px; font-weight:900; border:none; border-radius:14px; cursor:pointer; text-transform:uppercase; transition:0.3s; }
+        .btn-big { background:linear-gradient(135deg, #6366f1, #4338ca); }
+        .btn-small { background:linear-gradient(135deg, #f97316, #ea580c); }
+        .btn-big.disabled, .btn-small.disabled, .color-choice-btn.disabled, .num-btn.disabled { opacity:0.4; pointer-events:none; filter:grayscale(0.6); }
+        .color-selection-bar { display:flex; justify-content:center; gap:12px; margin:2px 0 10px 0; padding:0 12px; }
+        .color-choice-btn { flex:1; padding:12px; font-weight:bold; font-size:14px; color:white; border:none; border-radius:12px; cursor:pointer; text-transform:uppercase; transition:0.3s; }
+        .choice-red { background:linear-gradient(135deg, #ef4444, #b91c1c); }
+        .choice-green { background:linear-gradient(135deg, #10b981, #047857); }
+        .number-grid { display:grid; grid-template-columns:repeat(5, 1fr); gap:6px; padding:0 12px; margin-bottom:12px; }
+        .num-btn { padding:10px 0; font-size:16px; font-weight:bold; border:none; border-radius:10px; cursor:pointer; color:white; transition:0.2s; }
+        .bg-green { background:linear-gradient(135deg, #10b981, #059669); }
+        .bg-red { background:linear-gradient(135deg, #ef4444, #dc2626); }
+        .bg-mix { background:linear-gradient(135deg, #8b5cf6, #ec4899); border:1px dashed rgba(255,255,255,0.3); }
+        .logs { background:rgba(17,22,34,0.7); backdrop-filter:blur(8px); margin:10px 12px; padding:12px; border-radius:14px; text-align:left; max-height:150px; overflow-y:auto; border:1px solid rgba(35,49,70,0.2); }
+        .routing-header { font-size:10px; color:#f1c40f; font-weight:bold; border-bottom:1px solid rgba(35,49,70,0.3); padding-bottom:6px; margin-bottom:8px; text-transform:uppercase; display:flex; justify-content:space-between; align-items:center; }
+        .live-bet-card { display:flex; justify-content:space-between; align-items:center; background:rgba(28,35,51,0.6); padding:8px 12px; border-radius:10px; margin-bottom:6px; border:1px solid rgba(45,59,84,0.3); }
+        .badge-box { padding:4px 10px; border-radius:6px; font-weight:900; font-size:10px; text-transform:uppercase; }
+        .badge-big { background:linear-gradient(135deg, #6366f1, #4338ca); color:white; }
+        .badge-small { background:linear-gradient(135deg, #f97316, #ea580c); color:white; }
+        .badge-red { background:#ef4444; color:white; }
+        .badge-green { background:#10b981; color:white; }
+        .badge-num { background:#8b5cf6; color:white; border:1px solid rgba(255,255,255,0.2); }
+        .history-table-container { background:rgba(7,10,18,0.6); backdrop-filter:blur(8px); border:1px solid rgba(35,49,70,0.2); border-radius:12px; padding:6px; margin:8px 12px; font-size:10px; overflow-x:auto; }
+        .history-table { width:100%; border-collapse:collapse; text-align:left; }
+        .history-table th { background:rgba(17,24,39,0.6); color:#94a3b8; padding:6px 8px; font-weight:bold; text-transform:uppercase; border-bottom:1px solid rgba(35,49,70,0.3); font-size:9px; }
+        .history-table td { padding:8px; border-bottom:1px solid rgba(17,24,39,0.3); font-weight:600; font-size:11px; }
+        .history-empty-msg { padding:15px; text-align:center; color:#475569; font-weight:bold; font-size:11px; text-transform:uppercase; }
+        .pagination-row { display:flex; justify-content:center; align-items:center; gap:10px; margin:8px 12px; }
+        .page-nav-btn { background:rgba(30,41,59,0.6); color:#94a3b8; border:1px solid rgba(51,65,85,0.3); padding:6px 14px; border-radius:8px; cursor:pointer; font-size:10px; font-weight:bold; }
+        .page-nav-btn.active { background:#f1c40f; color:#000; border-color:#f1c40f; }
+        .status-badge { padding:2px 8px; border-radius:4px; font-size:8px; font-weight:bold; text-transform:uppercase; }
+        .status-pending { background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); }
+        .status-approved { background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); }
+        .status-rejected { background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); }
+        .aviator-display-box { background:rgba(16,17,22,0.7); backdrop-filter:blur(8px); border:1px solid rgba(31,41,55,0.3); border-radius:14px; margin:8px 12px; padding:8px; position:relative; }
+        .aviator-history-strip { display:flex; gap:4px; overflow-x:auto; padding:4px; margin-bottom:6px; background:rgba(7,8,10,0.5); border-radius:8px; font-size:9px; font-weight:bold; border:1px solid rgba(30,41,59,0.3); scrollbar-width:none; }
+        .aviator-history-strip::-webkit-scrollbar { display:none; }
+        .aviator-history-item { background:rgba(28,19,38,0.6); color:#c084fc; padding:3px 8px; border-radius:10px; border:1px solid rgba(88,28,135,0.3); min-width:40px; text-align:center; flex-shrink:0; font-size:10px; }
+        .aviator-canvas-container { position:relative; background:radial-gradient(circle at bottom left, rgba(44,9,25,0.8) 0%, rgba(14,15,20,0.9) 100%); border-radius:12px; width:100%; height:170px; border:1px solid rgba(39,39,42,0.3); overflow:hidden; }
+        #aviatorCanvas { width:100%; height:100%; display:block; }
+        .live-multiplier { position:absolute; top:40%; left:50%; transform:translate(-50%,-50%); font-size:42px; font-weight:900; color:#fff; font-family:monospace; pointer-events:none; text-shadow:0 0 30px rgba(255,255,255,0.1); }
+        .aviator-alert-overlay { position:absolute; top:65%; left:50%; transform:translate(-50%,-50%); font-size:12px; font-weight:800; text-transform:uppercase; padding:6px 16px; border-radius:50px; display:none; pointer-events:none; }
+        .flew-away-text { color:#ffffff; background:rgba(203,28,69,0.9); border:1px solid #ef4444; box-shadow:0 0 20px rgba(203,28,69,0.4); }
+        .waiting-text { color:#f59e0b; background:rgba(245,158,11,0.2); border:1px solid #f59e0b; font-size:13px; backdrop-filter:blur(4px); }
+        .aviator-live-badge { position:absolute; bottom:8px; right:10px; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); padding:3px 10px; border-radius:20px; font-size:9px; font-weight:bold; color:#10b981; display:flex; align-items:center; gap:4px; pointer-events:none; }
+        .aviator-live-badge span { width:6px; height:6px; background:#10b981; border-radius:50%; animation:pulse 1s infinite; }
+        .aviator-control-dashboard { display:grid; grid-template-columns:1fr; gap:8px; margin:8px 12px; padding:10px; background:rgba(20,21,27,0.6); backdrop-filter:blur(8px); border-radius:14px; border:1px solid rgba(36,38,49,0.3); }
+        .aviator-box-panel { background:rgba(27,28,34,0.6); padding:10px; border-radius:12px; border:1px solid rgba(46,49,62,0.3); display:flex; flex-direction:column; gap:8px; }
+        .av-bet-controls { display:flex; align-items:center; justify-content:space-between; background:rgba(13,14,18,0.6); padding:6px 12px; border-radius:8px; border:1px solid rgba(31,41,55,0.3); }
+        .av-bet-controls span { font-size:10px; color:#94a3b8; font-weight:bold; }
+        .av-bet-controls input { width:80px; padding:4px; font-weight:900; margin:0; color:#26e67f; font-size:14px; border:none; background:transparent; text-align:right; }
+        .av-main-action-btn { width:100%; padding:14px; font-size:16px; font-weight:900; border-radius:12px; border:none; cursor:pointer; text-transform:uppercase; color:white; transition:0.3s; }
+        .av-btn-green { background:linear-gradient(to bottom, #2cde76, #11914f); }
+        .av-btn-orange { background:linear-gradient(to bottom, #ff9000, #cc4b00); }
+        .av-btn-grey { background:#27272a; color:#71717a; cursor:not-allowed; }
+        .aviator-status-footer { background:rgba(7,8,10,0.5); border:1px solid rgba(39,39,42,0.3); color:#94a3b8; font-size:10px; font-weight:bold; padding:8px; border-radius:8px; text-transform:uppercase; }
+        .aviator-players-panel { background:rgba(17,18,24,0.6); backdrop-filter:blur(8px); border:1px solid rgba(31,41,55,0.2); margin:8px 12px 16px 12px; border-radius:14px; padding:10px; text-align:left; }
+        .panel-header-title { font-size:10px; color:#94a3b8; font-weight:800; border-bottom:1px solid rgba(39,39,42,0.3); padding-bottom:6px; margin-bottom:8px; text-transform:uppercase; display:flex; justify-content:space-between; }
+        .live-winner-row { display:flex; justify-content:space-between; font-size:10px; padding:5px 0; border-bottom:1px dashed rgba(30,41,59,0.3); font-weight:bold; }
+        .standalone-section { display:none; background:rgba(15,23,42,0.7); backdrop-filter:blur(12px); margin:10px 12px; padding:18px; border-radius:18px; border:1px solid rgba(51,65,85,0.2); text-align:left; }
+        .invite-title { font-size:12px; color:#f1c40f; font-weight:bold; text-transform:uppercase; margin-bottom:8px; display:flex; justify-content:space-between; }
+        .invite-row { display:flex; gap:8px; margin-bottom:10px; align-items:center; }
+        .invite-code-box { background:rgba(7,10,18,0.6); padding:10px; border-radius:8px; font-weight:bold; color:#fff; border:1px solid rgba(51,65,85,0.3); flex:1; text-align:center; letter-spacing:0.5px; font-size:14px; }
+        .invite-btn { background:#f1c40f; color:#000; border:none; padding:8px 14px; border-radius:8px; cursor:pointer; font-weight:bold; font-size:10px; text-transform:uppercase; }
+        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); justify-content:center; align-items:center; z-index:1000; padding:16px; box-sizing:border-box; }
+        .modal-content { background:rgba(30,41,59,0.95); backdrop-filter:blur(16px); padding:24px 18px; border-radius:24px; width:100%; max-width:380px; border:1px solid rgba(71,85,105,0.2); text-align:center; animation: fadeIn 0.3s ease; }
+        .submit-btn { background:linear-gradient(135deg, #10b981, #059669); color:white; border:none; padding:12px; border-radius:12px; cursor:pointer; font-weight:bold; width:100%; font-size:14px; }
+        .close-btn { background:rgba(71,85,105,0.5); color:white; border:none; padding:10px 20px; border-radius:10px; cursor:pointer; margin-top:12px; width:100%; font-size:13px; }
+        .payment-toggle-box { display:flex; gap:8px; margin-bottom:14px; }
+        .pay-box-btn { flex:1; padding:12px; font-size:12px; font-weight:bold; border-radius:10px; border:2px solid rgba(51,65,85,0.3); background:rgba(15,23,42,0.6); color:#94a3b8; cursor:pointer; }
+        .pay-box-btn.active-jazz { border-color:#f59e0b; color:#fff; background:rgba(245,158,11,0.1); }
+        .pay-box-btn.active-easy { border-color:#10b981; color:#fff; background:rgba(16,185,129,0.1); }
+        .status-display { background:rgba(17,24,39,0.6); backdrop-filter:blur(8px); border:1px dashed rgba(51,65,85,0.3); padding:10px; margin:8px 12px; border-radius:12px; font-size:11px; color:#94a3b8; font-weight:bold; }
+        .win-user-tag { color:#cbd5e1; }
+        .win-mult-tag { color:#c084fc; background:rgba(192,132,252,0.1); padding:1px 4px; border-radius:3px; }
+        .win-amt-tag { color:#10b981; }
+        ::-webkit-scrollbar { width:3px; height:3px; }
+        ::-webkit-scrollbar-track { background:transparent; }
+        ::-webkit-scrollbar-thumb { background:rgba(241,196,15,0.2); border-radius:10px; }
     </style>
 </head>
 <body>
 
     <div class="live-ticker-bar" id="globalTickerBar">
-        <div class="ticker-inner" id="tickerText">Loading transaction logs...</div>
+        <div class="ticker-inner" id="tickerText">Loading live transaction logs...</div>
     </div>
 
-    <!-- AUTH SCREEN -->
+    <div id="bettingClosedOverlay">
+        <div class="closed-ball"></div>
+        <div class="closed-text">Betting Closed</div>
+        <div class="closed-sub">Please wait for next round...</div>
+    </div>
+
     <div id="authScreen" class="auth-container">
         <div id="loginCard" class="auth-card">
-            <h2>Win Zone Login</h2>
+            <h2>Win Zone</h2>
             <input type="email" id="loginEmail" placeholder="Email Address">
             <input type="password" id="loginPassword" placeholder="Password">
-            <button class="submit-btn" onclick="handleLogin()">Login Account</button>
+            <button class="btn-primary" onclick="handleLogin()">Login</button>
             <span class="switch-auth" onclick="toggleAuth(false)">Create New Account</span>
         </div>
-        <div id="signupCard" class="auth-card" style="display: none;">
+        <div id="signupCard" class="auth-card" style="display:none;">
             <h2>Create Account</h2>
             <input type="text" id="signupPhone" placeholder="Mobile Number">
             <input type="email" id="signupEmail" placeholder="Email Address">
             <input type="password" id="signupPassword" placeholder="Password (Min 6 Chars)">
-            <button class="submit-btn" onclick="handleSignup()">Register Now</button>
-            <span class="switch-auth" onclick="toggleAuth(true)">Already have an account? Login</span>
+            <button class="btn-primary" onclick="handleSignup()">Register</button>
+            <span class="switch-auth" onclick="toggleAuth(true)">Already have account? Login</span>
         </div>
     </div>
 
-    <!-- MAIN APP SCREEN -->
     <div id="appScreen">
         <div class="header">
-            <span>👑 WIN ZONE AUTOMATED v3.4</span>
+            <span>⚡ Win Zone Pro v4.0</span>
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
 
-        <!-- MULTI-TAB NAVIGATION SYSTEM -->
-        <div class="game-tabs" style="margin-bottom: 5px;">
-            <button class="tab-btn active" id="navHome" onclick="navigateToSection('home')">🏠 Games</button>
+        <div class="game-tabs">
+            <button class="tab-btn active" id="navHome" onclick="navigateToSection('home')">🎮 Games</button>
             <button class="tab-btn" id="navInvite" onclick="navigateToSection('invite')">🤝 Invite</button>
             <button class="tab-btn" id="navWithdraw" onclick="navigateToSection('withdraw')">📤 Withdraw</button>
             <button class="tab-btn" onclick="openModal('depositModal')">➕ Deposit</button>
         </div>
 
         <div class="balance-card">
-            <div style="text-align: left;">
-                <div style="font-size: 10px; opacity: 0.7; text-transform: uppercase;">LIQUIDITY</div>
-                <div id="balance" style="font-size: 22px; font-weight: 900; color: #f1c40f;">PKR 0</div>
+            <div style="text-align:left;">
+                <div style="font-size:9px; opacity:0.6; text-transform:uppercase;">Balance</div>
+                <div id="balance" style="font-size:24px; font-weight:900; color:#f1c40f;">PKR 0</div>
             </div>
-            <div style="font-size: 11px; color: #94a3b8; text-align: right;">
-                ID: <span id="userPhoneDisplay" style="font-weight: bold; color: #fff;">-</span>
+            <div style="font-size:10px; color:#94a3b8; text-align:right;">
+                ID: <span id="userPhoneDisplay" style="font-weight:bold; color:#fff;">-</span>
             </div>
         </div>
 
-        <!-- SECTION 1: HOME GAMES CONTENT -->
-        <div id="sectionHome" style="display: block;">
+        <div id="sectionHome" style="display:block;">
             <div class="game-tabs">
-                <button class="tab-btn active" id="tabWingo" onclick="switchGame('wingo')">Bingo (Big/Small)</button>
-                <button class="tab-btn" id="tabAviator" onclick="switchGame('aviator')">Aviator Real Trap</button>
+                <button class="tab-btn active" id="tabWingo" onclick="switchGame('wingo')">Bingo</button>
+                <button class="tab-btn" id="tabAviator" onclick="switchGame('aviator')">Aviator</button>
             </div>
 
-            <!-- GAME 1: WINGO WRAPPER -->
             <div id="wingoEngineWrapper" class="game-wrapper active">
                 <div class="history-box">
-                    <div class="history-title">
-                        <span>📊 Trends History (Live Node Stream)</span>
-                    </div>
+                    <div class="history-title"><span>📊 Live Trends</span></div>
                     <div class="trends-list" id="trendsHistory"></div>
                 </div>
-
                 <div class="timer-section">
-                    <div class="wingo-live-bets-bubble" id="wingoLivePool">🔥 3,450 dynamic bets active</div>
-                    <div>⏱️ Ends: <span id="timer">00:30</span></div>
+                    <div class="wingo-live-bets-bubble" id="wingoLivePool" style="font-size:9px;color:#10b981;font-weight:600;">🔥 3,450 active bets</div>
+                    <div>⏱️ <span id="timer">00:30</span></div>
                 </div>
-
-                <div class="status-display" id="roundStatus">
-                    ⏳ Place stakes. Smart routing algorithm active.
-                </div>
-
-                <!-- ALIGNED HORIZONTAL BET COMPONENT -->
+                <div class="status-display" id="roundStatus">⏳ Place your bets. Timer running...</div>
                 <div class="bet-control-row">
                     <div class="bet-input-container">
-                        <label style="font-size: 10px; color: #94a3b8; font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Stake Amount:</label>
-                        <input type="number" id="betAmount" value="30" min="15" style="width: 110px; font-weight: bold; font-size: 18px; color: #f1c40f; margin: 0; padding: 6px;">
+                        <label>Stake (PKR)</label>
+                        <input type="number" id="betAmount" value="30" min="15">
                     </div>
                     <div class="multiplier-container">
-                        <button class="mult-btn" onclick="applyMultiplier(1)">X1</button>
-                        <button class="mult-btn" onclick="applyMultiplier(5)">X5</button>
-                        <button class="mult-btn" onclick="applyMultiplier(10)">X10</button>
-                        <button class="mult-btn" onclick="applyMultiplier(50)">X50</button>
+                        <button class="mult-btn" onclick="applyMultiplier(1)">×1</button>
+                        <button class="mult-btn" onclick="applyMultiplier(5)">×5</button>
+                        <button class="mult-btn" onclick="applyMultiplier(10)">×10</button>
+                        <button class="mult-btn" onclick="applyMultiplier(50)">×50</button>
                     </div>
                 </div>
-
-                <div class="game-section-label">⚡ Select Size (Big / Small)</div>
+                <div class="game-section-label">⚡ Size</div>
                 <div class="big-small-container">
-                    <button class="btn-big" onclick="placeBet('size', 'Big')">Big</button>
-                    <button class="btn-small" onclick="placeBet('size', 'Small')">Small</button>
+                    <button class="btn-big" id="betBigBtn" onclick="placeBet('size', 'Big')">Big (5-9)</button>
+                    <button class="btn-small" id="betSmallBtn" onclick="placeBet('size', 'Small')">Small (0-4)</button>
                 </div>
-
-                <div class="game-section-label">🎨 Select Color</div>
+                <div class="game-section-label">🎨 Color</div>
                 <div class="color-selection-bar">
-                    <button class="color-choice-btn choice-red" onclick="placeBet('color', 'Red')">Red</button>
-                    <button class="color-choice-btn choice-green" onclick="placeBet('color', 'Green')">Green</button>
+                    <button class="color-choice-btn choice-red" id="betRedBtn" onclick="placeBet('color', 'Red')">Red</button>
+                    <button class="color-choice-btn choice-green" id="betGreenBtn" onclick="placeBet('color', 'Green')">Green</button>
                 </div>
-
-                <div class="game-section-label">🔢 Direct Number Hit</div>
-                <div class="number-grid">
+                <div class="game-section-label">🔢 Direct Number</div>
+                <div class="number-grid" id="numberGrid">
                     <button class="num-btn bg-mix" onclick="placeBet('number', 0)">0</button>
                     <button class="num-btn bg-green" onclick="placeBet('number', 1)">1</button>
                     <button class="num-btn bg-green" onclick="placeBet('number', 2)">2</button>
@@ -272,211 +251,147 @@
                     <button class="num-btn bg-red" onclick="placeBet('number', 8)">8</button>
                     <button class="num-btn bg-red" onclick="placeBet('number', 9)">9</button>
                 </div>
-
                 <div class="logs" id="wingoLogSection">
                     <div class="routing-header">
-                        <span>📡 Bingo Routing Logs Stream</span>
-                        <span style="color:#10b981; animation: blink 1.5s infinite;">● Active</span>
+                        <span>📡 Active Bets</span>
+                        <span style="color:#10b981; animation:pulse 1.5s infinite; font-size:8px;">● Live</span>
                     </div>
                     <div id="activeBetsPanel"></div>
                 </div>
-
-                <!-- USER PERSONAL BET HISTORY TABLE SYSTEM -->
-                <div class="game-section-label" style="margin-top: 15px; color:#38bdf8;">📝 My Personal Bet History</div>
+                <div class="game-section-label" style="margin-top:18px; color:#38bdf8;">📝 My Bet History</div>
                 <div class="history-table-container">
                     <table class="history-table">
-                        <thead>
-                            <tr>
-                                <th>Select</th>
-                                <th>Category</th>
-                                <th>Amount</th>
-                                <th>Result</th>
-                                <th>Payout</th>
-                            </tr>
-                        </thead>
-                        <tbody id="userBetHistoryBody">
-                            <!-- Injected dynamically via JS code -->
-                        </tbody>
+                        <thead><tr><th>Selection</th><th>Type</th><th>Amount</th><th>Result</th><th>Payout</th></tr></thead>
+                        <tbody id="userBetHistoryBody"></tbody>
                     </table>
-                    <div id="betHistoryEmptyMsg" class="history-empty-msg">No stake history logged yet</div>
+                    <div id="betHistoryEmptyMsg" class="history-empty-msg">No bets placed yet</div>
                 </div>
-                <!-- Pagination Buttons Row -->
                 <div class="pagination-row">
-                    <button type="button" class="page-nav-btn active" id="btnBetPage1" onclick="changeBetPage(1)">Page 1</button>
-                    <button type="button" class="page-nav-btn" id="btnBetPage2" onclick="changeBetPage(2)">Page 2</button>
+                    <button class="page-nav-btn active" id="btnBetPage1" onclick="changeBetPage(1)">Page 1</button>
+                    <button class="page-nav-btn" id="btnBetPage2" onclick="changeBetPage(2)">Page 2</button>
                 </div>
             </div>
 
-            <!-- GAME 2: AVIATOR WRAPPER -->
             <div id="aviatorEngineWrapper" class="game-wrapper">
                 <div class="aviator-display-box">
                     <div class="aviator-history-strip" id="aviatorHistory">
                         <div class="aviator-history-item">1.34x</div>
-                        <div class="aviator-history-item" style="color:#c084fc;">4.12x</div>
+                        <div class="aviator-history-item" style="color:#a855f7;">4.12x</div>
                         <div class="aviator-history-item">1.18x</div>
-                        <div class="aviator-history-item" style="color:#c084fc;">9.65x</div>
+                        <div class="aviator-history-item" style="color:#a855f7;">9.65x</div>
                     </div>
-                    
                     <div class="aviator-canvas-container">
                         <canvas id="aviatorCanvas"></canvas>
                         <div class="live-multiplier" id="aviatorMultText">1.00x</div>
-                        <div class="aviator-alert-overlay flew-away-text" id="alertFlew">FLEW AWAY!</div>
-                        <div class="aviator-alert-overlay waiting-text" id="alertWait">NEXT ROUND IN <span id="avBufferTimer">7</span>s</div>
-                        
-                        <div class="aviator-live-badge">
-                            <span></span> <div id="liveBetsCount">210 bets</div>
-                        </div>
+                        <div class="aviator-alert-overlay flew-away-text" id="alertFlew">💥 Crashed!</div>
+                        <div class="aviator-alert-overlay waiting-text" id="alertWait">Next round <span id="avBufferTimer">7</span>s</div>
+                        <div class="aviator-live-badge"><span></span> <div id="liveBetsCount">210 bets</div></div>
                     </div>
                 </div>
-
                 <div class="aviator-control-dashboard">
                     <div class="aviator-box-panel">
                         <div class="av-bet-controls">
-                            <span>BET VALUE (PKR):</span>
+                            <span>Bet (PKR)</span>
                             <input type="number" id="aviatorBetAmount" value="25" min="15">
                         </div>
-                        <button class="av-main-action-btn av-btn-green" id="aviatorActionBtn" onclick="handleAviatorAction()">BET</button>
+                        <button class="av-main-action-btn av-btn-green" id="aviatorActionBtn" onclick="handleAviatorAction()">🎯 BET</button>
                     </div>
-                    
-                    <div class="aviator-status-footer" id="aviatorStatusMessage">
-                        ✈️ awaiting betting session...
-                    </div>
+                    <div class="aviator-status-footer" id="aviatorStatusMessage">✈️ Waiting for session...</div>
                 </div>
-
                 <div class="aviator-players-panel">
                     <div class="panel-header-title">
-                        <span>👥 Live Active Bets (All Users)</span>
-                        <span style="color: #10b981;">● Live Sync</span>
+                        <span>👥 Live Players</span>
+                        <span style="color:#10b981; font-size:8px;">● Sync</span>
                     </div>
                     <div id="aviatorLiveWinnersList"></div>
                 </div>
             </div>
         </div>
 
-        <!-- SECTION 2: STANDALONE EXCLUSIVE INVITATION PAGE -->
         <div id="sectionInvite" class="standalone-section">
-            <div class="invite-title">
-                <span>🤝 Invite & Earn (Rs. 50 Bonus)</span>
-            </div>
-            <p style="font-size: 12px; color: #94a3b8; margin: 0 0 10px 0;">Share your link code with friends. When they activate their accounts, you will instantly get credited.</p>
+            <div class="invite-title"><span>🤝 Invite & Earn (Rs. 50)</span></div>
+            <p style="font-size:11px; color:#94a3b8; margin:0 0 12px 0;">Share your code. When friends join, you get Rs. 50 bonus!</p>
             <div class="invite-row">
                 <div class="invite-code-box" id="myInviteCode">Generating...</div>
-                <button class="invite-btn" onclick="copyInviteCode()">Copy Code</button>
+                <button class="invite-btn" onclick="copyInviteCode()">Copy</button>
             </div>
-            <hr style="border:0; border-top:1px solid #1e293b; margin:12px 0;">
-            <div class="invite-title"><span>Link Invitation Uid</span></div>
+            <hr style="border:0; border-top:1px solid rgba(30,41,59,0.3); margin:12px 0;">
+            <div class="invite-title"><span>🔗 Link Referral</span></div>
             <div class="invite-row" id="referralInputRow">
-                <input type="text" id="inputReferralCode" placeholder="Enter Friend's Code" style="margin-bottom:0; font-size:13px; padding:8px; flex:1; text-align:left;">
+                <input type="text" id="inputReferralCode" placeholder="Enter Friend's Code" style="margin-bottom:0; font-size:12px; padding:10px; flex:1; text-align:left;">
                 <button class="invite-btn" style="background:#10b981; color:white;" onclick="applyReferralCode()">Link</button>
             </div>
-            <div id="referralStatus" style="font-size:12px; color:#34d399; margin-top:5px; font-weight:bold; display:none;">Code Linked Successfully!</div>
+            <div id="referralStatus" style="font-size:11px; color:#34d399; margin-top:6px; font-weight:bold; display:none;">✅ Code Linked!</div>
         </div>
 
-        <!-- SECTION 3: STANDALONE EXCLUSIVE WITHDRAWAL PAGE -->
         <div id="sectionWithdraw" class="standalone-section">
-            <div class="invite-title">
-                <span style="color: #ef4444;">📤 Manual Cloud Withdrawal Gate</span>
-            </div>
-            
+            <div class="invite-title"><span style="color:#ef4444;">📤 Withdraw Funds</span></div>
             <div class="payment-toggle-box">
                 <button type="button" id="btnMethodJazz" class="pay-box-btn active-jazz" onclick="selectWithdrawMethod('JazzCash')">🍊 JazzCash</button>
                 <button type="button" id="btnMethodEasy" class="pay-box-btn" onclick="selectWithdrawMethod('EasyPaisa')">🍏 EasyPaisa</button>
             </div>
-            
             <input type="hidden" id="selectedWithMethod" value="JazzCash">
-
-            <div style="text-align: left; margin-bottom: 8px;">
-                <label id="lblAccountNo" style="font-size: 11px; color: #94a3b8; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">JazzCash Account Number:</label>
-                <input type="text" id="withAccount" placeholder="e.g. 03XXXXXXXXX" style="max-width: 100%; text-align: left; margin:0;">
+            <div style="text-align:left; margin-bottom:10px;">
+                <label id="lblAccountNo" style="font-size:10px; color:#94a3b8; font-weight:bold; text-transform:uppercase; display:block; margin-bottom:4px;">Account Number:</label>
+                <input type="text" id="withAccount" placeholder="e.g. 03XXXXXXXXX" style="max-width:100%; text-align:left; margin:0;">
             </div>
-
-            <div style="text-align: left; margin-bottom: 8px;">
-                <label style="font-size: 11px; color: #94a3b8; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Account Title / Owner Name:</label>
-                <input type="text" id="withTitle" placeholder="Enter Account Title Name" style="max-width: 100%; text-align: left; margin:0;">
+            <div style="text-align:left; margin-bottom:10px;">
+                <label style="font-size:10px; color:#94a3b8; font-weight:bold; text-transform:uppercase; display:block; margin-bottom:4px;">Account Title:</label>
+                <input type="text" id="withTitle" placeholder="Full Name" style="max-width:100%; text-align:left; margin:0;">
             </div>
-
-            <div style="text-align: left; margin-bottom: 12px;">
-                <label style="font-size: 11px; color: #94a3b8; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Withdraw Amount (Min PKR 500):</label>
-                <input type="number" id="withAmount" placeholder="Min 500 Payout Amount" style="max-width: 100%; text-align: left; margin:0;">
+            <div style="text-align:left; margin-bottom:14px;">
+                <label style="font-size:10px; color:#94a3b8; font-weight:bold; text-transform:uppercase; display:block; margin-bottom:4px;">Amount (Min Rs. 1000):</label>
+                <input type="number" id="withAmount" placeholder="1000" style="max-width:100%; text-align:left; margin:0;">
             </div>
-
-            <button class="submit-btn" style="background: linear-gradient(135deg, #ef4444, #b91c1c); padding:12px;" onclick="processWithdrawal()">Request Withdrawal</button>
-
-            <!-- WITHDRAWAL TRACKING LOG HISTORY SYSTEM UI -->
-            <div class="invite-title" style="margin-top: 20px; color:#ef4444;"><span>📋 Payout Logs Statement</span></div>
+            <button class="submit-btn" style="background:linear-gradient(135deg, #ef4444, #b91c1c);" onclick="processWithdrawal()">Request Withdrawal</button>
+            <div class="invite-title" style="margin-top:20px; color:#ef4444;"><span>📋 Withdrawal History</span></div>
             <div class="history-table-container">
                 <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>Method</th>
-                            <th>Amount</th>
-                            <th>Account/Title</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="userWithdrawHistoryBody">
-                        <!-- Injected via Realtime Database Stream -->
-                    </tbody>
+                    <thead><tr><th>Method</th><th>Amount</th><th>Account</th><th>Status</th></tr></thead>
+                    <tbody id="userWithdrawHistoryBody"></tbody>
                 </table>
-                <div id="withHistoryEmptyMsg" class="history-empty-msg">No cashouts requested yet</div>
+                <div id="withHistoryEmptyMsg" class="history-empty-msg">No withdrawals yet</div>
             </div>
         </div>
     </div>
 
-    <!-- MODALS -->
-    <!-- DEPOSIT MODAL -->
     <div id="depositModal" class="modal">
-        <div class="modal-content" style="max-width: 390px;">
-            <h3 style="color: #10b981; margin-bottom: 5px; text-transform: uppercase;">Deposit Funds</h3>
-            
-            <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 15px; border-radius: 16px; border: 2px solid #eab308; margin-bottom: 16px; text-align: center; box-shadow: 0 0 15px rgba(234, 179, 8, 0.2);">
-                <p style="margin: 0 0 10px 0; font-size: 13px; color: #eab308; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">⚡ SCAN QR CODE TO DEPOSIT ⚡</p>
-                <div style="background: white; padding: 10px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.3); margin-bottom: 8px;">
-                    <img src="data:image/jpeg;base64,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" alt="Deposit QR Code" style="width: 200px; height: auto; display: block; margin: 0 auto; border-radius: 4px;">
+        <div class="modal-content" style="max-width:400px;">
+            <h3 style="color:#10b981; margin-bottom:5px; text-transform:uppercase;">Deposit</h3>
+            <div style="background:linear-gradient(135deg, rgba(30,41,59,0.8), rgba(15,23,42,0.9)); padding:16px; border-radius:16px; border:2px solid #eab308; margin-bottom:16px; text-align:center;">
+                <p style="margin:0 0 10px 0; font-size:12px; color:#eab308; font-weight:bold; text-transform:uppercase;">Scan QR to Deposit</p>
+                <div style="background:white; padding:10px; border-radius:12px; display:inline-block; margin-bottom:8px;">
+                    <img src="data:image/jpeg;base64,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
+                    " alt="QR" style="width:200px; border-radius:4px;">
                 </div>
-                <p style="margin: 5px 0 0 0; font-size: 12px; color: #94a3b8; font-weight: 500;">Scan this QR code via your EasyPaisa / JazzCash / Banking App to complete payment instantly.</p>
+                <p style="margin:0; font-size:11px; color:#94a3b8;">Scan via JazzCash / EasyPaisa</p>
             </div>
-
-            <div style="text-align: left; margin-bottom: 8px;">
-                <label style="font-size: 11px; color: #94a3b8; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Deposit Amount:</label>
-                <input type="number" id="depAmount" placeholder="Min Rs. 300" style="max-width: 100%; text-align: left;">
+            <div style="text-align:left; margin-bottom:8px;">
+                <label style="font-size:10px; color:#94a3b8; font-weight:bold; text-transform:uppercase;">Amount:</label>
+                <input type="number" id="depAmount" placeholder="Min Rs. 300" style="max-width:100%; text-align:left;">
             </div>
-
-            <div style="text-align: left; margin-bottom: 12px;">
-                <label style="font-size: 11px; color: #94a3b8; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Transaction ID / Track ID:</label>
-                <input type="text" id="depTrx" placeholder="Enter 12-Digit TRID" style="max-width: 100%; text-align: left;">
+            <div style="text-align:left; margin-bottom:12px;">
+                <label style="font-size:10px; color:#94a3b8; font-weight:bold; text-transform:uppercase;">Transaction ID:</label>
+                <input type="text" id="depTrx" placeholder="Enter TRID" style="max-width:100%; text-align:left;">
             </div>
-
-            <button class="submit-btn" onclick="createDepositRequest()">Submit Deposit Receipt</button>
-
-            <!-- DEPOSIT STATEMENT TRACKING SYSTEM INSIDE DIALOG FOR CLEAR PREVIEW -->
-            <div style="text-align: left; margin-top:15px; font-size:11px; color:#10b981; font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;">📋 Verification Receipts Statement</div>
+            <button class="submit-btn" onclick="createDepositRequest()">Submit Deposit</button>
+            <div style="text-align:left; margin-top:15px; font-size:10px; color:#10b981; font-weight:bold; text-transform:uppercase;">📋 Deposit History</div>
             <div class="history-table-container" style="max-height:120px; overflow-y:auto; margin-bottom:8px;">
                 <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>Amount</th>
-                            <th>TRID</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="userDepositHistoryBody">
-                        <!-- Loaded dynamically via real time nodes -->
-                    </tbody>
+                    <thead><tr><th>Amount</th><th>TRID</th><th>Status</th></tr></thead>
+                    <tbody id="userDepositHistoryBody"></tbody>
                 </table>
-                <div id="depHistoryEmptyMsg" class="history-empty-msg" style="padding:8px;">No deposits logged</div>
+                <div id="depHistoryEmptyMsg" class="history-empty-msg" style="padding:8px;">No deposits</div>
             </div>
-
             <button class="close-btn" onclick="closeModal('depositModal')" style="margin-top:0;">Cancel</button>
         </div>
     </div>
 
-    <!-- CELEBRATION MODAL UI -->
     <div id="resultModal" class="modal">
-        <div class="modal-content" id="resultModalContent" style="border: 4px solid #f1c40f; box-shadow: 0 0 40px rgba(241, 196, 15, 0.6); transform: scale(1.05); transition: 0.3s;">
-            <h2 id="resultHeader" style="margin-top: 0; font-size: 34px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px;"></h2>
-            <div id="resultDetails" style="font-size: 15px; margin: 20px 0; font-weight: bold; line-height: 1.6;"></div>
-            <button class="submit-btn" style="background: linear-gradient(135deg, #f1c40f, #d4ac0d); color: #000; font-size: 16px; font-weight: 900; letter-spacing: 1px;" onclick="closeModal('resultModal')">CONTINUE PLAYING</button>
+        <div class="modal-content" id="resultModalContent" style="border:4px solid #f1c40f;">
+            <h2 id="resultHeader" style="margin-top:0; font-size:34px; font-weight:900; text-transform:uppercase;"></h2>
+            <div id="resultDetails" style="font-size:14px; margin:20px 0; font-weight:bold; line-height:1.6;"></div>
+            <button class="submit-btn" style="background:linear-gradient(135deg, #f1c40f, #d4ac0d); color:#000; font-size:16px; font-weight:900;" onclick="closeModal('resultModal')">Continue</button>
         </div>
     </div>
 
@@ -490,845 +405,296 @@
             messagingSenderId: "398802919500",
             appId: "1:398802919500:web:3a80d3f0f8c76786b0d4e9"
         };
-        
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
+        firebase.initializeApp(firebaseConfig); const auth = firebase.auth(); const database = firebase.database();
+        let currentUser = null, currentBalance = 0, timeLeft = 30, isBettingClosed = false, activeWingoBets = [], largeTrendPool = [], preCalculatedRoundData = null;
+        let avState = "waiting", avMultiplier = 1.00, avCrashPoint = 2.00, avActiveBet = null, avHasCashedOut = false, avLoopInterval = null, avCountdownTime = 7, totalBetHistoryList = [], currentBetPage = 1;
+        const canvas = document.getElementById('aviatorCanvas'), ctx = canvas.getContext('2d');
+        let planeX = 30, planeY = 180; const fakeNames = ["0302***","0345***","0311***","0300***","0321***","0333***","0306***","0348***","0315***"];
 
-        let currentUser = null;
-        let currentBalance = 0;
-        let timeLeft = 30;
-
-        let activeWingoBets = [];  
-        let largeTrendPool = [];
-        
-        let preCalculatedRoundData = null;
-
-        let avState = "waiting"; 
-        let avMultiplier = 1.00;
-        let avCrashPoint = 2.00;
-        let avActiveBet = null; 
-        let avHasCashedOut = false;
-        let avLoopInterval = null;
-        let avCountdownTime = 7;
-
-        let totalBetHistoryList = [];
-        let currentBetPage = 1;
-
-        const canvas = document.getElementById('aviatorCanvas');
-        const ctx = canvas.getContext('2d');
-        let planeX = 30; let planeY = 180;
-
-        const fakeNames = ["0302***", "0345***", "0311***", "0300***", "0321***", "0333***", "0306***", "0348***", "0315***"];
+        function setBettingState(closed) {
+            isBettingClosed = closed; const overlay = document.getElementById('bettingClosedOverlay');
+            if(!overlay) return;
+            if(closed) {
+                overlay.classList.add('show');
+                document.querySelectorAll('.btn-big,.btn-small,.color-choice-btn,.num-btn').forEach(b => b.classList.add('disabled'));
+                document.getElementById('roundStatus').innerHTML = '🔒 <span style="color:#ef4444;">BETTING CLOSED</span>';
+            } else {
+                overlay.classList.remove('show');
+                document.querySelectorAll('.btn-big,.btn-small,.color-choice-btn,.num-btn').forEach(b => b.classList.remove('disabled'));
+            }
+        }
 
         function createDepositRequest() {
-            let amountElement = document.getElementById('depAmount');
-            let trxElement = document.getElementById('depTrx');
-            
-            if(!amountElement || !trxElement) {
-                alert("Critical System Error: HTML Input components missing.");
-                return;
-            }
+            let amt = document.getElementById('depAmount').value.trim(), trx = document.getElementById('depTrx').value.trim();
+            if(!amt||!trx) return alert("Fill all fields!"); if(parseInt(amt)<300) return alert("Min Rs. 300");
+            let ref = database.ref('deposit_requests').push(), id = ref.key, ts
+            // ===== CONTINUED JAVASCRIPT =====
 
-            let amount = amountElement.value.trim();
-            let trx = trxElement.value.trim();
-            
-            if(!amount || !trx) {
-                alert("Please enter Amount and Transaction ID!");
-                return;
-            }
-            
-            if(parseInt(amount) < 300) {
-                alert("Minimum deposit limit is Rs. 300");
-                return;
-            }
+function createDepositRequest() {
+    let amt = document.getElementById('depAmount').value.trim();
+    let trx = document.getElementById('depTrx').value.trim();
+    if(!amt||!trx) return alert("Fill all fields!");
+    if(parseInt(amt)<300) return alert("Min Rs. 300");
+    let ref = database.ref('deposit_requests').push(), id = ref.key, ts = Date.now();
 
-            let newRequestRef = database.ref('deposit_requests').push();
-            let uniqueRequestId = newRequestRef.key;
-            let entryTime = Date.now();
-            
-            let structuredPayload = {
-                uid: currentUser.uid,
-                email: currentUser.email,
-                amount: amount,
-                trxId: trx,
-                status: "pending",
-                timestamp: entryTime
-            };
+    ref.set({uid:currentUser.uid, email:currentUser.email, amount:amt, trxId:trx, status:"pending", timestamp:ts}).then(() => {
+        database.ref('users/'+currentUser.uid+'/deposits/'+id).set({amount:amt, trxId:trx, status:"pending", timestamp:ts});
+        closeModal('depositModal'); alert('✅ Submitted for verification!');
+        document.getElementById('depAmount').value=''; document.getElementById('depTrx').value='';
+    }).catch(e => alert("Error: "+e.message));
+}
 
-            newRequestRef.set(structuredPayload).then(() => {
-                database.ref('users/' + currentUser.uid + '/deposits/' + uniqueRequestId).set({
-                    amount: amount,
-                    trxId: trx,
-                    status: "pending",
-                    timestamp: entryTime
+function navigateToSection(s) {
+    ['sectionHome','sectionInvite','sectionWithdraw'].forEach(id => document.getElementById(id).style.display='none');
+    ['navHome','navInvite','navWithdraw'].forEach(id => document.getElementById(id).classList.remove('active'));
+    let map = {home:['sectionHome','navHome'], invite:['sectionInvite','navInvite'], withdraw:['sectionWithdraw','navWithdraw']};
+    if(map[s]) { document.getElementById(map[s][0]).style.display='block'; document.getElementById(map[s][1]).classList.add('active'); }
+}
+
+function selectWithdrawMethod(m) {
+    document.getElementById('selectedWithMethod').value = m;
+    document.getElementById('btnMethodJazz').className = 'pay-box-btn'+(m==='JazzCash'?' active-jazz':'');
+    document.getElementById('btnMethodEasy').className = 'pay-box-btn'+(m==='EasyPaisa'?' active-easy':'');
+    document.getElementById('lblAccountNo').innerText = m+' Account Number:';
+}
+
+function processWithdrawal() {
+    let amt = parseInt(document.getElementById('withAmount').value);
+    let acc = document.getElementById('withAccount').value.trim();
+    let title = document.getElementById('withTitle').value.trim();
+    let method = document.getElementById('selectedWithMethod').value;
+    if(!acc||!title||isNaN(amt)) return alert("Fill all fields!");
+    if(amt<1000) return alert("Min PKR 1000!");
+    if(amt>currentBalance) return alert("Insufficient balance!");
+    let ref = database.ref('withdraw_requests').push(), id = ref.key, ts = Date.now();
+    ref.set({uid:currentUser.uid, email:currentUser.email, amount:amt, accountNumber:acc, accountTitle:title, paymentMethod:method, status:"pending", timestamp:ts}).then(() => {
+        database.ref('users/'+currentUser.uid+'/withdrawals/'+id).set({amount:amt, accountNumber:acc, accountTitle:title, paymentMethod:method, status:"pending", timestamp:ts});
+        database.ref('users/'+currentUser.uid).update({balance:currentBalance-amt});
+        alert('✅ Withdrawal submitted!');
+        ['withAmount','withAccount','withTitle'].forEach(id => document.getElementById(id).value='');
+    }).catch(e => alert("Error: "+e.message));
+}
+
+setInterval(() => {
+    document.getElementById('tickerText').innerText = [
+        'User 0305 won PKR 8,400!',
+        'User 0344 won on Aviator 12.40x!',
+        'User 0313 deposited PKR 1,000 + bonus',
+        'User 0321 withdrew PKR 3,500'
+    ][Math.floor(Math.random()*4)];
+}, 6000);
+
+function switchGame(t) {
+    document.querySelectorAll('.game-wrapper').forEach(e => e.classList.remove('active'));
+    document.querySelectorAll('#sectionHome .game-tabs .tab-btn').forEach(e => e.classList.remove('active'));
+    document.getElementById(t+'EngineWrapper').classList.add('active');
+    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.add('active');
+    if(t==='aviator') setTimeout(triggerCanvasFix,100);
+}
+
+function triggerCanvasFix() {
+    canvas.width = canvas.parentElement.clientWidth;
+    canvas.height = canvas.parentElement.clientHeight;
+    drawAviatorGraph();
+}
+
+function drawRealPlane(x,y) {
+    ctx.save(); ctx.translate(x,y); ctx.fillStyle="#ea1c4d"; ctx.beginPath(); ctx.ellipse(0,0,14,5,0,0,2*Math.PI); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(-2,-4); ctx.lineTo(3,-14); ctx.lineTo(7,-14); ctx.lineTo(2,-4); ctx.fillStyle="#cb1c45"; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(-2,4); ctx.lineTo(3,14); ctx.lineTo(7,14); ctx.lineTo(2,4); ctx.fill(); ctx.restore();
+}
+
+function drawAviatorGraph() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    if(avState==="running") {
+        ctx.beginPath(); ctx.strokeStyle="#ea1c4d"; ctx.lineWidth=4;
+        ctx.moveTo(30,canvas.height-30); ctx.quadraticCurveTo(canvas.width/2,canvas.height-25,planeX,planeY); ctx.stroke();
+        let g=ctx.createLinearGradient(0,canvas.height,0,0); g.addColorStop(0,"rgba(14,15,20,0)"); g.addColorStop(1,"rgba(234,28,77,0.22)");
+        ctx.fillStyle=g; ctx.lineTo(planeX,canvas.height-30); ctx.lineTo(30,canvas.height-30); ctx.fill();
+        drawRealPlane(planeX,planeY);
+    }
+}
+
+function startBufferCountdown() {
+    avState="waiting"; avMultiplier=1.00; avCountdownTime=7; avHasCashedOut=false;
+    document.getElementById('aviatorMultText').style.display='none';
+    document.getElementById('alertFlew').style.display='none'; document.getElementById('alertWait').style.display='block';
+    document.getElementById('avBufferTimer').innerText=avCountdownTime;
+    document.getElementById('aviatorStatusMessage').innerText="🛑 PLACE YOUR BETS NOW!";
+    document.getElementById('liveBetsCount').innerText=Math.floor(Math.random()*80+190)+' bets';
+    let p=document.getElementById('aviatorLiveWinnersList'); p.innerHTML='';
+    for(let i=0;i<5;i++) p.innerHTML+=`<div class="live-winner-row" id="fr_${i}"><span class="win-user-tag">User ${fakeNames[Math.floor(Math.random()*fakeNames.length)]}${Math.floor(Math.random()*9000+1000)}</span><span class="win-mult-tag">-</span><span class="win-amt-tag" style="color:#94a3b8">PKR ${[15,20,25,50,100][Math.floor(Math.random()*5)]}</span></div>`;
+    updateAviatorBtn();
+    let ci=setInterval(()=>{avCountdownTime--; if(document.getElementById('avBufferTimer')) document.getElementById('avBufferTimer').innerText=avCountdownTime; if(avCountdownTime<=0){clearInterval(ci);startAviator();}},1000);
+}
+
+function startAviator() {
+    avState="running"; document.getElementById('alertWait').style.display='none'; document.getElementById('aviatorMultText').style.display='block';
+    document.getElementById('aviatorStatusMessage').innerText="🚀 FLYING...";
+    if(avActiveBet) {
+        if(avActiveBet<=25) avCrashPoint = Math.random()<0.09 ? (Math.random()*3+5).toFixed(2) : Math.random()<0.4 ? (Math.random()*0.2+1.02).toFixed(2) : (Math.random()*2.3+1.2).toFixed(2);
+        else if(avActiveBet===50) avCrashPoint = Math.random()<0.15 ? (Math.random()*3+3).toFixed(2) : (Math.random()*0.35+1.12).toFixed(2);
+        else avCrashPoint = (Math.random()*0.2+1.05).toFixed(2);
+    } else avCrashPoint = (Math.random()*6+2.5).toFixed(2);
+    updateAviatorBtn(); planeX=30; planeY=canvas.height-30;
+    avLoopInterval=setInterval(()=>{
+        avMultiplier+=avMultiplier>4?0.07:0.01; document.getElementById('aviatorMultText').innerText=avMultiplier.toFixed(2)+'x';
+        if(planeX<canvas.width-50) planeX+=canvas.width/180; if(planeY>50) planeY-=canvas.height/250;
+        drawAviatorGraph();
+        if(Math.random()<0.15) {
+            let r=Math.floor(Math.random()*5), t=document.getElementById('fr_'+r);
+            if(t&&t.innerHTML.includes('class="win-mult-tag">-</span>')) {
+                let a=parseInt(t.innerText.split('PKR ')[1]);
+                t.innerHTML=t.innerHTML.replace('<span class="win-mult-tag">-</span>',`<span class="win-mult-tag">${avMultiplier.toFixed(2)}x</span>`);
+                t.innerHTML=t.innerHTML.replace('style="color:#94a3b8"','style="color:#10b981"');
+                t.innerHTML=t.innerHTML.replace('PKR '+a,'+PKR '+Math.floor(a*avMultiplier));
+            }
+        }
+        if(avActiveBet&&!avHasCashedOut) document.getElementById('aviatorActionBtn').innerText='CASH OUT PKR '+Math.floor(avActiveBet*avMultiplier);
+        if(avMultiplier>=avCrashPoint){clearInterval(avLoopInterval);crashAviator();}
+    },30);
+}
+
+function crashAviator() {
+    avState="crashed"; document.getElementById('aviatorMultText').style.color="#cb1c45"; document.getElementById('alertFlew').style.display='block';
+    document.getElementById('aviatorStatusMessage').innerText='💥 CRASHED AT '+avCrashPoint+'x!';
+    let s=document.getElementById('aviatorHistory'), c=avCrashPoint>=3?"style='color:#a855f7;font-weight:900;'":"";
+    s.innerHTML='<div class="aviator-history-item" '+c+'>'+avCrashPoint+'x</div>'+s.innerHTML;
+    avActiveBet=null; updateAviatorBtn();
+    setTimeout(()=>{document.getElementById('aviatorMultText').style.color="#fff"; document.getElementById('aviatorMultText').innerText="1.00x"; startBufferCountdown();},2500);
+}
+
+function handleAviatorAction() {
+    let a=parseInt(document.getElementById('aviatorBetAmount').value);
+    if(avState==='waiting') {
+        if(avActiveBet) return;
+        if(isNaN(a)||a<15||a>currentBalance) return alert("Check balance!");
+        avActiveBet=a; database.ref('users/'+currentUser.uid).update({balance:currentBalance-a});
+        document.getElementById('aviatorStatusMessage').innerText='✅ BET PKR '+a; updateAviatorBtn();
+    } else if(avState==='running'&&avActiveBet&&!avHasCashedOut) {
+        avHasCashedOut=true; let p=Math.floor(avActiveBet*avMultiplier);
+        database.ref('users/'+currentUser.uid).update({balance:currentBalance+p});
+        document.getElementById('aviatorStatusMessage').innerText='💰 CASHED PKR '+p; updateAviatorBtn();
+    }
+}
+
+function updateAviatorBtn() {
+    let b=document.getElementById('aviatorActionBtn'); if(!b) return;
+    if(avState==='waiting'){b.className="av-main-action-btn av-btn-green"; b.innerText=avActiveBet?"🔒 LOCKED":"🎯 BET";}
+    else if(avState==='running'){if(avActiveBet&&!avHasCashedOut){b.className="av-main-action-btn av-btn-orange";}else{b.className="av-main-action-btn av-btn-grey"; b.innerText=avHasCashedOut?"✅ DONE":"⏳";}}
+    else{b.className="av-main-action-btn av-btn-grey"; b.innerText="💥 CRASHED";}
+}
+
+function showDashboard() {
+    document.getElementById('authScreen').style.display='none'; document.getElementById('appScreen').style.display='block';
+    listenTrends(); setupListeners(); setTimeout(()=>{triggerCanvasFix();startBufferCountdown();},1000);
+}
+
+function toggleAuth(l){document.getElementById('loginCard').style.display=l?'block':'none'; document.getElementById('signupCard').style.display=l?'none':'block';}
+
+function handleSignup() {
+    let p=document.getElementById('signupPhone').value.trim(), e=document.getElementById('signupEmail').value.trim(), pw=document.getElementById('signupPassword').value;
+    if(!p||!e||!pw) return;
+    auth.createUserWithEmailAndPassword(e,pw).then(u=>{currentUser=u.user; let c=u.user.uid.substring(0,6).toUpperCase(); database.ref('users/'+u.user.uid).set({phone:p,email:e,balance:0,inviteCode:c,referredBy:""}).then(()=>showDashboard());});
+}
+
+function handleLogin() {
+    let e=document.getElementById('loginEmail').value.trim(), p=document.getElementById('loginPassword').value;
+    if(!e||!p) return; auth.signInWithEmailAndPassword(e,p).then(()=>showDashboard());
+}
+
+auth.onAuthStateChanged(u=>{
+    if(u){currentUser=u;showDashboard();database.ref('users/'+u.uid).on('value',s=>{let d=s.val();if(d){currentBalance=d.balance||0;document.getElementById('balance').innerText='PKR '+currentBalance;document.getElementById('userPhoneDisplay').innerText=d.phone||'N/A';if(d.inviteCode)document.getElementById('myInviteCode').innerText=d.inviteCode;else database.ref('users/'+u.uid).update({inviteCode:u.uid.substring(0,6).toUpperCase()});if(d.referredBy&&d.referredBy!==''){document.getElementById('referralInputRow').style.display='none';document.getElementById('referralStatus').style.display='block';}else{document.getElementById('referralInputRow').style.display='flex';document.getElementById('referralStatus').style.display='none';}}});}
+    else{document.getElementById('authScreen').style.display='flex';document.getElementById('appScreen').style.display='none';}
+});
+
+function setupListeners() {
+    if(!currentUser) return;
+    database.ref('users/'+currentUser.uid+'/deposits').on('value',s=>{let b=document.getElementById('userDepositHistoryBody'),em=document.getElementById('depHistoryEmptyMsg');if(!b)return;b.innerHTML='';let f=false;s.forEach(c=>{let d=c.val();f=true;let st=d.status||'pending',bg=st==='approved'?'status-approved':st==='rejected'?'status-rejected':'status-pending';b.innerHTML='<tr><td style="color:#10b981;">Rs. '+d.amount+'</td><td style="color:#94a3b8;font-family:monospace;">'+d.trxId+'</td><td><span class="status-badge '+bg+'">'+st+'</span></td></tr>'+b.innerHTML;});em.style.display=f?'none':'block';});
+    database.ref('users/'+currentUser.uid+'/withdrawals').on('value',s=>{let b=document.getElementById('userWithdrawHistoryBody'),em=document.getElementById('withHistoryEmptyMsg');if(!b)return;b.innerHTML='';let f=false;s.forEach(c=>{let d=c.val();f=true;let st=d.status||'pending',bg=st==='approved'?'status-approved':st==='rejected'?'status-rejected':'status-pending';b.innerHTML='<tr><td style="color:#f59e0b;">'+d.paymentMethod+'</td><td style="color:#ef4444;">Rs. '+d.amount+'</td><td style="color:#cbd5e1;font-size:10px;">'+d.accountNumber+'<br><small style="color:#64748b;">'+d.accountTitle+'</small></td><td><span class="status-badge '+bg+'">'+st+'</span></td></tr>'+b.innerHTML;});em.style.display=f?'none':'block';});
+    database.ref('users/'+currentUser.uid+'/bets').on('value',s=>{totalBetHistoryList=[];s.forEach(c=>totalBetHistoryList.push(c.val()));totalBetHistoryList.sort((a,b)=>b.timestamp-a.timestamp);renderBetHistory();});
+}
+
+function renderBetHistory() {
+    let b=document.getElementById('userBetHistoryBody'),em=document.getElementById('betHistoryEmptyMsg');if(!b)return;b.innerHTML='';if(totalBetHistoryList.length===0){em.style.display='block';return;}em.style.display='none';
+    let items=totalBetHistoryList.slice((currentBetPage-1)*10,currentBetPage*10);
+    items.forEach(v=>{let bs=v.category==='size'?(v.value==='Big'?'badge-big':'badge-small'):v.category==='color'?(v.value==='Red'?'badge-red':'badge-green'):'badge-num';b.innerHTML+='<tr><td><span class="badge-box '+bs+'">'+v.value+'</span></td><td style="text-transform:uppercase;color:#94a3b8;font-size:9px;">'+v.category+'</td><td>Rs. '+v.amount+'</td><td>'+(v.isWin?'<span style="color:#10b981;">🏆 WIN</span>':'<span style="color:#ef4444;">❌ LOSE</span>')+'</td><td>'+(v.isWin?'<b style="color:#10b981;">+'+v.payout+'</b>':'<span style="color:#475569;">0</span>')+'</td></tr>';});
+}
+
+function changeBetPage(n){currentBetPage=n;document.getElementById('btnBetPage1').className='page-nav-btn'+(n===1?' active':'');document.getElementById('btnBetPage2').className='page-nav-btn'+(n===2?' active':'');renderBetHistory();}
+function copyInviteCode(){navigator.clipboard.writeText(document.getElementById('myInviteCode').innerText).then(()=>alert('✅ Copied!'));}
+function applyReferralCode(){
+    let c=document.getElementById('inputReferralCode').value.trim().toUpperCase(),m=document.getElementById('myInviteCode').innerText;
+    if(!c)return alert("Enter code!");if(c===m)return alert("Can't use your own!");database.ref('users').once('value',s=>{let f=false,u='',b=0;s.forEach(ch=>{let d=ch.val();if(d.inviteCode===c){f=true;u=ch.key;b=d.balance||0;}});if(f){database.ref('users/'+currentUser.uid).update({referredBy:c});database.ref('users/'+u).update({balance:b+50});alert('✅ Linked! Rs. 50 sent!');}else alert('❌ Invalid code!');});
+}
+function handleLogout(){auth.signOut().then(()=>location.reload());}
+function applyMultiplier(f){let i=document.getElementById('betAmount');i.value=(parseInt(i.value)||30)*f;}
+function listenTrends(){database.ref('wingo_history').limitToLast(10).on('value',s=>{largeTrendPool=[];s.forEach(c=>largeTrendPool.push(c.val()));renderHistory();});}
+function renderHistory(){let c=document.getElementById('trendsHistory');if(!c)return;c.innerHTML='';[...largeTrendPool].reverse().forEach((v,i)=>{let bg=v.color==='Green'?'linear-gradient(135deg,#10b981,#059669)':v.color==='Red'?'linear-gradient(135deg,#ef4444,#dc2626)':'linear-gradient(135deg,#8b5cf6,#ec4899)';c.innerHTML+='<div class="trend-dot" style="background:'+bg+';">'+(i===0?'<span class="latest-win-mark">🔥</span>':'')+'<span style="font-size:11px;font-weight:900;">'+v.num+'</span><span style="font-size:7px;opacity:0.9;">'+v.size+'</span></div>';});}
+
+// ===== 🎯 MAIN GAME LOOP WINGO =====
+setInterval(() => {
+    timeLeft--;
+    if(timeLeft%3===0){let e=document.getElementById('wingoLivePool');if(e)e.innerText='🔥 '+(Math.floor(Math.random()*1500+3000)).toLocaleString()+' active players';}
+
+    // 🎯 5 SECONDS: CLOSE BETTING + BALL BOUNCE
+    if(timeLeft===5){
+        setBettingState(true);
+        let size=Math.random()>0.5?'Big':'Small', num=size==='Big'?[5,6,7,8,9][Math.floor(Math.random()*5)]:[0,1,2,3,4][Math.floor(Math.random()*5)];
+        preCalculatedRoundData={num,size};
+        database.ref('admin_controls/auto_preview').set({num,size,message:'Locked: '+size+' ('+num+')'});
+    }
+
+    if(timeLeft<=0){
+        let finalNum=5,finalSize='Big';
+        if(preCalculatedRoundData){finalNum=preCalculatedRoundData.num;finalSize=preCalculatedRoundData.size;}
+        else{finalSize=Math.random()>0.5?'Big':'Small';finalNum=finalSize==='Big'?[5,6,7,8,9][Math.floor(Math.random()*5)]:[0,1,2,3,4][Math.floor(Math.random()*5)];}
+
+        database.ref('admin_controls/forced_result').once('value',s=>{
+            let f=s.val();if(f&&f!=='none'){finalNum=parseInt(f);finalSize=finalNum>=5?'Big':'Small';}
+            let finalColor=[2,4,6,8].includes(finalNum)?'Red':[1,3,7,9].includes(finalNum)?'Green':'Mix', payout=0, placings=[];
+            if(activeWingoBets.length>0){
+                activeWingoBets.forEach(b=>{
+                    let won=false,mul=2;
+                    if(b.category==='size'&&b.value===finalSize)won=true;
+                    else if(b.category==='color'&&(b.value===finalColor||finalColor==='Mix'))won=true;
+                    else if(b.category==='number'&&parseInt(b.value)===finalNum){won=true;mul=9;}
+                    let win=won?Math.floor((b.amount*mul)*0.9):0; payout+=win;
+                    placings.push({cat:b.category,val:b.value,amt:b.amount,won,returnAmt:win});
+                    database.ref('users/'+currentUser.uid+'/bets').push({category:b.category,value:b.value,amount:b.amount,isWin:won,payout:win,timestamp:Date.now()});
                 });
-
-                closeModal('depositModal');
-                alert('Your Deposit Request & Track ID has been sent to Admin for manual clearance!');
-                
-                const botToken = "8228129220:AAHvoJGNQD4ENfjZ-Qf8LGjoMdOtK9vRr3Q";
-                const chatId = "8608893352";
-                const message = `⚠️ *NEW DEPOSIT REQUEST*\n\n📧 User: ${currentUser.email}\n💰 Amount: PKR ${amount}\n🔑 TRID: ${trx}`;
-                
-                fetch(`https://api.telegram-proxy.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`)
-                .then(res => console.log("Telegram Proxy Trigger Result:", res.status))
-                .catch(err => console.log("Telegram alert failed: ", err));
-
-                if(document.getElementById('depAmount')) document.getElementById('depAmount').value = '';
-                if(document.getElementById('depTrx')) document.getElementById('depTrx').value = '';
-            }).catch((err) => {
-                console.error("Firebase Execution Failure: ", err);
-                alert("Error sending request: " + err.message);
-            });
-        }
-
-        function navigateToSection(sectionId) {
-            document.getElementById('sectionHome').style.display = "none";
-            document.getElementById('sectionInvite').style.display = "none";
-            document.getElementById('sectionWithdraw').style.display = "none";
-            
-            document.getElementById('navHome').classList.remove('active');
-            document.getElementById('navInvite').classList.remove('active');
-            document.getElementById('navWithdraw').classList.remove('active');
-
-            if(sectionId === 'home') {
-                document.getElementById('sectionHome').style.display = "block";
-                document.getElementById('navHome').classList.add('active');
-                triggerCanvasFix();
-            } else if(sectionId === 'invite') {
-                document.getElementById('sectionInvite').style.display = "block";
-                document.getElementById('navInvite').classList.add('active');
-            } else if(sectionId === 'withdraw') {
-                document.getElementById('sectionWithdraw').style.display = "block";
-                document.getElementById('navWithdraw').classList.add('active');
+                if(payout>0) database.ref('users/'+currentUser.uid+'/balance').set(currentBalance+payout);
+                showResult(placings,finalNum,finalColor,finalSize,payout);
             }
-        }
-
-        function selectWithdrawMethod(method) {
-            document.getElementById('selectedWithMethod').value = method;
-            const btnJazz = document.getElementById('btnMethodJazz');
-            const btnEasy = document.getElementById('btnMethodEasy');
-            const lblAccount = document.getElementById('lblAccountNo');
-            
-            if(method === 'JazzCash') {
-                btnJazz.classList.add('active-jazz');
-                btnEasy.classList.remove('active-easy');
-                lblAccount.innerText = "JazzCash Account Number:";
-            } else {
-                btnEasy.classList.add('active-easy');
-                btnJazz.classList.remove('active-jazz');
-                lblAccount.innerText = "EasyPaisa Account Number:";
-            }
-        }
-
-        function processWithdrawal() {
-            let amount = parseInt(document.getElementById('withAmount').value);
-            let account = document.getElementById('withAccount').value.trim();
-            let title = document.getElementById('withTitle').value.trim();
-            let method = document.getElementById('selectedWithMethod').value;
-
-            if(!account || !title || isNaN(amount)) {
-                alert("Please fill all details fully!");
-                return;
-            }
-
-            if(amount < 1000) {
-                alert("Minimum withdrawal limit is PKR 1000!");
-                return;
-            }
-
-            if(amount > currentBalance) {
-                alert("Insufficient wallet balance!");
-                return;
-            }
-
-            let newWithdrawalRef = database.ref('withdraw_requests').push();
-            let uniqueWithdrawalId = newWithdrawalRef.key;
-            let entryTime = Date.now();
-
-            let structuralPayload = {
-                uid: currentUser.uid,
-                email: currentUser.email,
-                amount: amount,
-                accountNumber: account,
-                accountTitle: title,
-                paymentMethod: method,
-                status: "pending",
-                timestamp: entryTime
-            };
-
-            newWithdrawalRef.set(structuralPayload).then(() => {
-                database.ref('users/' + currentUser.uid + '/withdrawals/' + uniqueWithdrawalId).set({
-                    amount: amount,
-                    accountNumber: account,
-                    accountTitle: title,
-                    paymentMethod: method,
-                    status: "pending",
-                    timestamp: entryTime
-                });
-
-                database.ref('users/' + currentUser.uid).update({ balance: currentBalance - amount });
-                alert(`Your ${method} Cashout request of PKR ${amount} is under manual verification!`);
-                
-                document.getElementById('withAmount').value = '';
-                document.getElementById('withAccount').value = '';
-                document.getElementById('withTitle').value = '';
-            }).catch((err) => {
-                console.error("Firebase Withdrawal Entry Failure: ", err);
-                alert("Error sending request: " + err.message);
-            });
-        }
-
-        function rotateGlobalTicker() {
-            const lines = [
-                `User 0305****812 requested a payout of PKR 8,400 via EasyPaisa successfully.`,
-                `User 0344****291 won PKR 14,500 on Aviator at 12.40x multiplier!`,
-                `User 0313****902 just deposited PKR 1,000 and received PKR 200 VIP bonus.`,
-                `User 0321****441 processed a direct JazzCash withdrawal of PKR 3,500.`
-            ];
-            document.getElementById('tickerText').innerText = lines[Math.floor(Math.random() * lines.length)];
-        }
-        setInterval(rotateGlobalTicker, 6000);
-
-        function drawRealPlane(x, y) {
-            ctx.save(); ctx.translate(x, y); ctx.fillStyle = "#ea1c4d"; ctx.beginPath();
-            ctx.ellipse(0, 0, 14, 5, 0, 0, 2 * Math.PI); ctx.fill();
-            ctx.beginPath(); ctx.moveTo(-2, -4); ctx.lineTo(3, -14); ctx.lineTo(7, -14); ctx.lineTo(2, -4);
-            ctx.fillStyle = "#cb1c45"; ctx.fill();
-            ctx.beginPath(); ctx.moveTo(-2, 4); ctx.lineTo(3, 14); ctx.lineTo(7, 14); ctx.lineTo(2, 4);
-            ctx.fill(); ctx.restore();
-        }
-
-        function switchGame(target) {
-            document.querySelectorAll('.game-wrapper').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('#sectionHome .game-tabs .tab-btn').forEach(el => el.classList.remove('active'));
-            if(target === 'wingo') {
-                document.getElementById('wingoEngineWrapper').classList.add('active');
-                document.getElementById('tabWingo').classList.add('active');
-            } else {
-                document.getElementById('aviatorEngineWrapper').classList.add('active');
-                document.getElementById('tabAviator').classList.add('active');
-                triggerCanvasFix();
-            }
-        }
-
-        function triggerCanvasFix() {
-            if(document.getElementById('sectionHome').style.display !== "none" && document.getElementById('aviatorEngineWrapper').classList.contains('active')) {
-                canvas.width = canvas.parentElement.clientWidth;
-                canvas.height = canvas.parentElement.clientHeight;
-                drawAviatorGraph();
-            }
-        }
-
-        function drawAviatorGraph() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (avState === "running") {
-                ctx.beginPath(); ctx.strokeStyle = "#ea1c4d"; ctx.lineWidth = 4;
-                ctx.moveTo(30, canvas.height - 30);
-                ctx.quadraticCurveTo(canvas.width / 2, canvas.height - 25, planeX, planeY);
-                ctx.stroke();
-
-                let grad = ctx.createLinearGradient(0, canvas.height, 0, 0);
-                grad.addColorStop(0, "rgba(14, 15, 20, 0)"); grad.addColorStop(1, "rgba(234, 28, 77, 0.22)");
-                ctx.fillStyle = grad; ctx.lineTo(planeX, canvas.height - 30); ctx.lineTo(30, canvas.height - 30); ctx.fill();
-                drawRealPlane(planeX, planeY);
-            }
-        }
-
-        function startBufferCountdown() {
-            avState = "waiting"; avMultiplier = 1.00; avCountdownTime = 7; avHasCashedOut = false;
-            document.getElementById('aviatorMultText').style.display = 'none';
-            document.getElementById('alertFlew').style.display = 'none';
-            document.getElementById('alertWait').style.display = 'block';
-            document.getElementById('avBufferTimer').innerText = avCountdownTime;
-            document.getElementById('aviatorStatusMessage').innerText = "🛑 PLACE YOUR BETS NOW!";
-            document.getElementById('liveBetsCount').innerText = `${Math.floor(Math.random() * 80 + 190)} bets`;
-            
-            let panel = document.getElementById('aviatorLiveWinnersList'); panel.innerHTML = '';
-            for(let i=0; i<5; i++) {
-                let randomBet = [15, 20, 25, 50, 100][Math.floor(Math.random() * 5)];
-                let randNum = Math.floor(Math.random() * 9000 + 1000);
-                panel.innerHTML += `<div class="live-winner-row" id="fakeRow_${i}"><span class="win-user-tag">User ${fakeNames[Math.floor(Math.random() * fakeNames.length)]}${randNum}</span><span class="win-mult-tag">-</span><span class="win-amt-tag" style="color:#94a3b8">PKR ${randomBet}</span></div>`;
-            }
-            updateAviatorButtonUI();
-
-            let cdInterval = setInterval(() => {
-                avCountdownTime--;
-                if(document.getElementById('avBufferTimer')) document.getElementById('avBufferTimer').innerText = avCountdownTime;
-                if(avCountdownTime <= 0) { clearInterval(cdInterval); startAviatorEngineLoop(); }
-            }, 1000);
-        }
-
-        function startAviatorEngineLoop() {
-            avState = "running";
-            document.getElementById('alertWait').style.display = 'none';
-            document.getElementById('aviatorMultText').style.display = 'block';
-            document.getElementById('aviatorStatusMessage').innerText = "🚀 FLIGHT IN PROGRESS...";
-            
-            if (avActiveBet) {
-                if (avActiveBet <= 25) {
-                    let isRareLuckyRound = (Math.random() < 0.09); 
-                    
-                    if (isRareLuckyRound) {
-                        avCrashPoint = (Math.random() * 3.0 + 5.00).toFixed(2);
-                    } else {
-                        let isInstantLoss = (Math.random() < 0.40);
-                        if (isInstantLoss) {
-                            avCrashPoint = (Math.random() * 0.2 + 1.02).toFixed(2); 
-                        } else {
-                            avCrashPoint = (Math.random() * 2.3 + 1.20).toFixed(2); 
-                        }
-                    }
-                } else if (avActiveBet === 50) {
-                    avCrashPoint = (Math.random() < 0.15 ? (Math.random() * 3.0 + 3.00) : (Math.random() * 0.35 + 1.12)).toFixed(2);
-                } else {
-                    avCrashPoint = (Math.random() * 0.20 + 1.05).toFixed(2);
-                }
-            } else {
-                avCrashPoint = (Math.random() * 6.0 + 2.50).toFixed(2);
-            }
-
-            updateAviatorButtonUI();
-            planeX = 30; planeY = canvas.height - 30;
-
-            avLoopInterval = setInterval(() => {
-                avMultiplier += avMultiplier > 4 ? 0.07 : 0.01;
-                document.getElementById('aviatorMultText').innerText = avMultiplier.toFixed(2) + "x";
-                if (planeX < canvas.width - 50) planeX += (canvas.width / 180);
-                if (planeY > 50) planeY -= (canvas.height / 250);
-                drawAviatorGraph();
-
-                if (Math.random() < 0.15) {
-                    let randomRowId = Math.floor(Math.random() * 5);
-                    let targetRow = document.getElementById(`fakeRow_${randomRowId}`);
-                    if (targetRow && targetRow.innerHTML.includes('class="win-mult-tag">-</span>')) {
-                        let currentBetAmt = parseInt(targetRow.innerText.split('PKR ')[1]);
-                        let winAmt = Math.floor(currentBetAmt * avMultiplier);
-                        targetRow.innerHTML = targetRow.innerHTML.replace('<span class="win-mult-tag">-</span>', `<span class="win-mult-tag">${avMultiplier.toFixed(2)}x</span>`);
-                        targetRow.innerHTML = targetRow.innerHTML.replace(`style="color:#94a3b8"`, `style="color:#10b981"`);
-                        targetRow.innerHTML = targetRow.innerHTML.replace(`PKR ${currentBetAmt}`, `+PKR ${winAmt}`);
-                    }
-                }
-
-                if (avActiveBet && !avHasCashedOut) {
-                    let calculatedCash = Math.floor(avActiveBet * avMultiplier);
-                    document.getElementById('aviatorActionBtn').innerText = `CASH OUT PKR ${calculatedCash}`;
-                }
-                if (avMultiplier >= avCrashPoint) { clearInterval(avLoopInterval); triggerAviatorCrash(); }
-            }, 30);
-        }
-
-        function triggerAviatorCrash() {
-            avState = "crashed";
-            document.getElementById('aviatorMultText').style.color = "#cb1c45";
-            document.getElementById('alertFlew').style.display = 'block';
-            document.getElementById('aviatorStatusMessage').innerText = `💥 CRASHED AT ${avCrashPoint}x!`;
-            const strip = document.getElementById('aviatorHistory');
-            let itemColor = avCrashPoint >= 3.0 ? "style='color:#a855f7; font-weight:900;'" : "";
-            strip.innerHTML = `<div class="aviator-history-item" ${itemColor}>${avCrashPoint}x</div>` + strip.innerHTML;
-            avActiveBet = null; updateAviatorButtonUI();
-            setTimeout(() => { document.getElementById('aviatorMultText').style.color = "#fff"; document.getElementById('aviatorMultText').innerText = "1.00x"; startBufferCountdown(); }, 2500);
-        }
-
-        function handleAviatorAction() {
-            let amount = parseInt(document.getElementById('aviatorBetAmount').value);
-            if (avState === 'waiting') {
-                if (avActiveBet) return;
-                if (isNaN(amount) || amount < 15 || amount > currentBalance) { alert("Check wallet balance!"); return; }
-                avActiveBet = amount;
-                database.ref('users/' + currentUser.uid).update({ balance: currentBalance - amount });
-                document.getElementById('aviatorStatusMessage').innerText = `✅ STAKE ACTIVE: PKR ${amount}`;
-                updateAviatorButtonUI();
-            } else if (avState === 'running' && avActiveBet && !avHasCashedOut) {
-                avHasCashedOut = true;
-                let payout = Math.floor(avActiveBet * avMultiplier);
-                database.ref('users/' + currentUser.uid).update({ balance: currentBalance + payout });
-                document.getElementById('aviatorStatusMessage').innerText = `💰 PROFIT CLAIMS: PKR ${payout}`;
-                updateAviatorButtonUI();
-            }
-        }
-
-        function updateAviatorButtonUI() {
-            const btn = document.getElementById('aviatorActionBtn'); if(!btn) return;
-            if (avState === 'waiting') { btn.className = "av-main-action-btn av-btn-green"; btn.innerText = avActiveBet ? "LOCKED IN" : "BET"; } 
-            else if (avState === 'running') {
-                if (avActiveBet && !avHasCashedOut) { btn.className = "av-main-action-btn av-btn-orange"; } 
-                else { btn.className = "av-main-action-btn av-btn-grey"; btn.innerText = avHasCashedOut ? "SUCCESS" : "RUNNING"; }
-            } else { btn.className = "av-main-action-btn av-btn-grey"; btn.innerText = "CRASHED"; }
-        }
-
-        function showDashboard() {
-            document.getElementById('authScreen').style.display = 'none';
-            document.getElementById('appScreen').style.display = 'block';
-            listenWingoTrends();
-            setupPersonalHistoryListeners(); 
-            setTimeout(() => { triggerCanvasFix(); startBufferCountdown(); }, 1000);
-        }
-
-        function toggleAuth(isLogin) {
-            document.getElementById('loginCard').style.display = isLogin ? 'block' : 'none';
-            document.getElementById('signupCard').style.display = isLogin ? 'none' : 'block';
-        }
-
-        function handleSignup() {
-            const phone = document.getElementById('signupPhone').value.trim();
-            const email = document.getElementById('signupEmail').value.trim();
-            const password = document.getElementById('signupPassword').value;
-            if(!phone || !email || !password) return;
-            auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
-                currentUser = userCredential.user;
-                let generatedCode = currentUser.uid.substring(0, 6).toUpperCase();
-                database.ref('users/' + currentUser.uid).set({ 
-                    phone: phone, 
-                    email: email, 
-                    balance: 0,
-                    inviteCode: generatedCode,
-                    referredBy: ""
-                }).then(() => { showDashboard(); });
-            });
-        }
-
-        function handleLogin() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            if(!email || !password) return;
-            auth.signInWithEmailAndPassword(email, password).then(() => { showDashboard(); });
-        }
-
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                currentUser = user; showDashboard();
-                database.ref('users/' + user.uid).on('value', (snapshot) => {
-                    let data = snapshot.val();
-                    if(data) {
-                        currentBalance = data.balance || 0;
-                        document.getElementById('balance').innerText = `PKR ${currentBalance}`;
-                        document.getElementById('userPhoneDisplay').innerText = data.phone || 'N/A';
-                        
-                        if(data.inviteCode) {
-                            document.getElementById('myInviteCode').innerText = data.inviteCode;
-                        } else {
-                            let genCode = user.uid.substring(0, 6).toUpperCase();
-                            database.ref('users/' + user.uid).update({ inviteCode: genCode });
-                        }
-
-                        if(data.referredBy && data.referredBy !== "") {
-                            document.getElementById('referralInputRow').style.display = "none";
-                            document.getElementById('referralStatus').style.display = "block";
-                        } else {
-                            document.getElementById('referralInputRow').style.display = "flex";
-                            document.getElementById('referralStatus').style.display = "none";
-                        }
-                    }
-                });
-            } else {
-                document.getElementById('authScreen').style.display = 'flex';
-                document.getElementById('appScreen').style.display = 'none';
-            }
+            database.ref('wingo_history').push({num:finalNum,color:finalColor,size:finalSize});
+            document.getElementById('roundStatus').innerHTML='🎉 Result: <span style="color:#f1c40f;">'+finalNum+'</span> | Size <span style="color:#38bdf8;">['+finalSize+']</span>';
+            activeWingoBets=[]; preCalculatedRoundData=null; document.getElementById('activeBetsPanel').innerHTML=''; timeLeft=30;
+            setBettingState(false);
         });
+    } else {let t=document.getElementById('timer');if(t)t.innerText='00:'+(timeLeft<10?'0'+timeLeft:timeLeft);}
+}, 1000);
 
-        function setupPersonalHistoryListeners() {
-            if(!currentUser) return;
+function placeBet(cat,val){
+    if(isBettingClosed) return alert("⏳ Betting closed! Wait for next round.");
+    let a=parseInt(document.getElementById('betAmount').value);
+    if(isNaN(a)||a<15||a>currentBalance) return alert("Check stake/balance!");
+    if(cat==='size'){let c=val==='Big'?'Small':'Big';if(activeWingoBets.some(b=>b.category==='size'&&b.value===c))return alert('❌ Already on '+c+'!');}
+    if(cat==='color'){let c=val==='Red'?'Green':'Red';if(activeWingoBets.some(b=>b.category==='color'&&b.value===c))return alert('❌ Already on '+c+'!');if(activeWingoBets.some(b=>b.category==='number'))return alert('❌ Can\'t bet color with number!');}
+    if(cat==='number'&&activeWingoBets.some(b=>b.category==='color'))return alert('❌ Can\'t bet number with color!');
+    activeWingoBets.push({category:cat,value:val,amount:a});
+    database.ref('users/'+currentUser.uid).update({balance:currentBalance-a});
+    let p=document.getElementById('activeBetsPanel'); p.innerHTML='';
+    activeWingoBets.forEach(b=>{let bc='badge-box ';if(b.category==='size')bc+=b.value==='Big'?'badge-big':'badge-small';else if(b.category==='color')bc+=b.value==='Red'?'badge-red':'badge-green';else bc+='badge-num';p.innerHTML+='<div class="live-bet-card"><span class="'+bc+'">'+b.value+'</span><span style="color:#94a3b8;font-size:10px;">'+b.category.toUpperCase()+'</span><span style="color:#f1c40f;font-weight:900;">PKR '+b.amount+'</span></div>';});
+}
 
-            // REAL-TIME DEPOSIT LIVE STREAM & REFRESH FIX (POORI PURANI HISTORY SEPARATE RESET)
-            database.ref('users/' + currentUser.uid + '/deposits').on('value', (snapshot) => {
-                const body = document.getElementById('userDepositHistoryBody');
-                const emptyMsg = document.getElementById('depHistoryEmptyMsg');
-                if(!body) return;
-                body.innerHTML = '';
-                
-                let dataFound = false;
-                snapshot.forEach((child) => {
-                    let dep = child.val();
-                    dataFound = true;
-                    let currentStatus = dep.status ? dep.status.toLowerCase() : "pending";
-                    let badgeClass = currentStatus === 'approved' ? 'status-approved' : (currentStatus === 'rejected' ? 'status-rejected' : 'status-pending');
-                    
-                    body.innerHTML = `
-                        <tr>
-                            <td style="color:#10b981;">Rs. ${dep.amount}</td>
-                            <td style="color:#94a3b8; font-family:monospace;">${dep.trxId}</td>
-                            <td><span class="status-badge ${badgeClass}">${currentStatus}</span></td>
-                        </tr>
-                    ` + body.innerHTML;
-                });
-                
-                if(dataFound) emptyMsg.style.display = 'none';
-                else emptyMsg.style.display = 'block';
-            });
-
-            // REAL-TIME WITHDRAWAL LIVE STREAM & REFRESH FIX (POORI PURANI HISTORY SEPARATE RESET)
-            database.ref('users/' + currentUser.uid + '/withdrawals').on('value', (snapshot) => {
-                const body = document.getElementById('userWithdrawHistoryBody');
-                const emptyMsg = document.getElementById('withHistoryEmptyMsg');
-                if(!body) return;
-                body.innerHTML = '';
-                
-                let dataFound = false;
-                snapshot.forEach((child) => {
-                    let wit = child.val();
-                    dataFound = true;
-                    let currentStatus = wit.status ? wit.status.toLowerCase() : "pending";
-                    let badgeClass = currentStatus === 'approved' ? 'status-approved' : (currentStatus === 'rejected' ? 'status-rejected' : 'status-pending');
-                    
-                    body.innerHTML = `
-                        <tr>
-                            <td style="color:#f59e0b;">${wit.paymentMethod}</td>
-                            <td style="color:#ef4444;">Rs. ${wit.amount}</td>
-                            <td style="color:#cbd5e1; font-size:10px;">${wit.accountNumber}<br><small style="color:#64748b;">${wit.accountTitle}</small></td>
-                            <td><span class="status-badge ${badgeClass}">${currentStatus}</span></td>
-                        </tr>
-                    ` + body.innerHTML;
-                });
-                
-                if(dataFound) emptyMsg.style.display = 'none';
-                else emptyMsg.style.display = 'block';
-            });
-
-            database.ref('users/' + currentUser.uid + '/bets').on('value', (snapshot) => {
-                totalBetHistoryList = [];
-                snapshot.forEach((child) => {
-                    totalBetHistoryList.push(child.val());
-                });
-                totalBetHistoryList.sort((a,b) => b.timestamp - a.timestamp);
-                renderBetHistoryPagination();
-            });
-        }
-
-        function renderBetHistoryPagination() {
-            const body = document.getElementById('userBetHistoryBody');
-            const emptyMsg = document.getElementById('betHistoryEmptyMsg');
-            if(!body) return;
-            body.innerHTML = '';
-
-            if(totalBetHistoryList.length === 0) {
-                emptyMsg.style.display = 'block';
-                return;
-            }
-            emptyMsg.style.display = 'none';
-
-            let itemsPerPage = 10; 
-            let startIndex = (currentBetPage - 1) * itemsPerPage;
-            let endIndex = startIndex + itemsPerPage;
-            let pageItems = totalBetHistoryList.slice(startIndex, endIndex);
-
-            pageItems.forEach((bet) => {
-                let badgeStyle = bet.category === 'size' ? (bet.value === 'Big' ? 'badge-big':'badge-small') : bet.category === 'color' ? (bet.value === 'Red' ? 'badge-red':'badge-green') : 'badge-num';
-                let outcomeDisplay = bet.isWin ? `<span style="color:#10b981;">🏆 WIN</span>` : `<span style="color:#ef4444;">❌ LOSE</span>`;
-                let rewardDisplay = bet.isWin ? `<b style="color:#10b981;">+${bet.payout}</b>` : `<span style="color:#475569;">0</span>`;
-                
-                body.innerHTML += `
-                    <tr>
-                        <td><span class="badge-box ${badgeStyle}">${bet.value}</span></td>
-                        <td style="text-transform:uppercase; color:#94a3b8; font-size:10px;">${bet.category}</td>
-                        <td style="color:#fff;">Rs. ${bet.amount}</td>
-                        <td>${outcomeDisplay}</td>
-                        <td>${rewardDisplay}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function changeBetPage(pageNumber) {
-            currentBetPage = pageNumber;
-            document.getElementById('btnBetPage1').classList.remove('active');
-            document.getElementById('btnBetPage2').classList.remove('active');
-            
-            if(pageNumber === 1) document.getElementById('btnBetPage1').classList.add('active');
-            else document.getElementById('btnBetPage2').classList.add('active');
-            
-            renderBetHistoryPagination();
-        }
-
-        function copyInviteCode() {
-            let code = document.getElementById('myInviteCode').innerText;
-            navigator.clipboard.writeText(code).then(() => {
-                alert("Invitation Code copied: " + code);
-            });
-        }
-
-        function applyReferralCode() {
-            let typedCode = document.getElementById('inputReferralCode').value.trim().toUpperCase();
-            let myOwnCode = document.getElementById('myInviteCode').innerText;
-            
-            if(!typedCode) { alert("Please enter a code!"); return; }
-            if(typedCode === myOwnCode) { alert("You cannot use your own invitation code!"); return; }
-
-            database.ref('users').once('value', (snapshot) => {
-                let codeFound = false;
-                let targetUserUid = "";
-                let targetUserBalance = 0;
-
-                snapshot.forEach((childSnapshot) => {
-                    let userData = childSnapshot.val();
-                    if(userData.inviteCode === typedCode) {
-                        codeFound = true;
-                        targetUserUid = childSnapshot.key;
-                        targetUserBalance = userData.balance || 0;
-                    }
-                });
-
-                if(codeFound) {
-                    database.ref('users/' + currentUser.uid).update({ referredBy: typedCode });
-                    database.ref('users/' + targetUserUid).update({ balance: targetUserBalance + 50 });
-                    alert("Referral Applied! Rs. 50 bonus sent to the inviter.");
-                } else {
-                    alert("Invalid Invitation Code! Please check again.");
-                }
-            });
-        }
-
-        function handleLogout() { auth.signOut().then(() => location.reload()); }
-        function applyMultiplier(factor) {
-            let inputField = document.getElementById('betAmount');
-            inputField.value = (parseInt(inputField.value) || 30) * factor;
-        }
-
-        function listenWingoTrends() {
-            database.ref('wingo_history').limitToLast(10).on('value', (snapshot) => {
-                largeTrendPool = [];
-                snapshot.forEach((child) => { largeTrendPool.push(child.val()); });
-                renderHistoryView();
-            });
-        }
-
-        function renderHistoryView() {
-            const container = document.getElementById('trendsHistory'); if(!container) return; container.innerHTML = '';
-            let displayArray = [...largeTrendPool].reverse();
-            displayArray.forEach((item, index) => {
-                let colorBg = item.color === 'Green' ? 'linear-gradient(135deg, #10b981, #059669)' : item.color === 'Red' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 'linear-gradient(135deg, #8b5cf6, #ec4899)';
-                let dynamicIndicator = (index === 0) ? `<span class="latest-win-mark">🔥 Result</span>` : '';
-                container.innerHTML += `<div class="trend-dot" style="background: ${colorBg};">${dynamicIndicator}<span style="font-size:11px; font-weight:900;">${item.num}</span><span style="font-size:7px; opacity:0.9; text-transform:uppercase;">${item.size}</span></div>`;
-            });
-        }
-
-        setInterval(() => {
-            timeLeft--;
-            if (timeLeft % 3 === 0) {
-                let randomWingoUsers = Math.floor(Math.random() * 1500 + 3000);
-                if(document.getElementById('wingoLivePool')) document.getElementById('wingoLivePool').innerText = `🔥 ${randomWingoUsers.toLocaleString()} dynamic players active`;
-            }
-
-            if (timeLeft === 10) {
-                let tempSize = Math.random() > 0.5 ? 'Big' : 'Small';
-                let tempNum = tempSize === 'Big' ? [5,6,7,8,9][Math.floor(Math.random()*5)] : [0,1,2,3,4][Math.floor(Math.random()*5)];
-                
-                preCalculatedRoundData = {
-                    num: tempNum,
-                    size: tempSize
-                };
-
-                database.ref('admin_controls/auto_preview').set({ 
-                    num: tempNum,
-                    size: tempSize,
-                    message: `Round Outcome Locked: ${tempSize} (${tempNum})`
-                });
-            }
-
-            if (timeLeft <= 0) {
-                let finalSizeResult = 'Big';
-                let finalNumberResult = 5;
-
-                if (preCalculatedRoundData) {
-                    finalNumberResult = preCalculatedRoundData.num;
-                    finalSizeResult = preCalculatedRoundData.size;
-                } else {
-                    finalSizeResult = Math.random() > 0.5 ? 'Big' : 'Small';
-                    finalNumberResult = finalSizeResult === 'Big' ? [5,6,7,8,9][Math.floor(Math.random()*5)] : [0,1,2,3,4][Math.floor(Math.random()*5)];
-                }
-                
-                database.ref('admin_controls/forced_result').once('value', (snapshot) => {
-                    let forcedVal = snapshot.val();
-                    if (forcedVal && forcedVal !== "none") {
-                        finalNumberResult = parseInt(forcedVal);
-                        finalSizeResult = finalNumberResult >= 5 ? 'Big' : 'Small';
-                    }
-                    
-                    let finalColorResult = [2,4,6,8].includes(finalNumberResult) ? 'Red' : [1,3,7,9].includes(finalNumberResult) ? 'Green' : 'Mix';
-                    let totalPayout = 0;
-                    let userPlacings = [];
-
-                    if (activeWingoBets.length > 0) {
-                        activeWingoBets.forEach(bet => {
-                            let betWon = false;
-                            let multiplier = 2;
-
-                            if (bet.category === 'size' && bet.value === finalSizeResult) {
-                                betWon = true;
-                            } else if (bet.category === 'color' && (bet.value === finalColorResult || finalColorResult === 'Mix')) {
-                                betWon = true;
-                            } else if (bet.category === 'number' && parseInt(bet.value) === finalNumberResult) {
-                                betWon = true;
-                                multiplier = 9;
-                            }
-
-                            let winAmt = 0;
-                            if (betWon) {
-                                winAmt = Math.floor((bet.amount * multiplier) * 0.90);
-                                totalPayout += winAmt;
-                                userPlacings.push({ cat: bet.category, val: bet.value, amt: bet.amount, won: true, returnAmt: winAmt });
-                            } else {
-                                userPlacings.push({ cat: bet.category, val: bet.value, amt: bet.amount, won: false, returnAmt: 0 });
-                            }
-
-                            database.ref('users/' + currentUser.uid + '/bets').push({
-                                category: bet.category,
-                                value: bet.value,
-                                amount: bet.amount,
-                                isWin: betWon,
-                                payout: winAmt,
-                                timestamp: Date.now()
-                            });
-                        });
-
-                        if (totalPayout > 0) {
-                            database.ref('users/' + currentUser.uid).child('balance').set(currentBalance + totalPayout);
-                        }
-                        
-                        triggerResultCelebrationModal(userPlacings, finalNumberResult, finalColorResult, finalSizeResult, totalPayout);
-                    }
-
-                    database.ref('wingo_history').push({ num: finalNumberResult, color: finalColorResult, size: finalSizeResult });
-                    
-                    if(document.getElementById('roundStatus')) document.getElementById('roundStatus').innerHTML = `🎉 Result: Number <span style="color:#f1c40f;">${finalNumberResult}</span> | Size <span style="color:#38bdf8;">[${finalSizeResult}]</span>`;
-                    
-                    activeWingoBets = []; 
-                    preCalculatedRoundData = null;
-                    document.getElementById('activeBetsPanel').innerHTML = ''; 
-                    timeLeft = 30;
-                });
-            } else {
-                if(document.getElementById('timer')) document.getElementById('timer').innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
-            }
-        }, 1000);
-
-        function placeBet(category, value) {
-            let amount = parseInt(document.getElementById('betAmount').value);
-            if (isNaN(amount) || amount < 15 || amount > currentBalance) { alert("Check stake/balance!"); return; }
-            
-            if (category === 'size') {
-                let conflictingSize = value === 'Big' ? 'Small' : 'Big';
-                let hasConflict = activeWingoBets.some(b => b.category === 'size' && b.value === conflictingSize);
-                if (hasConflict) {
-                    alert(`Ghalti! Aap ne pehle hi [${conflictingSize}] par bet lagayi hui hai. Ek waqt me sirf aik side choose kar sakte hain!`);
-                    return;
-                }
-            }
-
-            if (category === 'color') {
-                let conflictingColor = value === 'Red' ? 'Green' : 'Red';
-                let hasConflict = activeWingoBets.some(b => b.category === 'color' && b.value === conflictingColor);
-                if (hasConflict) {
-                    alert(`Ghalti! Aap ne pehle hi [${conflictingColor}] par bet lagayi hui hai. Dono colors par sath bet nahi lag sakti!`);
-                    return;
-                }
-                
-                let hasNumberBet = activeWingoBets.some(b => b.category === 'number');
-                if (hasNumberBet) {
-                    alert("Aap ne Direct Number hit choose kiya hai, isliye ab aap Color par bet nahi laga sakte!");
-                    return;
-                }
-            }
-
-            if (category === 'number') {
-                let hasColorBet = activeWingoBets.some(b => b.category === 'color');
-                if (hasColorBet) {
-                    alert("Aap pehle hi Color select kar chuke hain. Number par bet lagane ke liye agle round ka wait karein ya color skip karein!");
-                    return;
-                }
-            }
-
-            activeWingoBets.push({ category: category, value: value, amount: amount });
-            database.ref('users/' + currentUser.uid).update({ balance: currentBalance - amount });
-            
-            renderLiveRoutingUi();
-        }
-
-        function renderLiveRoutingUi() {
-            const panel = document.getElementById('activeBetsPanel');
-            panel.innerHTML = '';
-            activeWingoBets.forEach(bet => {
-                let badgeClass = "badge-box ";
-                if(bet.category === 'size') badgeClass += bet.value === 'Big' ? 'badge-big' : 'badge-small';
-                else if(bet.category === 'color') badgeClass += bet.value === 'Red' ? 'badge-red' : 'badge-green';
-                else badgeClass += 'badge-num';
-
-                panel.innerHTML += `
-                    <div class="live-bet-card">
-                        <span class="${badgeClass}">${bet.value}</span>
-                        <span style="color:#94a3b8; font-size:11px;">Category: <b style="color:#fff;">${bet.category.toUpperCase()}</b></span>
-                        <span style="color:#f1c40f; font-weight:900;">PKR ${bet.amount}</span>
-                    </div>
-                `;
-            });
-        }
-
-        function triggerResultCelebrationModal(placingsArray, num, color, size, payout) {
-            const modal = document.getElementById('resultModal');
-            const content = document.getElementById('resultModalContent');
-            const header = document.getElementById('resultHeader');
-            const details = document.getElementById('resultDetails');
-            
-            let isNetWin = payout > 0;
-            let rowsHtml = "";
-
-            placingsArray.forEach(p => {
-                let badgeStyle = p.cat === 'size' ? (p.val === 'Big' ? 'badge-big':'badge-small') : p.cat === 'color' ? (p.val === 'Red' ? 'badge-red':'badge-green') : 'badge-num';
-                if(p.won) {
-                    rowsHtml += `
-                        <div style="display:flex; justify-content:space-between; background:rgba(16,185,129,0.15); padding:6px 10px; border-radius:8px; margin-bottom:4px; border:1px solid #10b981;">
-                            <span class="badge-box ${badgeStyle}">${p.val}</span>
-                            <span style="color:#34d399;">🏆 WON (+PKR ${p.returnAmt})</span>
-                        </div>`;
-                } else {
-                    rowsHtml += `
-                        <div style="display:flex; justify-content:space-between; background:rgba(239,68,68,0.15); padding:6px 10px; border-radius:8px; margin-bottom:4px; border:1px solid #ef4444;">
-                            <span class="badge-box ${badgeStyle}">${p.val}</span>
-                            <span style="color:#f87171;">❌ LOST (-PKR ${p.amt})</span>
-                        </div>`;
-                }
-            });
-
-            if (isNetWin) {
-                header.innerText = "🏆 WINNER! 🏆";
-                header.style.color = "#10b981";
-                content.style.borderColor = "#10b981";
-                content.style.background = "linear-gradient(135deg, #1e293b 0%, #064e3b 100%)";
-                details.innerHTML = `
-                    <div style="font-size: 18px; color: #f1c40f; margin-bottom: 10px; font-weight:800;">CONGRATULATIONS!</div>
-                    <div style="display:flex; justify-content:space-around; background:#0f172a; padding:8px; border-radius:10px; margin-bottom:10px; border:1px solid #233146;">
-                        <div><small style="color:#94a3b8;display:block;">NUMBER</small><b style="color:#f1c40f;font-size:14px;">${num}</b></div>
-                        <div><small style="color:#94a3b8;display:block;">COLOR</small><b style="color:#34d399;font-size:14px;">${color}</b></div>
-                        <div><small style="color:#94a3b8;display:block;">SIZE</small><b style="color:#38bdf8;font-size:14px;">${size}</b></div>
-                    </div>
-                    <div style="text-align:left; font-size:11px; color:#94a3b8; margin-bottom:6px; font-weight:bold; text-transform:uppercase;">Stakes Status:</div>
-                    ${rowsHtml}
-                    <hr style="border:0; border-top:1px dashed #334155; margin:10px 0;">
-                    <span style="font-size: 20px; color: #fff;">Total Received: <b style="color:#10b981;">+PKR ${payout}</b></span>
-                `;
-            } else {
-                header.innerText = "❌ YOU LOST ❌";
-                header.style.color = "#ef4444";
-                content.style.borderColor = "#ef4444";
-                content.style.background = "linear-gradient(135deg, #1e293b 0%, #451a03 100%)";
-                details.innerHTML = `
-                    <div style="font-size: 15px; color: #94a3b8; margin-bottom: 10px;">Better Luck Next Round!</div>
-                    <div style="display:flex; justify-content:space-around; background:#0f172a; padding:8px; border-radius:10px; margin-bottom:10px; border:1px solid #233146;">
-                        <div><small style="color:#94a3b8;display:block;">NUMBER</small><b style="color:#f1c40f;font-size:14px;">${num}</b></div>
-                        <div><small style="color:#94a3b8;display:block;">COLOR</small><b style="color:#34d399;font-size:14px;">${color}</b></div>
-                        <div><small style="color:#94a3b8;display:block;">SIZE</small><b style="color:#38bdf8;font-size:14px;">${size}</b></div>
-                    </div>
-                    <div style="text-align:left; font-size:11px; color:#94a3b8; margin-bottom:6px; font-weight:bold; text-transform:uppercase;">Stakes Status:</div>
-                    ${rowsHtml}
-                `;
-            }
-            openModal('resultModal');
-        }
-
-        function openModal(id) { document.getElementById(id).style.display = "flex"; }
-        function closeModal(id) { document.getElementById(id).style.display = "none"; }
-        window.addEventListener('resize', triggerCanvasFix);
-    </script>
-</body>
-</html>
+function showResult(arr,num,color,size,payout){
+    let m=document.getElementById('resultModal'),c=document.getElementById('resultModalContent'),h=document.getElementById('resultHeader'),d=document.getElementById('resultDetails'),win=payout>0,rows='';
+    arr.forEach(p=>{let bs=p.cat==='size'?(p.val==='Big'?'badge-big':'badge-small'):p.cat==='color'?(p.val==='Red'?'badge-red':'badge-green'):'badge-num';if(p.won)rows+='<div style="display:flex;justify-content:space-between;background:rgba(16,185,129,0.15);padding:6px 10px;border-radius:8px;margin-bottom:4px;border:1px solid #10b981;"><span class="badge-box '+bs+'">'+p.val+'</span><span style="color:#34d399;">🏆 +PKR '+p.returnAmt+'</span></div>';else rows+='<div style="display:flex;justify-content:space-between;background:rgba(239,68,68,0.15);padding:6px 10px;border-radius:8px;margin-bottom:4px;border:1px solid #ef4444;"><span class="badge-box '+bs+'">'+p.val+'</span><span style="color:#f87171;">❌ -PKR '+p.amt+'</span></div>';});
+    if(win){h.innerText="🏆 YOU WIN!";h.style.color="#10b981";c.style.borderColor="#10b981";c.style.background="linear-gradient(135deg,#1e293b 0%,#064e3b 100%)";d.innerHTML='<div style="display:flex;justify-content:space-around;background:#0f172a;padding:8px;border-radius:10px;margin-bottom:10px;border:1px solid #233146;"><div><small style="color:#94a3b8;">NUMBER</small><b style="color:#f1c40f;">'+num+'</b></div><div><small style="color:#94a3b8;">COLOR</small><b style="color:#34d399;">'+color+'</b></div><div><small style="color:#94a3b8;">SIZE</small><b style="color:#38bdf8;">'+size+'</b></div></div>'+rows+'<hr style="border:0;border-top:1px dashed #334155;margin:10px 0;"><span style="font-size:18px;color:#fff;">Total: <b style="color:#10b981;">+PKR '+payout+'</b></span>';}
+    else{h.innerText="❌ LOST";h.style.color="#ef4444";c.style.borderColor="#ef4444";c.style.background="linear-gradient(135deg,#1e293b 0%,#451a03 100%)";d.innerHTML='<div style="font-size:14px;color:#94a3b8;margin-bottom:10px;">Better luck!</div><div style="display:flex;justify-content:space-around;background:#0f172a;padding:8px;border-radius:10px;margin-bottom:10px;border:1px solid #233146;"><div><small style="color:#94a3b8;">NUMBER</small><b style="color:#f1c40f;">'+num+'</b></div><div><small style="color:#94a3b8;">COLOR</small><b style="color:#34d399;">'+color+'</b></div><div><small style="color:#94a3b8;">SIZE</small><b style="color:#38bdf8;">'+size+'</b></div></div>'+rows;}
+    openModal('resultModal');
+}
+function openModal(id){document.getElementById(id).style.display='flex';}
+function closeModal(id){document.getElementById(id).style.display='none';}
+window.addEventListener('resize',triggerCanvasFix);
+</script></body></html>
