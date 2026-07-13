@@ -3,439 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Win Zone Pro - Modern Elite v3.5</title>
+    <title>Win Zone Pro - Elite Dual Engine App v3.4</title>
     <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        :root {
-            --primary: #f1c40f;
-            --secondary: #6366f1;
-            --success: #10b981;
-            --danger: #ef4444;
-            --bg-light: #f8fafc;
-            --card-bg: rgba(255, 255, 255, 0.9);
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-        }
-
+        /* LIGHT THEME CORE */
         body {
             margin: 0; padding: 0;
-            font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc; color: #1e293b;
             text-align: center;
             overflow-x: hidden;
-            min-height: 100vh;
         }
-
         #appScreen { display: none; }
-
-        /* AUTH SCREEN MODERNIZED */
-        .auth-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; }
-        .auth-card { 
-            background: var(--card-bg); 
-            padding: 40px 30px; 
-            border-radius: 30px; 
-            width: 100%; 
-            max-width: 400px; 
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            border: 1px solid rgba(255,255,255,0.8);
-            backdrop-filter: blur(10px);
+        
+        .auth-container { 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            height: 100vh; padding: 20px; box-sizing: border-box; 
+            background: linear-gradient(to bottom, #f1f5f9, #e2e8f0); 
         }
-        .auth-card h2 { color: var(--text-main); margin-bottom: 25px; font-size: 28px; font-weight: 800; letter-spacing: -1px; }
+        .auth-card { 
+            background-color: #ffffff; padding: 35px 25px; border-radius: 24px; 
+            width: 100%; max-width: 380px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            border: 1px solid #cbd5e1; 
+        }
+        .auth-card h2 { color: #d97706; margin-bottom: 25px; font-size: 26px; font-weight: 800; text-transform: uppercase; }
         
         /* HEADER & TICKER */
         .header { 
-            background: #ffffff; 
-            padding: 15px 20px; 
-            font-size: 16px; 
-            font-weight: 800; 
-            border-bottom: 1px solid #e2e8f0; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            background-color: #ffffff; padding: 12px 15px; font-size: 16px; font-weight: 800; 
+            border-bottom: 3px solid #f59e0b; display: flex; align-items: center; 
+            justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
         }
-        .header span { color: var(--secondary); letter-spacing: 1px; }
-        .logout-btn { background: #fee2e2; color: var(--danger); border: none; padding: 8px 16px; border-radius: 12px; cursor: pointer; font-size: 11px; font-weight: 700; transition: 0.3s; }
+        .header span { color: #1e293b; }
+        .logout-btn { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: bold; }
         
-        .live-ticker-bar { background: #1e293b; color: #34d399; font-size: 11px; font-weight: 600; padding: 6px; overflow: hidden; white-space: nowrap; box-sizing: border-box; }
+        .live-ticker-bar { background: #f1f5f9; color: #059669; font-size: 11px; font-weight: bold; padding: 6px; border-bottom: 1px solid #e2e8f0; overflow: hidden; white-space: nowrap; box-sizing: border-box; }
         .ticker-inner { display: inline-block; padding-left: 100%; animation: tickerMove 25s linear infinite; }
         @keyframes tickerMove { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-        /* NAVIGATION TABS */
-        .game-tabs { 
-            display: flex; 
-            background: #f1f5f9; 
-            margin: 15px 15px; 
-            padding: 6px; 
-            border-radius: 16px; 
-            gap: 6px; 
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .tab-btn { 
-            flex: 1; 
-            padding: 12px 6px; 
-            font-size: 12px; 
-            font-weight: 700; 
-            border: none; 
-            border-radius: 12px; 
-            background: transparent; 
-            color: var(--text-muted); 
-            cursor: pointer; 
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .tab-btn.active { 
-            background: #ffffff; 
-            color: var(--secondary); 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
-        }
+        /* NAVIGATION & TABS */
+        .game-tabs { display: flex; background: #ffffff; margin: 8px 10px; padding: 4px; border-radius: 10px; border: 1px solid #e2e8f0; gap: 4px; }
+        .tab-btn { flex: 1; padding: 10px 4px; font-size: 12px; font-weight: 800; border: none; border-radius: 8px; background: transparent; color: #64748b; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        .tab-btn.active { background: #f59e0b; color: #ffffff; box-shadow: 0 3px 8px rgba(245, 158, 11, 0.2); }
 
         .game-wrapper { display: none; }
         .game-wrapper.active { display: block; }
 
         /* BALANCE CARD */
         .balance-card { 
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); 
-            margin: 15px; 
-            padding: 25px; 
-            border-radius: 24px; 
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            color: white;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); 
+            margin: 8px 10px; padding: 15px; border-radius: 14px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; 
+            display: flex; justify-content: space-between; align-items: center; 
         }
         
-        /* WINGO COMPONENTS */
-        .history-box { 
-            background: white; 
-            margin: 15px; 
-            padding: 15px; 
-            border-radius: 20px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
-            text-align: left;
-        }
-        .history-title { font-size: 12px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
-        .trends-list { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; }
-        .trend-dot { 
-            min-width: 38px; height: 38px; border-radius: 12px; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 12px; font-weight: 800; color: white; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .timer-section { 
-            background: #ffffff; 
-            margin: 15px; 
-            padding: 15px; 
-            border-radius: 20px; 
-            font-size: 14px; 
-            color: var(--text-main); 
-            font-weight: 700; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        .timer-section span { color: var(--secondary); font-size: 18px; border-left: 2px solid #e2e8f0; padding-left: 10px; }
+        /* WINGO UI ELEMENTS */
+        .history-box { background-color: #ffffff; margin: 8px 10px; padding: 10px; border-radius: 10px; border: 1px solid #e2e8f0; text-align: left; }
+        .history-title { font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .trends-list { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 5px; }
+        .trend-dot { min-width: 32px; height: 32px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: white; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.1); line-height: 1.1; }
         
-        /* BETTING CONTROLS */
-        .bet-control-row { 
-            display: flex; flex-direction: column; 
-            margin: 15px; padding: 20px; 
-            background: white; border-radius: 20px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
-            gap: 15px;
-        }
-        .mult-btn { 
-            flex: 1; background: #f8fafc; border: 1px solid #e2e8f0; 
-            color: var(--text-main); padding: 12px 0; 
-            border-radius: 12px; font-weight: 700; font-size: 12px; 
-            transition: 0.2s;
-        }
-        .mult-btn:active { background: #e2e8f0; }
+        .latest-win-mark { position: absolute; top: -6px; font-size: 8px; background: #000; color: #fff; padding: 1px 3px; border-radius: 4px; font-weight: 900; animation: blink 1s infinite; }
+        @keyframes blink { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
 
-        .big-small-container, .color-selection-bar { 
-            display: flex; justify-content: center; gap: 12px; margin: 10px 15px; 
-        }
-        .btn-big { background: var(--secondary); color: white; flex: 1; padding: 15px; font-weight: 800; border: none; border-radius: 16px; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2); }
-        .btn-small { background: #f59e0b; color: white; flex: 1; padding: 15px; font-weight: 800; border: none; border-radius: 16px; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2); }
-
-        .choice-red { background: var(--danger); }
-        .choice-green { background: var(--success); }
-
-        .number-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 0 15px; margin-bottom: 20px; }
-        .num-btn { padding: 12px 0; font-size: 16px; font-weight: 800; border: none; border-radius: 12px; color: white; }
-        .bg-mix { background: linear-gradient(135deg, #a855f7, #ec4899); }
-
-        /* AVIATOR MODERNIZED */
-        .aviator-display-box { background: #0f172a; border-radius: 24px; margin: 15px; padding: 10px; overflow: hidden; }
-        .aviator-canvas-container { 
-            background: radial-gradient(circle at center, #1e293b 0%, #020617 100%); 
-            border-radius: 15px; height: 180px; 
-        }
-        .live-multiplier { font-size: 42px; text-shadow: 0 0 20px rgba(255,255,255,0.3); }
-
-        /* INPUTS */
-        input[type="number"], input[type="text"], input[type="email"], input[type="password"] { 
-            padding: 14px; font-size: 15px; border-radius: 12px; 
-            border: 1px solid #e2e8f0; background: #f8fafc; 
-            color: var(--text-main); width: 100%; box-sizing: border-box;
-            margin-bottom: 12px; transition: 0.3s;
-        }
-        input:focus { border-color: var(--secondary); outline: none; background: #fff; }
-
-        .status-display { color: var(--text-muted); padding: 10px; font-style: italic; font-size: 12px; }
+        .timer-section { background-color: #ffffff; margin: 8px 10px; padding: 10px; border-radius: 10px; font-size: 14px; color: #d97706; font-weight: bold; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+        .wingo-live-bets-bubble { font-size: 10px; color: #059669; font-weight: 600; margin: 0; }
+        .timer-section span { font-size: 16px; color: #1e293b; background: #f1f5f9; padding: 2px 8px; border-radius: 6px; border: 1px solid #f59e0b; }
         
-        .logs { background: white; margin: 15px; padding: 15px; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .bet-control-row { display: flex; align-items: center; justify-content: space-between; margin: 8px 10px; padding: 8px 10px; background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; gap: 8px; }
+        .bet-input-container { display: flex; flex-direction: column; align-items: flex-start; flex: 1; }
+        .multiplier-container { display: flex; gap: 4px; flex: 1.5; justify-content: flex-end; }
+        .mult-btn { flex: 1; background-color: #f1f5f9; border: 1px solid #cbd5e1; color: #475569; padding: 10px 0; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; }
+        .mult-btn:hover { background: #e2e8f0; }
+        
+        .game-section-label { font-size: 11px; color: #475569; text-align: left; margin: 12px 15px 5px 15px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* STANDALONE SECTIONS */
-        .standalone-section { 
-            display: none; background: white; margin: 15px; padding: 20px; 
-            border-radius: 24px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-            text-align: left;
-        }
+        /* BUTTONS */
+        .btn-big { background: linear-gradient(135deg, #4f46e5, #3730a3); color: white; flex: 1; padding: 12px; font-size: 15px; font-weight: 900; border: none; border-radius: 10px; cursor: pointer; text-transform: uppercase; }
+        .btn-small { background: linear-gradient(135deg, #f97316, #ea580c); color: white; flex: 1; padding: 12px; font-size: 15px; font-weight: 900; border: none; border-radius: 10px; cursor: pointer; text-transform: uppercase; }
 
-        .history-table-container { border-radius: 15px; overflow: hidden; background: #f8fafc; border: 1px solid #e2e8f0; }
-        .history-table th { background: #f1f5f9; color: var(--text-muted); padding: 12px; font-size: 10px; }
-        .history-table td { padding: 12px; font-size: 11px; border-bottom: 1px solid #e2e8f0; color: var(--text-main); }
+        .color-choice-btn { flex: 1; padding: 10px; font-weight: bold; font-size: 13px; color: white; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
+        .choice-red { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+        .choice-green { background: linear-gradient(135deg, #10b981, #047857); }
 
-        /* MODAL */
-        .modal-content { background: white; border-radius: 30px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
-        .submit-btn { 
-            background: linear-gradient(135deg, #10b981, #059669); 
-            padding: 16px; border-radius: 15px; font-weight: 700; 
-            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2); 
-            border: none; color: white; width: 100%; cursor: pointer;
-        }
+        .num-btn { padding: 10px 0; font-size: 14px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; color: white; }
+        .bg-green { background: #10b981; }
+        .bg-red { background: #ef4444; }
+        .bg-mix { background: linear-gradient(135deg, #8b5cf6, #ec4899); border: 1px dashed #fff; }
 
-        .pay-box-btn { border-radius: 14px; background: #f1f5f9; border: 2px solid transparent; padding: 15px; }
-        .pay-box-btn.active-jazz { border-color: #f59e0b; background: white; }
-        .pay-box-btn.active-easy { border-color: #10b981; background: white; }
+        /* AVIATOR UI LIGHT */
+        .aviator-display-box { background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 12px; margin: 8px 10px; padding: 6px; position: relative; }
+        .aviator-history-strip { display: flex; gap: 4px; overflow-x: auto; padding: 4px; margin-bottom: 6px; background: #ffffff; border-radius: 6px; font-size: 10px; font-weight: bold; border: 1px solid #e2e8f0; }
+        .aviator-history-item { background: #f3e8ff; color: #7e22ce; padding: 2px 6px; border-radius: 10px; border: 1px solid #d8b4fe; min-width: 36px; text-align: center; }
+        
+        .aviator-canvas-container { position: relative; background: radial-gradient(circle at bottom left, #dcfce7 0%, #f8fafc 100%); border-radius: 10px; width: 100%; height: 160px; border: 1px solid #e2e8f0; overflow: hidden; }
+        #aviatorCanvas { width: 100%; height: 100%; display: block; }
+        
+        .live-multiplier { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 38px; font-weight: 900; color: #1e293b; font-family: sans-serif; pointer-events: none; }
+        .flew-away-text { color: #ffffff; background: #ef4444; border: 1px solid #dc2626; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2); }
+        
+        .av-bet-controls { display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 6px 10px; border-radius: 6px; border: 1px solid #e2e8f0; }
+        .av-bet-controls input { width: 80px; padding: 4px; font-weight: 900; color: #059669; font-size: 14px; border: none; background: transparent; text-align: right; }
+
+        /* LOGS & TABLES */
+        input[type="number"], input[type="text"], input[type="email"], input[type="password"] { padding: 12px; font-size: 14px; border-radius: 8px; border: 1px solid #cbd5e1; background-color: #ffffff; color: #1e293b; width: 100%; max-width: 280px; text-align: center; margin-bottom: 8px; box-sizing: border-box; }
+        
+        .status-display { background-color: #f1f5f9; border: 1px dashed #cbd5e1; padding: 8px; margin: 8px 10px; border-radius: 10px; font-size: 12px; color: #64748b; font-weight: bold; }
+        
+        .logs { background-color: #ffffff; margin: 10px; padding: 10px; border-radius: 12px; text-align: left; max-height: 120px; overflow-y: auto; border: 1px solid #e2e8f0; }
+        .routing-header { font-size: 11px; color: #b45309; font-weight: bold; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase; display: flex; justify-content: space-between; }
+        
+        .live-bet-card { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 6px 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #e2e8f0; }
+        
+        .history-table-container { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 6px; margin-top: 8px; font-size: 11px; overflow-x: auto; }
+        .history-table th { background: #f1f5f9; color: #64748b; padding: 8px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; }
+        .history-table td { padding: 9px 8px; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #1e293b; }
+
+        .modal-content { background-color: #ffffff; padding: 25px 20px; border-radius: 20px; width: 100%; max-width: 360px; border: 1px solid #cbd5e1; text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .submit-btn { background: #10b981; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
+        
+        .standalone-section { display: none; background: #ffffff; margin: 10px; padding: 15px; border-radius: 14px; border: 1px solid #e2e8f0; text-align: left; }
+        .invite-code-box { background: #f1f5f9; padding: 8px; border-radius: 6px; font-weight: bold; color: #1e293b; border: 1px solid #cbd5e1; flex: 1; text-align: center; font-size: 13px; }
+        
+        .pay-box-btn { flex: 1; padding: 10px; font-size: 13px; font-weight: bold; border-radius: 8px; border: 2px solid #e2e8f0; background: #ffffff; color: #64748b; cursor: pointer; }
+        .pay-box-btn.active-jazz { border-color: #f59e0b; color: #b45309; background: #fffcf0; }
+        .pay-box-btn.active-easy { border-color: #10b981; color: #065f46; background: #f0fdf4; }
+
+        /* Status Colors */
+        .status-pending { background: #fef3c7; color: #b45309; border: 1px solid #fcd34d; }
+        .status-approved { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .status-rejected { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
     </style>
 </head>
 <body>
 
     <div class="live-ticker-bar" id="globalTickerBar">
-        <div class="ticker-inner" id="tickerText">Syncing secure data nodes... Welcome to Win Zone Pro v3.5</div>
+        <div class="ticker-inner" id="tickerText">Loading transparent settlement logs...</div>
     </div>
 
     <!-- AUTH SCREEN -->
     <div id="authScreen" class="auth-container">
         <div id="loginCard" class="auth-card">
-            <h2>Win Zone Pro</h2>
+            <h2>Win Zone Login</h2>
             <input type="email" id="loginEmail" placeholder="Email Address">
             <input type="password" id="loginPassword" placeholder="Password">
-            <button class="submit-btn" onclick="handleLogin()">Sign In</button>
-            <span class="switch-auth" style="color:var(--secondary); font-weight:700; cursor:pointer; margin-top:15px; display:block;" onclick="toggleAuth(false)">New user? Register</span>
+            <button class="submit-btn" onclick="handleLogin()">Login Account</button>
+            <span class="switch-auth" style="color:#2563eb; cursor:pointer; font-size:12px; margin-top:10px; display:block;" onclick="toggleAuth(false)">Create New Account</span>
         </div>
         <div id="signupCard" class="auth-card" style="display: none;">
             <h2>Create Account</h2>
             <input type="text" id="signupPhone" placeholder="Mobile Number">
             <input type="email" id="signupEmail" placeholder="Email Address">
             <input type="password" id="signupPassword" placeholder="Password (Min 6 Chars)">
-            <button class="submit-btn" onclick="handleSignup()">Register</button>
-            <span class="switch-auth" style="color:var(--secondary); font-weight:700; cursor:pointer; margin-top:15px; display:block;" onclick="toggleAuth(true)">Already a member? Login</span>
+            <button class="submit-btn" onclick="handleSignup()">Register Now</button>
+            <span class="switch-auth" style="color:#2563eb; cursor:pointer; font-size:12px; margin-top:10px; display:block;" onclick="toggleAuth(true)">Already have an account? Login</span>
         </div>
     </div>
 
     <!-- MAIN APP SCREEN -->
     <div id="appScreen">
         <div class="header">
-            <span>WIN ZONE PRO</span>
-            <button class="logout-btn" onclick="handleLogout()">Exit</button>
+            <span>🏆 WIN ZONE TECH v3.4</span>
+            <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
 
         <div class="game-tabs">
-            <button class="tab-btn active" id="navHome" onclick="navigateToSection('home')">🎮 Games</button>
+            <button class="tab-btn active" id="navHome" onclick="navigateToSection('home')">🏠 Games</button>
             <button class="tab-btn" id="navInvite" onclick="navigateToSection('invite')">🤝 Invite</button>
             <button class="tab-btn" id="navWithdraw" onclick="navigateToSection('withdraw')">📤 Withdraw</button>
-            <button class="tab-btn" onclick="openModal('depositModal')" style="background:var(--success); color:white;">+ Topup</button>
+            <button class="tab-btn" style="color:#059669;" onclick="openModal('depositModal')">➕ Deposit</button>
         </div>
 
         <div class="balance-card">
             <div style="text-align: left;">
-                <div style="font-size: 11px; opacity: 0.9; text-transform: uppercase; font-weight:700;">Wallet Balance</div>
-                <div id="balance" style="font-size: 28px; font-weight: 900;">PKR 0.00</div>
+                <div style="font-size: 10px; color:#64748b; text-transform: uppercase;">Available Balance</div>
+                <div id="balance" style="font-size: 24px; font-weight: 900; color: #1e293b;">PKR 0</div>
             </div>
-            <div style="font-size: 11px; background: rgba(255,255,255,0.2); padding: 8px 12px; border-radius: 12px;">
-                User: <span id="userPhoneDisplay" style="font-weight: 900;">-</span>
+            <div style="font-size: 11px; color: #64748b; text-align: right;">
+                USER: <span id="userPhoneDisplay" style="font-weight: bold; color: #2563eb;">-</span>
             </div>
         </div>
 
+        <!-- SECTION 1: HOME GAMES CONTENT -->
         <div id="sectionHome" style="display: block;">
-            <div class="game-tabs" style="background:#fff; border: 1px solid #e2e8f0;">
-                <button class="tab-btn active" id="tabWingo" onclick="switchGame('wingo')">Bingo Pro</button>
-                <button class="tab-btn" id="tabAviator" onclick="switchGame('aviator')">Aviator Live</button>
+            <div class="game-tabs" style="background:#f1f5f9;">
+                <button class="tab-btn active" id="tabWingo" onclick="switchGame('wingo')">Bingo Win</button>
+                <button class="tab-btn" id="tabAviator" onclick="switchGame('aviator')">Aviator Pro</button>
             </div>
 
-            <!-- GAME 1: WINGO -->
             <div id="wingoEngineWrapper" class="game-wrapper active">
                 <div class="history-box">
-                    <div class="history-title">Live Trend Analysis</div>
+                    <div class="history-title"><span>📊 Trend Stream (Real-time)</span></div>
                     <div class="trends-list" id="trendsHistory"></div>
                 </div>
 
                 <div class="timer-section">
-                    <div class="wingo-live-bets-bubble" id="wingoLivePool" style="color:var(--success)">● 4,102 Live Players</div>
-                    <div><span id="timer">00:30</span></div>
+                    <div class="wingo-live-bets-bubble" id="wingoLivePool">🔥 3,450 active players</div>
+                    <div>⏳ Ends: <span id="timer">00:30</span></div>
                 </div>
+
+                <div class="status-display" id="roundStatus">💰 Smart routing algorithm active.</div>
 
                 <div class="bet-control-row">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size: 12px; font-weight: 700; color:var(--text-muted)">STAKE AMOUNT</span>
-                        <input type="number" id="betAmount" value="250" min="150" style="width: 140px; margin:0; text-align:right; font-weight:800; color:var(--secondary)">
+                    <div class="bet-input-container">
+                        <label style="font-size: 10px; color: #64748b; font-weight: bold; text-transform: uppercase;">Stake:</label>
+                        <input type="number" id="betAmount" value="250" min="150" style="width: 100px; font-weight: bold; font-size: 18px; color: #d97706; margin: 0; padding: 5px;">
                     </div>
-                    <div class="multiplier-container" style="display:flex; gap:8px;">
-                        <button class="mult-btn" onclick="applyMultiplier(1)">1X</button>
-                        <button class="mult-btn" onclick="applyMultiplier(5)">5X</button>
-                        <button class="mult-btn" onclick="applyMultiplier(10)">10X</button>
-                        <button class="mult-btn" onclick="applyMultiplier(50)">50X</button>
+                    <div class="multiplier-container">
+                        <button class="mult-btn" onclick="applyMultiplier(1)">X1</button>
+                        <button class="mult-btn" onclick="applyMultiplier(5)">X5</button>
+                        <button class="mult-btn" onclick="applyMultiplier(10)">X10</button>
                     </div>
                 </div>
 
-                <div class="big-small-container">
-                    <button class="btn-big" onclick="placeBet('size', 'Big')">BIG x2</button>
-                    <button class="btn-small" onclick="placeBet('size', 'Small')">SMALL x2</button>
+                <div class="game-section-label">⚡ Select Size</div>
+                <div class="big-small-container" style="display:flex; gap:10px; padding:0 10px; margin-bottom:10px;">
+                    <button class="btn-big" onclick="placeBet('size', 'Big')">Big</button>
+                    <button class="btn-small" onclick="placeBet('size', 'Small')">Small</button>
                 </div>
 
-                <div class="color-selection-bar">
-                    <button class="color-choice-btn choice-red" style="flex:1; padding:15px; border-radius:16px; border:none; color:white; font-weight:800;" onclick="placeBet('color', 'Red')">RED</button>
-                    <button class="color-choice-btn choice-green" style="flex:1; padding:15px; border-radius:16px; border:none; color:white; font-weight:800;" onclick="placeBet('color', 'Green')">GREEN</button>
+                <div class="game-section-label">🎨 Select Color</div>
+                <div class="color-selection-bar" style="display:flex; gap:10px; padding:0 10px; margin-bottom:10px;">
+                    <button class="color-choice-btn choice-red" onclick="placeBet('color', 'Red')">Red</button>
+                    <button class="color-choice-btn choice-green" onclick="placeBet('color', 'Green')">Green</button>
                 </div>
 
-                <div class="number-grid">
+                <div class="game-section-label">🔢 Number Hit</div>
+                <div class="number-grid" style="display:grid; grid-template-columns: repeat(5, 1fr); gap:5px; padding:0 10px; margin-bottom:10px;">
                     <button class="num-btn bg-mix" onclick="placeBet('number', 0)">0</button>
-                    <button class="num-btn choice-green" onclick="placeBet('number', 1)">1</button>
-                    <button class="num-btn choice-green" onclick="placeBet('number', 2)">2</button>
-                    <button class="num-btn choice-green" onclick="placeBet('number', 3)">3</button>
-                    <button class="num-btn choice-green" onclick="placeBet('number', 4)">4</button>
+                    <button class="num-btn bg-green" onclick="placeBet('number', 1)">1</button>
+                    <button class="num-btn bg-green" onclick="placeBet('number', 2)">2</button>
+                    <button class="num-btn bg-green" onclick="placeBet('number', 3)">3</button>
+                    <button class="num-btn bg-green" onclick="placeBet('number', 4)">4</button>
                     <button class="num-btn bg-mix" onclick="placeBet('number', 5)">5</button>
-                    <button class="num-btn choice-red" onclick="placeBet('number', 6)">6</button>
-                    <button class="num-btn choice-red" onclick="placeBet('number', 7)">7</button>
-                    <button class="num-btn choice-red" onclick="placeBet('number', 8)">8</button>
-                    <button class="num-btn choice-red" onclick="placeBet('number', 9)">9</button>
+                    <button class="num-btn bg-red" onclick="placeBet('number', 6)">6</button>
+                    <button class="num-btn bg-red" onclick="placeBet('number', 7)">7</button>
+                    <button class="num-btn bg-red" onclick="placeBet('number', 8)">8</button>
+                    <button class="num-btn bg-red" onclick="placeBet('number', 9)">9</button>
                 </div>
 
                 <div class="logs" id="wingoLogSection">
-                    <div class="history-title" style="display:flex; justify-content:space-between">
-                        <span>Streaming Logs</span>
-                        <span style="color:var(--success)">Active</span>
+                    <div class="routing-header">
+                        <span>📡 Live Logs Stream</span>
+                        <span style="color:#059669;">● Live</span>
                     </div>
                     <div id="activeBetsPanel"></div>
                 </div>
 
-                <div class="history-box">
-                    <div class="history-title" style="color:var(--secondary)">My Bet History</div>
-                    <div class="history-table-container">
-                        <table class="history-table" style="width:100%">
-                            <thead>
-                                <tr><th>Ref</th><th>Cat</th><th>Amt</th><th>Res</th><th>Win</th></tr>
-                            </thead>
-                            <tbody id="userBetHistoryBody"></tbody>
-                        </table>
-                        <div id="betHistoryEmptyMsg" class="history-empty-msg" style="padding:20px; font-size:12px; color:var(--text-muted)">No data found</div>
-                    </div>
+                <div class="game-section-label" style="color:#2563eb;">📑 My History</div>
+                <div class="history-table-container">
+                    <table class="history-table" style="width:100%; border-collapse:collapse;">
+                        <thead>
+                            <tr>
+                                <th>Select</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Result</th>
+                                <th>Payout</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userBetHistoryBody"></tbody>
+                    </table>
+                    <div id="betHistoryEmptyMsg" class="history-empty-msg" style="padding:15px; color:#94a3b8;">No history found</div>
                 </div>
             </div>
 
-            <!-- GAME 2: AVIATOR -->
+            <!-- AVIATOR WRAPPER -->
             <div id="aviatorEngineWrapper" class="game-wrapper">
                 <div class="aviator-display-box">
-                    <div class="aviator-history-strip" id="aviatorHistory" style="display:flex; gap:10px; padding:10px; overflow-x:auto;">
-                        <!-- JS items here -->
-                    </div>
-                    <div class="aviator-canvas-container" style="position:relative">
+                    <div class="aviator-history-strip" id="aviatorHistory"></div>
+                    <div class="aviator-canvas-container">
                         <canvas id="aviatorCanvas"></canvas>
-                        <div class="live-multiplier" id="aviatorMultText" style="color:#ffffff; font-weight:900; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%)">1.00x</div>
-                        <div class="aviator-alert-overlay blew-away" id="alertFlew" style="display:none; color:var(--danger); font-weight:900;">FLEW AWAY!</div>
-                        <div class="aviator-alert-overlay" id="alertWait" style="display:none; color:var(--primary);">PLOTTING NEXT...</div>
+                        <div class="live-multiplier" id="aviatorMultText">1.00x</div>
+                        <div class="aviator-alert-overlay flew-away-text" id="alertFlew" style="display:none; position:absolute; top:65%; left:50%; transform:translate(-50%,-50%); padding:5px 15px; border-radius:50px; font-weight:bold;">FLEW AWAY!</div>
                     </div>
                 </div>
-                <div class="bet-control-row">
-                     <input type="number" id="aviatorBetAmount" value="250" min="150" style="margin-bottom:10px;">
-                     <button class="submit-btn" id="aviatorActionBtn" onclick="handleAviatorAction()">PLACE STAKE</button>
+                <div class="aviator-control-dashboard" style="padding:10px;">
+                    <div class="av-bet-controls">
+                        <span>STAKE (PKR):</span>
+                        <input type="number" id="aviatorBetAmount" value="250">
+                    </div>
+                    <button class="submit-btn" style="margin-top:10px; background:#059669;" id="aviatorActionBtn" onclick="handleAviatorAction()">BET</button>
                 </div>
             </div>
         </div>
 
-        <!-- SECTION 2: INVITE -->
+        <!-- SECTION: INVITE -->
         <div id="sectionInvite" class="standalone-section">
-            <div class="history-title" style="color:var(--secondary)">Refer & Profit</div>
-            <p style="font-size: 13px; color: var(--text-muted)">Earn PKR 50.00 for every successfully linked partner.</p>
-            <div style="display:flex; gap:10px; margin: 15px 0;">
-                <div class="invite-code-box" id="myInviteCode" style="background:#f1f5f9; padding:15px; border-radius:12px; font-family:monospace; font-weight:900; flex:1; text-align:center;">---</div>
-                <button class="submit-btn" style="width:auto; padding:0 25px;" onclick="copyInviteCode()">Copy</button>
+            <div class="invite-title" style="font-weight:bold; color:#1e293b; margin-bottom:10px;">🤝 Invite program</div>
+            <div class="invite-row" style="display:flex; gap:10px;">
+                <div class="invite-code-box" id="myInviteCode">...</div>
+                <button class="submit-btn" style="width:auto; padding:0 15px;" onclick="copyInviteCode()">Copy</button>
             </div>
-            <hr style="border:0; border-top:1px solid #e2e8f0; margin:20px 0;">
-            <div style="display:flex; gap:10px;">
-                <input type="text" id="inputReferralCode" placeholder="Enter Referral Link ID" style="margin:0;">
-                <button class="submit-btn" style="width:auto; padding:0 25px; background:var(--text-main);" onclick="applyReferralCode()">Link</button>
+            <div class="invite-title" style="margin-top:20px;">Link Uid</div>
+            <div class="invite-row">
+                <input type="text" id="inputReferralCode" placeholder="Code">
+                <button class="submit-btn" onclick="applyReferralCode()">Link</button>
             </div>
         </div>
 
-        <!-- SECTION 3: WITHDRAW -->
+        <!-- SECTION: WITHDRAW -->
         <div id="sectionWithdraw" class="standalone-section">
-             <div class="history-title" style="color:var(--danger)">Withdrawal Hub</div>
-             <div style="display:flex; gap:10px; margin-bottom:20px;">
-                <button id="btnMethodJazz" class="pay-box-btn active-jazz" style="flex:1" onclick="selectWithdrawMethod('JazzCash')">JazzCash</button>
-                <button id="btnMethodEasy" class="pay-box-btn" style="flex:1" onclick="selectWithdrawMethod('EasyPaisa')">EasyPaisa</button>
-             </div>
-             <input type="text" id="withAccount" placeholder="Phone Number (03xxxxxxxxx)">
-             <input type="text" id="withTitle" placeholder="Account Holder Name">
-             <input type="number" id="withAmount" placeholder="Amount (Minimum 1000)">
-             <button class="submit-btn" style="background:var(--danger)" onclick="processWithdrawal()">Confirm Withdrawal</button>
-             
-             <div class="history-table-container" style="margin-top:20px;">
-                <table class="history-table" style="width:100%">
-                    <thead><tr><th>Method</th><th>Amt</th><th>Status</th></tr></thead>
-                    <tbody id="userWithdrawHistoryBody"></tbody>
-                </table>
-             </div>
+            <div class="invite-title"><span style="color:#ef4444;">Withdrawal Portal</span></div>
+            <div class="payment-toggle-box" style="display:flex; gap:10px; margin-bottom:15px;">
+                <button class="pay-box-btn active-jazz" id="btnMethodJazz" onclick="selectWithdrawMethod('JazzCash')">JazzCash</button>
+                <button class="pay-box-btn" id="btnMethodEasy" onclick="selectWithdrawMethod('EasyPaisa')">EasyPaisa</button>
+            </div>
+            <input type="hidden" id="selectedWithMethod" value="JazzCash">
+            <input type="text" id="withAccount" placeholder="Account Number">
+            <input type="text" id="withTitle" placeholder="Account Title">
+            <input type="number" id="withAmount" placeholder="Amount (Min 1000)">
+            <button class="submit-btn" style="background:#ef4444;" onclick="processWithdrawal()">Withdraw PKR</button>
         </div>
     </div>
 
     <!-- DEPOSIT MODAL -->
-    <div id="depositModal" class="modal">
-        <div class="modal-content" style="padding:30px; margin:20px;">
-            <div class="history-title" style="color:var(--success)">Deposit Wallet</div>
-            <div style="background:#f8fafc; padding:20px; border-radius:20px; margin:15px 0; border:1px dashed var(--success);">
-                <span style="font-size:10px; font-weight:700; color:var(--text-muted)">SCAN OR UPLOAD RECEIPT</span>
-                <div style="height:150px; background:#ddd; border-radius:10px; margin-top:10px;">
-                    <!-- Insert QR Placeholder -->
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=WinZoneDeposit" style="width:100%; height:100%; border-radius:10px; object-fit:contain;">
-                </div>
+    <div id="depositModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:1000;">
+        <div class="modal-content">
+            <h3 style="color:#10b981;">Deposit Funds</h3>
+            <p style="font-size:12px; color:#64748b;">Transfer to our official account and upload screenshot.</p>
+            <div style="background:#f8fafc; padding:15px; border-radius:10px; border:1px solid #e2e8f0; margin-bottom:15px;">
+                <div style="font-weight:bold; color:#f59e0b;">JazzCash: 0329-0520448</div>
+                <div style="font-size:11px; margin-top:5px;">Name: Win Zone Tech</div>
             </div>
-            <button class="submit-btn" onclick="closeModal('depositModal')">I Have Paid</button>
-            <button class="logout-btn" style="width:100%; margin-top:10px; padding:12px;" onclick="closeModal('depositModal')">Cancel</button>
+            <button class="submit-btn" onclick="alert('Please contact support with payment proof.')">Confirm Deposit</button>
+            <button class="submit-btn" style="background:#64748b; margin-top:8px;" onclick="document.getElementById('depositModal').style.display='none'">Close</button>
         </div>
     </div>
 
-    <script>
-        /* 
-           ALL ORIGINAL JAVASCRIPT LOGIC MUST BE PASTED HERE 
-           (Firebase Init, handleLogin, handleSignup, placeBet, switchGame, etc.)
-        */
-        
-        // Essential Tab Switch Logic for the Modernized App
-        function navigateToSection(sec) {
-            document.getElementById('sectionHome').style.display = (sec === 'home') ? 'block' : 'none';
-            document.getElementById('sectionInvite').style.display = (sec === 'invite') ? 'block' : 'none';
-            document.getElementById('sectionWithdraw').style.display = (sec === 'withdraw') ? 'block' : 'none';
-            
-            // UI Button Active State
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            if(sec === 'home') document.getElementById('navHome').classList.add('active');
-            if(sec === 'invite') document.getElementById('navInvite').classList.add('active');
-            if(sec === 'withdraw') document.getElementById('navWithdraw').classList.add('active');
-        }
-
-        // Note: Copy your original <script> functions exactly here to maintain functionality.
-    </script>
 </body>
 </html>
