@@ -39,7 +39,6 @@
 
         .balance-card { background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); margin: 12px 10px; padding: 16px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
         
-        /* Wingo UI Elements */
         .history-box { background-color: #ffffff; margin: 8px 10px; padding: 10px; border-radius: 12px; border: 1px solid #e2e8f0; text-align: left; }
         .history-title { font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 6px; display: flex; justify-content: space-between; }
         .trends-list { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 3px; }
@@ -52,7 +51,6 @@
         .wingo-live-bets-bubble { font-size: 11px; color: #059669; font-weight: 600; margin: 0; }
         .timer-section span { font-size: 16px; color: #0f172a; background: #f1f5f9; padding: 2px 10px; border-radius: 6px; border: 1px solid #cbd5e1; }
         
-        /* ALIGNED AND COMPRESSED BET BOX ROW */
         .bet-control-row { display: flex; align-items: center; justify-content: space-between; margin: 8px 10px; padding: 8px 12px; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; gap: 8px; }
         .bet-input-container { display: flex; flex-direction: column; align-items: flex-start; flex: 1; }
         .multiplier-container { display: flex; gap: 4px; flex: 1.5; justify-content: flex-end; }
@@ -75,7 +73,6 @@
         .bg-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
         .bg-mix { background: linear-gradient(135deg, #8b5cf6, #ec4899); border: 1px dashed #fff; }
 
-        /* AVIATOR UI ELEMENTS */
         .aviator-display-box { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; margin: 8px 10px; padding: 8px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
         .aviator-history-strip { display: flex; gap: 4px; overflow-x: auto; padding: 6px; margin-bottom: 8px; background: #f8fafc; border-radius: 8px; font-size: 10px; font-weight: bold; border: 1px solid #e2e8f0; }
         .aviator-history-item { background: #f3e8ff; color: #7e22ce; padding: 3px 8px; border-radius: 12px; border: 1px solid #e9d5ff; min-width: 36px; text-align: center; }
@@ -137,14 +134,12 @@
         .pay-box-btn.active-jazz { border-color: #f59e0b; color: #b45309; background: #fef3c7; }
         .pay-box-btn.active-easy { border-color: #10b981; color: #047857; background: #ecfdf5; }
 
-        /* SEPARATE SECTION INTERFACE STYLES */
         .standalone-section { display: none; background: #ffffff; margin: 10px; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; text-align: left; box-shadow: 0 4px 12px rgba(0,0,0,0.01); }
         .invite-title { font-size: 13px; color: #4f46e5; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .invite-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
         .invite-code-box { background: #f1f5f9; padding: 10px; border-radius: 8px; font-weight: bold; color: #0f172a; border: 1px solid #cbd5e1; flex: 1; text-align: center; letter-spacing: 0.5px; font-size: 14px; }
         .invite-btn { background: #4f46e5; color: white; border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; }
 
-        /* HISTORY SYSTEM UI STYLES */
         .history-table-container { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 6px; margin-top: 8px; font-size: 11px; overflow-x: auto; }
         .history-table { width: 100%; border-collapse: collapse; text-align: left; }
         .history-table th { background: #f1f5f9; color: #475569; padding: 8px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; }
@@ -193,7 +188,6 @@
             <button class="logout-btn" onclick="handleLogout()">Logout</button>
         </div>
 
-        <!-- MULTI-TAB NAVIGATION SYSTEM -->
         <div class="game-tabs" style="margin-bottom: 5px;">
             <button class="tab-btn active" id="navHome" onclick="navigateToSection('home')">🎮 Games</button>
             <button class="tab-btn" id="navInvite" onclick="navigateToSection('invite')">🤝 Invite</button>
@@ -236,7 +230,6 @@
                     ⏳ Place stakes. Smart routing algorithm active.
                 </div>
 
-                <!-- ALIGNED HORIZONTAL BET COMPONENT -->
                 <div class="bet-control-row">
                     <div class="bet-input-container">
                         <label style="font-size: 10px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Stake Amount:</label>
@@ -284,7 +277,6 @@
                     <div id="activeBetsPanel"></div>
                 </div>
 
-                <!-- USER PERSONAL BET HISTORY TABLE SYSTEM -->
                 <div class="game-section-label" style="margin-top: 15px; color:#4f46e5;">📋 My Personal Bet History</div>
                 <div class="history-table-container">
                     <table class="history-table">
@@ -297,13 +289,10 @@
                                 <th>Payout</th>
                             </tr>
                         </thead>
-                        <tbody id="userBetHistoryBody">
-                            <!-- Injected dynamically via JS code -->
-                        </tbody>
+                        <tbody id="userBetHistoryBody"></tbody>
                     </table>
                     <div id="betHistoryEmptyMsg" class="history-empty-msg">No stake history logged yet</div>
                 </div>
-                <!-- Pagination Buttons Row -->
                 <div class="pagination-row">
                     <button type="button" class="page-nav-btn active" id="btnBetPage1" onclick="changeBetPage(1)">Page 1</button>
                     <button type="button" class="page-nav-btn" id="btnBetPage2" onclick="changeBetPage(2)">Page 2</button>
@@ -313,12 +302,7 @@
             <!-- GAME 2: AVIATOR WRAPPER -->
             <div id="aviatorEngineWrapper" class="game-wrapper">
                 <div class="aviator-display-box">
-                    <div class="aviator-history-strip" id="aviatorHistory">
-                        <div class="aviator-history-item">1.34x</div>
-                        <div class="aviator-history-item" style="color:#7e22ce; background: #f3e8ff;">4.12x</div>
-                        <div class="aviator-history-item">1.18x</div>
-                        <div class="aviator-history-item" style="color:#7e22ce; background: #f3e8ff;">9.65x</div>
-                    </div>
+                    <div class="aviator-history-strip" id="aviatorHistory"></div>
                     
                     <div class="aviator-canvas-container">
                         <canvas id="aviatorCanvas"></canvas>
@@ -405,7 +389,6 @@
 
             <button class="submit-btn" style="background: linear-gradient(135deg, #ef4444, #b91c1c); padding:12px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);" onclick="processWithdrawal()">Request Withdrawal</button>
 
-            <!-- WITHDRAWAL TRACKING LOG HISTORY SYSTEM UI -->
             <div class="invite-title" style="margin-top: 20px; color:#ef4444;"><span>📝 Payout Logs Statement</span></div>
             <div class="history-table-container">
                 <table class="history-table">
@@ -417,16 +400,13 @@
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody id="userWithdrawHistoryBody">
-                        <!-- Injected via Realtime Database Stream -->
-                    </tbody>
+                    <tbody id="userWithdrawHistoryBody"></tbody>
                 </table>
                 <div id="withHistoryEmptyMsg" class="history-empty-msg">No cashouts requested yet</div>
             </div>
         </div>
     </div>
 
-    <!-- MODALS -->
     <!-- DEPOSIT MODAL -->
     <div id="depositModal" class="modal">
         <div class="modal-content" style="max-width: 390px;">
@@ -435,7 +415,7 @@
             <div style="background: #f8fafc; padding: 15px; border-radius: 16px; border: 2px solid #eab308; margin-bottom: 16px; text-align: center; box-shadow: 0 4px 12px rgba(234, 179, 8, 0.05);">
                 <p style="margin: 0 0 10px 0; font-size: 13px; color: #b45309; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">⚡ SCAN QR CODE TO DEPOSIT ⚡</p>
                 <div style="background: white; padding: 10px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 8px;">
-                    <img src="data:image/jpeg;base64,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" alt="Deposit QR Code" style="width: 200px; height: auto; display: block; margin: 0 auto; border-radius: 4px;">
+                    <img src="data:image/jpeg;base64,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" alt="Deposit QR Code" style="width: 200px; height: auto; display: block; margin: 0 auto; border-radius: 4px;">
                 </div>
                 <p style="margin: 5px 0 0 0; font-size: 12px; color: #64748b; font-weight: 500;">Scan this QR code via your EasyPaisa / JazzCash / Banking App to complete payment instantly.</p>
             </div>
@@ -452,7 +432,6 @@
 
             <button class="submit-btn" onclick="createDepositRequest()">Submit Deposit Receipt</button>
 
-            <!-- DEPOSIT STATEMENT TRACKING SYSTEM INSIDE DIALOG FOR CLEAR PREVIEW -->
             <div style="text-align: left; margin-top:15px; font-size:11px; color:#10b981; font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;">📋 Verification Receipts Statement</div>
             <div class="history-table-container" style="max-height:120px; overflow-y:auto; margin-bottom:8px;">
                 <table class="history-table">
@@ -463,9 +442,7 @@
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody id="userDepositHistoryBody">
-                        <!-- Loaded dynamically via real time nodes -->
-                    </tbody>
+                    <tbody id="userDepositHistoryBody"></tbody>
                 </table>
                 <div id="depHistoryEmptyMsg" class="history-empty-msg" style="padding:8px;">No deposits logged</div>
             </div>
@@ -483,7 +460,11 @@
         </div>
     </div>
 
+    <!-- COMPLETE DYNAMIC JAVASCRIPT ENGINE -->
     <script>
+        // ----------------------------------------------------
+        // FIREBASE SETUP
+        // ----------------------------------------------------
         const firebaseConfig = {
             apiKey: "AIzaSyC38KxWq7xJdaadAiF5nfChWyne_iA6vBw",
             authDomain: "winzone-bff7c.firebaseapp.com",
@@ -504,7 +485,6 @@
 
         let activeWingoBets = [];  
         let largeTrendPool = [];
-        
         let preCalculatedRoundData = null;
 
         let avState = "waiting"; 
@@ -524,50 +504,563 @@
 
         const fakeNames = ["0302***", "0345***", "0311***", "0300***", "0321***", "0333***", "0306***", "0348***", "0315***"];
 
+        // ----------------------------------------------------
+        // AUTHENTICATION CONTROLLER (LOGIN / SIGNUP)
+        // ----------------------------------------------------
+        function toggleAuth(showLogin) {
+            document.getElementById('loginCard').style.display = showLogin ? 'block' : 'none';
+            document.getElementById('signupCard').style.display = showLogin ? 'none' : 'block';
+        }
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('authScreen').style.display = 'none';
+                document.getElementById('appScreen').style.display = 'block';
+                initializeUserDatabase();
+                initRealtimeStreams();
+            } else {
+                currentUser = null;
+                document.getElementById('authScreen').style.display = 'flex';
+                document.getElementById('appScreen').style.display = 'none';
+            }
+        });
+
+        function handleSignup() {
+            const phone = document.getElementById('signupPhone').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value.trim();
+
+            if (!phone || !email || !password) return alert("All registration inputs are required.");
+            if (password.length < 6) return alert("Password must be at least 6 characters.");
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then(cred => {
+                    database.ref('users/' + cred.user.uid).set({
+                        phone: phone,
+                        email: email,
+                        balance: 50, // Register welcome gift
+                        inviteCode: "WZ-" + Math.floor(100000 + Math.random() * 900000)
+                    });
+                    alert("Account Created Successfully!");
+                }).catch(err => alert(err.message));
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+
+            if (!email || !password) return alert("Please fill out login credentials.");
+
+            auth.signInWithEmailAndPassword(email, password)
+                .catch(err => alert(err.message));
+        }
+
+        function handleLogout() {
+            auth.signOut();
+        }
+
+        // ----------------------------------------------------
+        // CORE LIFECYCLE MECHANICS
+        // ----------------------------------------------------
+        function initializeUserDatabase() {
+            database.ref('users/' + currentUser.uid).on('value', snapshot => {
+                const data = snapshot.val();
+                if (data) {
+                    currentBalance = parseInt(data.balance || 0);
+                    document.getElementById('balance').innerText = "PKR " + currentBalance;
+                    document.getElementById('userPhoneDisplay').innerText = data.phone || data.email.split('@')[0];
+                    document.getElementById('myInviteCode').innerText = data.inviteCode || "No Code";
+                    if(data.referredBy) {
+                        document.getElementById('referralInputRow').style.display = 'none';
+                        document.getElementById('referralStatus').style.display = 'block';
+                    }
+                }
+            });
+        }
+
+        function initRealtimeStreams() {
+            // Live Global Logs Ticker
+            setInterval(() => {
+                let randomUser = fakeNames[Math.floor(Math.random() * fakeNames.length)];
+                let actions = ["withdrew PKR " + (Math.floor(Math.random() * 8 + 2) * 1000), "deposited PKR " + (Math.floor(Math.random() * 5 + 1) * 1000)];
+                document.getElementById('tickerText').innerText = `🔥 User ${randomUser} ${actions[Math.floor(Math.random() * actions.length)]} successfully...`;
+            }, 4000);
+
+            // Synchronize Personalized Submissions
+            syncUserBetHistory();
+            syncTransactionsTables();
+            generateTrendsBar();
+        }
+
+        // NAVIGATION SWITCHER
+        function navigateToSection(target) {
+            document.getElementById('sectionHome').style.display = target === 'home' ? 'block' : 'none';
+            document.getElementById('sectionInvite').style.display = target === 'invite' ? 'block' : 'none';
+            document.getElementById('sectionWithdraw').style.display = target === 'withdraw' ? 'block' : 'none';
+
+            document.getElementById('navHome').classList.toggle('active', target === 'home');
+            document.getElementById('navInvite').classList.toggle('active', target === 'invite');
+            document.getElementById('navWithdraw').classList.toggle('active', target === 'withdraw');
+        }
+
+        function switchGame(game) {
+            document.getElementById('wingoEngineWrapper').classList.toggle('active', game === 'wingo');
+            document.getElementById('aviatorEngineWrapper').classList.toggle('active', game === 'aviator');
+            document.getElementById('tabWingo').classList.toggle('active', game === 'wingo');
+            document.getElementById('tabAviator').classList.toggle('active', game === 'aviator');
+            if (game === 'aviator' && !avLoopInterval) startAviatorSystem();
+        }
+
+        // MODAL MANAGEMENT
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        // ----------------------------------------------------
+        // ENGINE 1: BINGO / WINGO ENGINE SYSTEM
+        // ----------------------------------------------------
+        function applyMultiplier(val) {
+            let base = document.getElementById('betAmount');
+            base.value = 150 * val;
+        }
+
+        function generateTrendsBar() {
+            const container = document.getElementById('trendsHistory');
+            container.innerHTML = '';
+            largeTrendPool = [];
+            for (let i = 0; i < 15; i++) {
+                let num = Math.floor(Math.random() * 10);
+                let size = num >= 5 ? 'Big' : 'Small';
+                let col = (num === 0 || num === 5) ? 'bg-mix' : (num % 2 === 0 ? 'bg-red' : 'bg-green');
+                largeTrendPool.push({ num, size, col });
+            }
+
+            largeTrendPool.forEach((item, index) => {
+                let dot = document.createElement('div');
+                dot.className = `trend-dot ${item.col}`;
+                dot.innerHTML = `${item.num}<span style="font-size:7px;">${item.size}</span>`;
+                if (index === largeTrendPool.length - 1) {
+                    let badge = document.createElement('span');
+                    badge.className = "latest-win-mark";
+                    badge.innerText = "NEW";
+                    dot.appendChild(badge);
+                }
+                container.appendChild(dot);
+            });
+        }
+
+        // AUTOMATED RECURSIVE TIMER 30S LOOP
+        setInterval(() => {
+            timeLeft--;
+            if (timeLeft < 0) {
+                timeLeft = 30;
+                executeWingoResolution();
+            }
+            let secs = timeLeft < 10 ? '0' + timeLeft : timeLeft;
+            document.getElementById('timer').innerText = `00:${secs}`;
+
+            if(timeLeft === 5) {
+                document.getElementById('roundStatus').innerText = "🚨 Locking Pool Node for settlement calculations...";
+            }
+        }, 1000);
+
+        function placeBet(type, selection) {
+            if (timeLeft <= 5) return alert("Stakes are locked for calculation. Wait for next round.");
+            const amount = parseInt(document.getElementById('betAmount').value);
+            if (isNaN(amount) || amount < 150) return alert("Minimum stake required is PKR 150");
+            if (amount > currentBalance) return alert("Insufficient balance for this transaction.");
+
+            currentBalance -= amount;
+            database.ref('users/' + currentUser.uid + '/balance').set(currentBalance);
+
+            let betLog = {
+                type: type,
+                select: selection,
+                amount: amount,
+                timestamp: Date.now(),
+                status: "processing"
+            };
+
+            let ref = database.ref('users/' + currentUser.uid + '/bets').push();
+            betLog.id = ref.key;
+            ref.set(betLog);
+
+            activeWingoBets.push(betLog);
+
+            // Add UI Log element immediately
+            let panel = document.getElementById('activeBetsPanel');
+            let badgeClass = selection === 'Big' ? 'badge-big' : selection === 'Small' ? 'badge-small' : selection === 'Red' ? 'badge-red' : selection === 'Green' ? 'badge-green' : 'badge-num';
+            panel.innerHTML += `
+                <div class="live-bet-card" id="card-${betLog.id}">
+                    <span style="font-size:11px; font-weight:bold; color:#475569;">Staked Dynamic Route</span>
+                    <span class="badge-box ${badgeClass}">${selection}</span>
+                    <span style="color:#4f46e5; font-weight:900;">Rs. ${amount}</span>
+                </div>
+            `;
+        }
+
+        function executeWingoResolution() {
+            let winningNum = Math.floor(Math.random() * 10);
+            let winningSize = winningNum >= 5 ? 'Big' : 'Small';
+            let winningColor = (winningNum === 0 || winningNum === 5) ? 'Mix' : (winningNum % 2 === 0 ? 'Red' : 'Green');
+
+            activeWingoBets.forEach(bet => {
+                let isWin = false;
+                let multiplier = 2;
+
+                if (bet.type === 'size' && bet.select === winningSize) isWin = true;
+                if (bet.type === 'color' && bet.select === winningColor) isWin = true;
+                if (bet.type === 'number' && parseInt(bet.select) === winningNum) { isWin = true; multiplier = 9; }
+
+                let finalPayout = isWin ? bet.amount * multiplier : 0;
+                if (isWin) {
+                    currentBalance += finalPayout;
+                    database.ref('users/' + currentUser.uid + '/balance').set(currentBalance);
+                }
+
+                database.ref('users/' + currentUser.uid + '/bets/' + bet.id).update({
+                    status: "settled",
+                    result: isWin ? "WIN" : "LOSS",
+                    payout: finalPayout,
+                    winningNumber: winningNum
+                });
+
+                if(isWin) {
+                    document.getElementById('resultHeader').innerText = "🎉 YOU WON!";
+                    document.getElementById('resultHeader').style.color = "#10b981";
+                    document.getElementById('resultDetails').innerText = `Bingo Settled Number: ${winningNum} (${winningSize})\nPayout Dispatched: PKR ${finalPayout}`;
+                    openModal('resultModal');
+                }
+            });
+
+            activeWingoBets = [];
+            document.getElementById('activeBetsPanel').innerHTML = '';
+            document.getElementById('roundStatus').innerText = "⏳ Place stakes. Smart routing algorithm active.";
+            generateTrendsBar();
+        }
+
+        function syncUserBetHistory() {
+            database.ref('users/' + currentUser.uid + '/bets').on('value', snapshot => {
+                totalBetHistoryList = [];
+                snapshot.forEach(child => {
+                    totalBetHistoryList.unshift(child.val());
+                });
+                renderBetHistoryTable();
+            });
+        }
+
+        function renderBetHistoryTable() {
+            const tbody = document.getElementById('userBetHistoryBody');
+            tbody.innerHTML = '';
+            if(totalBetHistoryList.length === 0) {
+                document.getElementById('betHistoryEmptyMsg').style.display = 'block';
+                return;
+            }
+            document.getElementById('betHistoryEmptyMsg').style.display = 'none';
+
+            let itemsPerPage = 5;
+            let start = (currentBetPage - 1) * itemsPerPage;
+            let paginated = totalBetHistoryList.slice(start, start + itemsPerPage);
+
+            paginated.forEach(b => {
+                let resColor = b.result === 'WIN' ? '#10b981' : b.result === 'LOSS' ? '#ef4444' : '#f59e0b';
+                tbody.innerHTML += `
+                    <tr>
+                        <td><b style="color:#0f172a;">${b.select}</b></td>
+                        <td>${b.type.toUpperCase()}</td>
+                        <td>Rs. ${b.amount}</td>
+                        <td style="color:${resColor}; font-weight:800;">${b.result || 'PENDING'}</td>
+                        <td style="color:#059669;">${b.payout !== undefined ? 'Rs. '+b.payout : '-'}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function changeBetPage(page) {
+            currentBetPage = page;
+            document.getElementById('btnBetPage1').classList.toggle('active', page === 1);
+            document.getElementById('btnBetPage2').classList.toggle('active', page === 2);
+            renderBetHistoryTable();
+        }
+
+        // ----------------------------------------------------
+        // ENGINE 2: AVIATOR ENGINE SYSTEM (REAL GRAPH MECHANICS)
+        // ----------------------------------------------------
+        function startAviatorSystem() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = 160;
+            avLoopInterval = setInterval(updateAviatorLoop, 40);
+            resetAviatorRound();
+        }
+
+        function resetAviatorRound() {
+            avState = "flying";
+            avMultiplier = 1.00;
+            avHasCashedOut = false;
+            planeX = 30; planeY = 130;
+            avCrashPoint = (Math.random() * 4 + 1.05).toFixed(2); 
+
+            document.getElementById('alertFlew').style.display = 'none';
+            document.getElementById('alertWait').style.display = 'none';
+            
+            let btn = document.getElementById('aviatorActionBtn');
+            btn.className = "av-main-action-btn av-btn-green";
+            btn.innerText = "BET";
+            document.getElementById('aviatorStatusMessage').innerText = "✈️ Plane is airborne. Watch multiplier closely!";
+            generateFakeWinners();
+        }
+
+        function updateAviatorLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (avState === "flying") {
+                avMultiplier += 0.012;
+                document.getElementById('aviatorMultText').innerText = avMultiplier.toFixed(2) + "x";
+
+                planeX += (canvas.width - 60) / 150;
+                planeY -= 80 / 150;
+
+                // Draw curve tracking vector line
+                ctx.beginPath();
+                ctx.moveTo(30, 130);
+                ctx.quadraticCurveTo(canvas.width / 2, 130, planeX, planeY);
+                ctx.strokeStyle = '#ef4444';
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
+                // Draw matching plane icon proxy
+                ctx.beginPath();
+                ctx.arc(planeX, planeY, 6, 0, 2 * Math.PI);
+                ctx.fillStyle = '#cb1c45';
+                ctx.fill();
+
+                if (avMultiplier >= avCrashPoint) {
+                    triggerAviatorCrash();
+                }
+            }
+        }
+
+        function triggerAviatorCrash() {
+            avState = "crashed";
+            document.getElementById('alertFlew').style.display = 'block';
+            document.getElementById('aviatorStatusMessage').innerText = `💥 Flew Away at ${avCrashPoint}x! Buffering system...`;
+            
+            let strip = document.getElementById('aviatorHistory');
+            strip.innerHTML = `<div class="aviator-history-item">${avCrashPoint}x</div>` + strip.innerHTML;
+
+            setTimeout(() => {
+                document.getElementById('alertFlew').style.display = 'none';
+                document.getElementById('alertWait').style.display = 'block';
+                avCountdownTime = 5;
+                let countdown = setInterval(() => {
+                    avCountdownTime--;
+                    document.getElementById('avBufferTimer').innerText = avCountdownTime;
+                    if(avCountdownTime <= 0) {
+                        clearInterval(countdown);
+                        resetAviatorRound();
+                    }
+                }, 1000);
+            }, 2000);
+        }
+
+        function handleAviatorAction() {
+            const amt = parseInt(document.getElementById('aviatorBetAmount').value);
+            if (isNaN(amt) || amt < 150) return alert("Minimum stake required is PKR 150");
+
+            if (avState === "flying" && !avActiveBet && !avHasCashedOut) {
+                // Placing bet live mid-air
+                if (amt > currentBalance) return alert("Insufficient account assets.");
+                currentBalance -= amt;
+                database.ref('users/' + currentUser.uid + '/balance').set(currentBalance);
+                avActiveBet = amt;
+                let btn = document.getElementById('aviatorActionBtn');
+                btn.className = "av-main-action-btn av-btn-orange";
+                btn.innerText = "CASH OUT";
+            } else if (avState === "flying" && avActiveBet && !avHasCashedOut) {
+                // Execution of Cashout triggered
+                let winAmt = Math.floor(avActiveBet * avMultiplier);
+                currentBalance += winAmt;
+                database.ref('users/' + currentUser.uid + '/balance').set(currentBalance);
+                
+                avHasCashedOut = true;
+                avActiveBet = null;
+
+                let btn = document.getElementById('aviatorActionBtn');
+                btn.className = "av-main-action-btn av-btn-grey";
+                btn.innerText = "CASHED OUT";
+
+                document.getElementById('resultHeader').innerText = "🚀 FLIGHT CASHED OUT!";
+                document.getElementById('resultHeader').style.color = "#ea580c";
+                document.getElementById('resultDetails').innerText = `Successfully locked multiplier: ${avMultiplier.toFixed(2)}x\nDispatched back to wallet: PKR ${winAmt}`;
+                openModal('resultModal');
+            }
+        }
+
+        function generateFakeWinners() {
+            let list = document.getElementById('aviatorLiveWinnersList');
+            list.innerHTML = '';
+            for(let i=0; i<4; i++) {
+                let name = fakeNames[Math.floor(Math.random() * fakeNames.length)];
+                let mult = (Math.random() * 2 + 1.1).toFixed(2);
+                let cash = Math.floor(250 * mult);
+                list.innerHTML += `
+                    <div class="live-winner-row">
+                        <span class="win-user-tag">👤 ${name}</span>
+                        <span class="win-mult-tag">${mult}x</span>
+                        <span class="win-amt-tag">Rs. ${cash}</span>
+                    </div>
+                `;
+            }
+        }
+
+        // ----------------------------------------------------
+        // EXCLUSIVE TRANSACTION CHANNELS & WITHDRAWALS
+        // ----------------------------------------------------
+        function selectWithdrawMethod(method) {
+            document.getElementById('selectedWithMethod').value = method;
+            document.getElementById('btnMethodJazz').className = method === 'JazzCash' ? 'pay-box-btn active-jazz' : 'pay-box-btn';
+            document.getElementById('btnMethodEasy').className = method === 'EasyPaisa' ? 'pay-box-btn active-easy' : 'pay-box-btn';
+            document.getElementById('lblAccountNo').innerText = `${method} Account Number:`;
+        }
+
+        function processWithdrawal() {
+            const method = document.getElementById('selectedWithMethod').value;
+            const account = document.getElementById('withAccount').value.trim();
+            const title = document.getElementById('withTitle').value.trim();
+            const amount = parseInt(document.getElementById('withAmount').value);
+
+            if (!account || !title || isNaN(amount)) return alert("Please complete withdrawal parameters.");
+            if (amount < 1000) return alert("Minimum standard cloud payout is Rs. 1000");
+            if (amount > currentBalance) return alert("Insufficient available parameters for cashout.");
+
+            currentBalance -= amount;
+            database.ref('users/' + currentUser.uid + '/balance').set(currentBalance);
+
+            let withRef = database.ref('withdrawal_requests').push();
+            let payload = {
+                uid: currentUser.uid,
+                email: currentUser.email,
+                method: method,
+                account: account,
+                title: title,
+                amount: amount,
+                status: "pending",
+                timestamp: Date.now()
+            };
+
+            withRef.set(payload).then(() => {
+                database.ref('users/' + currentUser.uid + '/withdraws/' + withRef.key).set(payload);
+                alert("Withdrawal requested successfully! Processing via validation queue.");
+                document.getElementById('withAccount').value = '';
+                document.getElementById('withTitle').value = '';
+                document.getElementById('withAmount').value = '';
+            });
+        }
+
         function createDepositRequest() {
-            let amountElement = document.getElementById('depAmount');
-            let trxElement = document.getElementById('depTrx');
+            let amount = document.getElementById('depAmount').value.trim();
+            let trx = document.getElementById('depTrx').value.trim();
             
-            if(!amountElement || !trxElement) {
-                alert("Critical System Error: HTML Input components missing.");
-                return;
-            }
+            if(!amount || !trx) return alert("Please fill amount and matching Transaction ID.");
+            if(parseInt(amount) < 1000) return alert("Minimum structural deposit is PKR 1000");
 
-            let amount = amountElement.value.trim();
-            let trx = trxElement.value.trim();
-            
-            if(!amount || !trx) {
-                alert("Please enter Amount and Transaction ID!");
-                return;
-            }
-            
-            if(parseInt(amount) < 500) {
-                alert("Minimum deposit limit is Rs. 1000");
-                return;
-            }
-
-            let newRequestRef = database.ref('deposit_requests').push();
-            let uniqueRequestId = newRequestRef.key;
-            let entryTime = Date.now();
-            
-            let structuredPayload = {
+            let depRef = database.ref('deposit_requests').push();
+            let payload = {
                 uid: currentUser.uid,
                 email: currentUser.email,
                 amount: amount,
                 trxId: trx,
                 status: "pending",
-                timestamp: entryTime
+                timestamp: Date.now()
             };
 
-            newRequestRef.set(structuredPayload).then(() => {
-                database.ref('users/' + currentUser.uid + '/deposits/' + uniqueRequestId).set({
-                    amount: amount,
-                    trxId: trx,
-                    status: "pending",
-                    timestamp: entryTime
+            depRef.set(payload).then(() => {
+                database.ref('users/' + currentUser.uid + '/deposits/' + depRef.key).set(payload);
+                alert("Deposit receipt submitted successfully!");
+                document.getElementById('depAmount').value = '';
+                document.getElementById('depTrx').value = '';
+                closeModal('depositModal');
+            });
+        }
+
+        function syncTransactionsTables() {
+            // Synchronize User Specific Deposits List
+            database.ref('users/' + currentUser.uid + '/deposits').on('value', snapshot => {
+                const tbody = document.getElementById('userDepositHistoryBody');
+                tbody.innerHTML = '';
+                let hasItems = false;
+                snapshot.forEach(child => {
+                    hasItems = true;
+                    let d = child.val();
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>Rs. ${d.amount}</td>
+                            <td><code style="color:#4f46e5;">${d.trxId}</code></td>
+                            <td><span class="status-badge status-${d.status}">${d.status}</span></td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('depHistoryEmptyMsg').style.display = hasItems ? 'none' : 'block';
+            });
+
+            // Synchronize User Specific Withdraw List
+            database.ref('users/' + currentUser.uid + '/withdraws').on('value', snapshot => {
+                const tbody = document.getElementById('userWithdrawHistoryBody');
+                tbody.innerHTML = '';
+                let hasItems = false;
+                snapshot.forEach(child => {
+                    hasItems = true;
+                    let w = child.val();
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><b>${w.method}</b></td>
+                            <td>Rs. ${w.amount}</td>
+                            <td>${w.account}<br><span style="font-size:10px; color:#64748b;">${w.title}</span></td>
+                            <td><span class="status-badge status-${w.status}">${w.status}</span></td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('withHistoryEmptyMsg').style.display = hasItems ? 'none' : 'block';
+            });
+        }
+
+        // ----------------------------------------------------
+        // INVITATION & REFERRAL SYSTEM
+        // ----------------------------------------------------
+        function copyInviteCode() {
+            let code = document.getElementById('myInviteCode').innerText;
+            navigator.clipboard.writeText(code);
+            alert("Referral Uid Code Copied to Clipboard: " + code);
+        }
+
+        function applyReferralCode() {
+            let code = document.getElementById('inputReferralCode').value.trim();
+            if(!code) return alert("Please input a valid friend reference code.");
+
+            database.ref('users').once('value', snapshot => {
+                let foundUser = null;
+                snapshot.forEach(userSnap => {
+                    let u = userSnap.val();
+                    if(u.inviteCode === code && userSnap.key !== currentUser.uid) {
+                        foundUser = userSnap.key;
+                    }
                 });
 
-                closeModal('depositModal');
+                if(foundUser) {
+                    // Credit 50 PKR to Current User
+                    currentBalance += 50;
+                    database.ref('users/' + currentUser.uid).update({
+                        balance: currentBalance,
+                        referredBy: foundUser
+                    });
+                    
+                    // Credit 50 PKR to Inviter User node
+                    database.ref('users/' + foundUser + '/balance').transaction(b => (b || 0) + 50);
+                    
+                    alert("Success! Link bonus parameters dispatched.");
+                } else {
+                    alert("Invalid reference code or cannot link your own code.");
+                }
             });
         }
     </script>
