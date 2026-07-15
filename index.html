@@ -12,150 +12,153 @@
         body {
             margin: 0; padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f7f8fc; color: #333333;
+            background-color: #f8fafc; color: #0f172a;
             text-align: center;
             overflow-x: hidden;
         }
         #appScreen { display: none; }
-        .auth-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; background: linear-gradient(to bottom, #e8ecf1, #f4f6f9); }
-        .auth-card { background-color: #ffffff; padding: 35px 25px; border-radius: 24px; width: 100%; max-width: 380px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); border: 1px solid #d1d5db; }
-        .auth-card h2 { color: #f59e0b; margin-bottom: 25px; font-size: 26px; font-weight: 800; text-transform: uppercase; }
+        .auth-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; background: linear-gradient(to bottom, #f1f5f9, #e2e8f0); }
+        .auth-card { background-color: #ffffff; padding: 35px 25px; border-radius: 24px; width: 100%; max-width: 380px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08); border: 1px solid #e2e8f0; }
+        .auth-card h2 { color: #4f46e5; margin-bottom: 25px; font-size: 26px; font-weight: 800; text-transform: uppercase; }
         
-        .header { background-color: #ffffff; padding: 10px 15px; font-size: 18px; font-weight: 800; border-bottom: 3px solid #f59e0b; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
-        .header span { color: #f59e0b; }
-        .logout-btn { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: bold; }
+        .header { background-color: #ffffff; padding: 14px 15px; font-size: 16px; font-weight: 800; border-bottom: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .header span { color: #4f46e5; letter-spacing: 0.5px; }
+        .logout-btn { background: #ef4444; color: white; border: none; padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; transition: background 0.2s; }
+        .logout-btn:hover { background: #dc2626; }
         
-        .live-ticker-bar { background: #eef1f5; color: #059669; font-size: 11px; font-weight: bold; padding: 4px; border-bottom: 1px solid #d1d5db; overflow: hidden; white-space: nowrap; box-sizing: border-box; }
+        .live-ticker-bar { background: #f1f5f9; color: #047857; font-size: 11px; font-weight: bold; padding: 6px; border-bottom: 1px solid #e2e8f0; overflow: hidden; white-space: nowrap; box-sizing: border-box; }
         .ticker-inner { display: inline-block; padding-left: 100%; animation: tickerMove 25s linear infinite; }
         @keyframes tickerMove { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-        .game-tabs { display: flex; background: #ffffff; margin: 8px 10px; padding: 4px; border-radius: 10px; border: 1px solid #d1d5db; gap: 4px; }
-        .tab-btn { flex: 1; padding: 8px 4px; font-size: 12px; font-weight: 800; border: none; border-radius: 8px; background: transparent; color: #6b7280; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
-        .tab-btn.active { background: #f59e0b; color: #fff; box-shadow: 0 3px 10px rgba(245, 158, 11, 0.3); }
+        .game-tabs { display: flex; background: #f1f5f9; margin: 8px 10px; padding: 4px; border-radius: 12px; border: 1px solid #e2e8f0; gap: 4px; }
+        .tab-btn { flex: 1; padding: 10px 4px; font-size: 12px; font-weight: 800; border: none; border-radius: 8px; background: transparent; color: #64748b; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        .tab-btn.active { background: #ffffff; color: #4f46e5; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); }
 
         .game-wrapper { display: none; }
         .game-wrapper.active { display: block; }
 
-        .balance-card { background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%); margin: 8px 10px; padding: 10px; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid #d1d5db; display: flex; justify-content: space-between; align-items: center; }
+        .balance-card { background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); margin: 12px 10px; padding: 16px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
         
         /* Wingo UI Elements */
-        .history-box { background-color: #ffffff; margin: 8px 10px; padding: 8px; border-radius: 10px; border: 1px solid #d1d5db; text-align: left; }
-        .history-title { font-size: 11px; color: #6b7280; font-weight: bold; text-transform: uppercase; margin-bottom: 6px; display: flex; justify-content: space-between; }
+        .history-box { background-color: #ffffff; margin: 8px 10px; padding: 10px; border-radius: 12px; border: 1px solid #e2e8f0; text-align: left; }
+        .history-title { font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 6px; display: flex; justify-content: space-between; }
         .trends-list { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 3px; }
-        .trend-dot { min-width: 32px; height: 32px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: white; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.1); line-height: 1.1; }
-        .latest-win-mark { position: absolute; top: -6px; font-size: 8px; background: #f59e0b; color: #000; padding: 1px 2px; border-radius: 3px; font-weight: 900; animation: blink 1s infinite; }
+        .trend-dot { min-width: 32px; height: 32px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: white; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.08); line-height: 1.1; }
+        .latest-win-mark { position: absolute; top: -6px; font-size: 8px; background: #eab308; color: white; padding: 1px 3px; border-radius: 4px; font-weight: 900; animation: blink 1s infinite; }
         
         @keyframes blink { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
 
-        .timer-section { background-color: #ffffff; margin: 8px 10px; padding: 8px; border-radius: 10px; font-size: 14px; color: #d97706; font-weight: bold; border: 1px solid #d1d5db; display: flex; justify-content: space-between; align-items: center; }
-        .wingo-live-bets-bubble { font-size: 10px; color: #059669; font-weight: 600; margin: 0; }
-        .timer-section span { font-size: 16px; color: #1f2937; background: #f3f4f6; padding: 2px 8px; border-radius: 6px; border: 1px solid #d97706; }
+        .timer-section { background-color: #ffffff; margin: 8px 10px; padding: 10px; border-radius: 12px; font-size: 14px; color: #d97706; font-weight: bold; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+        .wingo-live-bets-bubble { font-size: 11px; color: #059669; font-weight: 600; margin: 0; }
+        .timer-section span { font-size: 16px; color: #0f172a; background: #f1f5f9; padding: 2px 10px; border-radius: 6px; border: 1px solid #cbd5e1; }
         
         /* ALIGNED AND COMPRESSED BET BOX ROW */
-        .bet-control-row { display: flex; align-items: center; justify-content: space-between; margin: 8px 10px; padding: 6px 10px; background: #ffffff; border-radius: 10px; border: 1px solid #d1d5db; gap: 8px; }
+        .bet-control-row { display: flex; align-items: center; justify-content: space-between; margin: 8px 10px; padding: 8px 12px; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; gap: 8px; }
         .bet-input-container { display: flex; flex-direction: column; align-items: flex-start; flex: 1; }
         .multiplier-container { display: flex; gap: 4px; flex: 1.5; justify-content: flex-end; }
-        .mult-btn { flex: 1; background-color: #e5e7eb; border: 1px solid #9ca3af; color: #1f2937; padding: 10px 0; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; }
-        .game-section-label { font-size: 11px; color: #d97706; text-align: left; margin: 8px 15px 3px 15px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+        .mult-btn { flex: 1; background-color: #f1f5f9; border: 1px solid #cbd5e1; color: #475569; padding: 10px 0; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; transition: background 0.2s; }
+        .mult-btn:hover { background-color: #e2e8f0; }
+        .game-section-label { font-size: 11px; color: #4f46e5; text-align: left; margin: 12px 15px 4px 15px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
 
         .big-small-container { display: flex; justify-content: center; gap: 10px; margin: 2px 0 8px 0; padding: 0 10px; }
-        .btn-big { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; flex: 1; padding: 10px; font-size: 15px; font-weight: 900; border: none; border-radius: 10px; cursor: pointer; text-transform: uppercase; }
-        .btn-small { background: linear-gradient(135deg, #f97316, #ea580c); color: white; flex: 1; padding: 10px; font-size: 15px; font-weight: 900; border: none; border-radius: 10px; cursor: pointer; text-transform: uppercase; }
+        .btn-big { background: linear-gradient(135deg, #6366f1, #4338ca); color: white; flex: 1; padding: 12px; font-size: 15px; font-weight: 900; border: none; border-radius: 12px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2); }
+        .btn-small { background: linear-gradient(135deg, #f97316, #ea580c); color: white; flex: 1; padding: 12px; font-size: 15px; font-weight: 900; border: none; border-radius: 12px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2); }
 
         .color-selection-bar { display: flex; justify-content: center; gap: 10px; margin: 2px 0 8px 0; padding: 0 10px; }
-        .color-choice-btn { flex: 1; padding: 8px; font-weight: bold; font-size: 13px; color: white; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
-        .choice-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        .choice-green { background: linear-gradient(135deg, #10b981, #059669); }
+        .color-choice-btn { flex: 1; padding: 10px; font-weight: bold; font-size: 13px; color: white; border: none; border-radius: 10px; cursor: pointer; text-transform: uppercase; }
+        .choice-red { background: linear-gradient(135deg, #ef4444, #b91c1c); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2); }
+        .choice-green { background: linear-gradient(135deg, #10b981, #047857); box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2); }
 
-        .number-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; padding: 0 10px; margin-bottom: 10px; }
-        .num-btn { padding: 8px 0; font-size: 14px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; color: white; }
+        .number-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 0 10px; margin-bottom: 12px; }
+        .num-btn { padding: 10px 0; font-size: 14px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; color: white; }
         .bg-green { background: linear-gradient(135deg, #10b981, #059669); }
         .bg-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
         .bg-mix { background: linear-gradient(135deg, #8b5cf6, #ec4899); border: 1px dashed #fff; }
 
         /* AVIATOR UI ELEMENTS */
-        .aviator-display-box { background: #f9fafb; border: 1px solid #d1d5db; border-radius: 12px; margin: 8px 10px; padding: 6px; position: relative; }
-        .aviator-history-strip { display: flex; gap: 4px; overflow-x: auto; padding: 4px; margin-bottom: 6px; background: #e5e7eb; border-radius: 6px; font-size: 10px; font-weight: bold; border: 1px solid #d1d5db; }
-        .aviator-history-item { background: #ede9fe; color: #7c3aed; padding: 2px 6px; border-radius: 10px; border: 1px solid #a78bfa; min-width: 36px; text-align: center; }
+        .aviator-display-box { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; margin: 8px 10px; padding: 8px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+        .aviator-history-strip { display: flex; gap: 4px; overflow-x: auto; padding: 6px; margin-bottom: 8px; background: #f8fafc; border-radius: 8px; font-size: 10px; font-weight: bold; border: 1px solid #e2e8f0; }
+        .aviator-history-item { background: #f3e8ff; color: #7e22ce; padding: 3px 8px; border-radius: 12px; border: 1px solid #e9d5ff; min-width: 36px; text-align: center; }
         
-        .aviator-canvas-container { position: relative; background: radial-gradient(circle at bottom left, #fce7f3 0%, #f9fafb 100%); border-radius: 10px; width: 100%; height: 160px; border: 1px solid #d1d5db; overflow: hidden; }
+        .aviator-canvas-container { position: relative; background: radial-gradient(circle at bottom left, #fef2f2 0%, #f8fafc 100%); border-radius: 12px; width: 100%; height: 160px; border: 1px solid #e2e8f0; overflow: hidden; }
         #aviatorCanvas { width: 100%; height: 100%; display: block; }
         
-        .live-multiplier { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 38px; font-weight: 900; color: #1f2937; font-family: sans-serif; pointer-events: none; }
-        .aviator-alert-overlay { position: absolute; top: 65%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; font-weight: 800; text-transform: uppercase; padding: 4px 12px; border-radius: 50px; display: none; pointer-events: none; }
-        .flew-away-text { color: #ffffff; background: #dc2626; border: 1px solid #ef4444; box-shadow: 0 0 12px #dc2626; }
-        .waiting-text { color: #d97706; background: rgba(245, 158, 11, 0.1); border: 1px solid #d97706; font-size: 13px; }
+        .live-multiplier { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 38px; font-weight: 900; color: #0f172a; font-family: sans-serif; pointer-events: none; }
+        .aviator-alert-overlay { position: absolute; top: 65%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; font-weight: 800; text-transform: uppercase; padding: 4px 14px; border-radius: 50px; display: none; pointer-events: none; }
+        .flew-away-text { color: #ffffff; background: #cb1c45; border: 1px solid #ef4444; box-shadow: 0 4px 12px rgba(203, 28, 69, 0.3); }
+        .waiting-text { color: #b45309; background: #fef3c7; border: 1px solid #f59e0b; font-size: 13px; }
 
-        .aviator-live-badge { position: absolute; bottom: 8px; right: 10px; background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: bold; color: #059669; display: flex; align-items: center; gap: 4px; pointer-events: none; }
+        .aviator-live-badge { position: absolute; bottom: 8px; right: 10px; background: #ecfdf5; border: 1px solid #10b981; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; color: #047857; display: flex; align-items: center; gap: 4px; pointer-events: none; }
         .aviator-live-badge span { width: 5px; height: 5px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse 1s infinite; }
 
-        .aviator-control-dashboard { display: grid; grid-template-columns: 1fr; gap: 8px; margin: 8px 10px; padding: 8px; background: #f9fafb; border-radius: 12px; border: 1px solid #d1d5db; }
-        .aviator-box-panel { background: #ffffff; padding: 8px; border-radius: 10px; border: 1px solid #d1d5db; display: flex; flex-direction: column; gap: 6px; }
+        .aviator-control-dashboard { display: grid; grid-template-columns: 1fr; gap: 8px; margin: 8px 10px; padding: 10px; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; }
+        .aviator-box-panel { background: #f8fafc; padding: 10px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 8px; }
         
-        .av-bet-controls { display: flex; align-items: center; justify-content: space-between; background: #f3f4f6; padding: 4px 10px; border-radius: 6px; border: 1px solid #d1d5db; }
-        .av-bet-controls span { font-size: 11px; color: #6b7280; font-weight: bold; }
-        .av-bet-controls input { width: 80px; padding: 4px; font-weight: 900; margin: 0; color: #059669; font-size: 13px; border: none; background: transparent; text-align: right; }
+        .av-bet-controls { display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 6px 12px; border-radius: 8px; border: 1px solid #cbd5e1; }
+        .av-bet-controls span { font-size: 11px; color: #64748b; font-weight: bold; }
+        .av-bet-controls input { width: 80px; padding: 4px; font-weight: 900; margin: 0; color: #059669; font-size: 14px; border: none; background: transparent; text-align: right; }
 
-        .av-main-action-btn { width: 100%; padding: 10px; font-size: 15px; font-weight: 900; border-radius: 8px; border: none; cursor: pointer; text-transform: uppercase; color: white; display: block; box-sizing: border-box; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
-        .av-btn-green { background: linear-gradient(to bottom, #34d399, #059669); border-bottom: 3px solid #047857; }
-        .av-btn-orange { background: linear-gradient(to bottom, #f97316, #ea580c); border-bottom: 3px solid #c2410c; }
-        .av-btn-grey { background: #d1d5db; color: #6b7280; cursor: not-allowed; border-bottom: 3px solid #9ca3af; }
+        .av-main-action-btn { width: 100%; padding: 12px; font-size: 15px; font-weight: 900; border-radius: 10px; border: none; cursor: pointer; text-transform: uppercase; color: white; display: block; box-sizing: border-box; }
+        .av-btn-green { background: linear-gradient(to bottom, #2cde76, #11914f); border-bottom: 3px solid #08592f; box-shadow: 0 4px 10px rgba(17, 145, 79, 0.2); }
+        .av-btn-orange { background: linear-gradient(to bottom, #ff9000, #cc4b00); border-bottom: 3px solid #802a00; box-shadow: 0 4px 10px rgba(204, 75, 0, 0.2); }
+        .av-btn-grey { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; border-bottom: 3px solid #cbd5e1; }
 
-        .aviator-status-footer { background: #e5e7eb; border: 1px solid #d1d5db; color: #6b7280; font-size: 10px; font-weight: bold; padding: 6px; border-radius: 6px; text-transform: uppercase; }
+        .aviator-status-footer { background: #f1f5f9; border: 1px solid #e2e8f0; color: #475569; font-size: 10px; font-weight: bold; padding: 6px; border-radius: 8px; text-transform: uppercase; }
 
-        .aviator-players-panel { background: #f9fafb; border: 1px solid #d1d5db; margin: 8px 10px 10px 10px; border-radius: 10px; padding: 8px; text-align: left; }
-        .panel-header-title { font-size: 11px; color: #6b7280; font-weight: 800; border-bottom: 1px solid #d1d5db; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
-        .live-winner-row { display: flex; justify-content: space-between; font-size: 11px; padding: 4px 0; border-bottom: 1px dashed #d1d5db; font-weight: bold; }
-        .win-user-tag { color: #4b5563; }
-        .win-mult-tag { color: #7c3aed; background: rgba(139, 92, 246, 0.1); padding: 1px 4px; border-radius: 3px; }
+        .aviator-players-panel { background: #ffffff; border: 1px solid #e2e8f0; margin: 8px 10px 10px 10px; border-radius: 12px; padding: 10px; text-align: left; }
+        .panel-header-title { font-size: 11px; color: #475569; font-weight: 800; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 6px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+        .live-winner-row { display: flex; justify-content: space-between; font-size: 11px; padding: 6px 0; border-bottom: 1px dashed #e2e8f0; font-weight: bold; }
+        .win-user-tag { color: #334155; }
+        .win-mult-tag { color: #6b21a8; background: #f3e8ff; padding: 2px 6px; border-radius: 6px; }
         .win-amt-tag { color: #059669; }
 
-        input[type="number"], input[type="text"], input[type="email"], input[type="password"] { padding: 10px; font-size: 14px; border-radius: 8px; border: 1px solid #d1d5db; background-color: #ffffff; color: #1f2937; width: 100%; max-width: 280px; text-align: center; margin-bottom: 8px; box-sizing: border-box; }
-        .status-display { background-color: #ffffff; border: 1px dashed #d1d5db; padding: 8px; margin: 8px 10px; border-radius: 10px; font-size: 12px; color: #6b7280; font-weight: bold; }
+        input[type="number"], input[type="text"], input[type="email"], input[type="password"] { padding: 10px; font-size: 14px; border-radius: 10px; border: 1px solid #cbd5e1; background-color: #ffffff; color: #0f172a; width: 100%; max-width: 280px; text-align: center; margin-bottom: 8px; box-sizing: border-box; }
+        input:focus { outline: none; border-color: #4f46e5; }
+        .status-display { background-color: #f8fafc; border: 1px dashed #cbd5e1; padding: 10px; margin: 8px 10px; border-radius: 12px; font-size: 12px; color: #475569; font-weight: bold; }
         
-        .logs { background-color: #f9fafb; margin: 10px; padding: 10px; border-radius: 12px; text-align: left; max-height: 120px; overflow-y: auto; border: 1px solid #cbd5e1; box-shadow: inset 0 4px 12px rgba(0,0,0,0.04); }
-        .routing-header { font-size: 11px; color: #d97706; font-weight: bold; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center;}
-        .live-bet-card { display: flex; justify-content: space-between; align-items: center; background: #ffffff; padding: 6px 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #cbd5e1; }
-        .badge-box { padding: 3px 8px; border-radius: 4px; font-weight: 900; font-size: 10px; text-transform: uppercase; }
-        .badge-big { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; }
+        .logs { background-color: #f8fafc; margin: 10px; padding: 12px; border-radius: 14px; text-align: left; max-height: 120px; overflow-y: auto; border: 1px solid #e2e8f0; }
+        .routing-header { font-size: 11px; color: #4f46e5; font-weight: bold; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 6px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center;}
+        .live-bet-card { display: flex; justify-content: space-between; align-items: center; background: #ffffff; padding: 6px 12px; border-radius: 8px; margin-bottom: 6px; border: 1px solid #e2e8f0; }
+        .badge-box { padding: 3px 8px; border-radius: 6px; font-weight: 900; font-size: 10px; text-transform: uppercase; }
+        .badge-big { background: linear-gradient(135deg, #6366f1, #4338ca); color: white; }
         .badge-small { background: linear-gradient(135deg, #f97316, #ea580c); color: white; }
         .badge-red { background: #ef4444; color: white; }
         .badge-green { background: #10b981; color: white; }
         .badge-num { background: #8b5cf6; color: white; border: 1px solid #fff; padding: 1px 6px; border-radius: 50%; }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; padding: 15px; box-sizing: border-box; }
-        .modal-content { background-color: #ffffff; padding: 20px 15px; border-radius: 20px; width: 100%; max-width: 360px; border: 1px solid #d1d5db; text-align: center; }
-        .submit-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
-        .close-btn { background-color: #9ca3af; color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer; margin-top: 10px; width: 100%; }
-        .switch-auth { color: #3b82f6; cursor: pointer; text-decoration: underline; margin-top: 12px; font-size: 12px; display: inline-block; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 1000; padding: 15px; box-sizing: border-box; }
+        .modal-content { background-color: #ffffff; padding: 25px 20px; border-radius: 24px; width: 100%; max-width: 360px; border: 1px solid #e2e8f0; text-align: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .submit-btn { background: linear-gradient(135deg, #4f46e5, #3730a3); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); }
+        .close-btn { background-color: #f1f5f9; color: #475569; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; margin-top: 10px; width: 100%; font-weight: bold; }
+        .switch-auth { color: #4f46e5; cursor: pointer; text-decoration: underline; margin-top: 12px; font-size: 12px; display: inline-block; }
 
         .payment-toggle-box { display: flex; gap: 8px; margin-bottom: 12px; }
-        .pay-box-btn { flex: 1; padding: 10px; font-size: 13px; font-weight: bold; border-radius: 8px; border: 2px solid #d1d5db; background: #ffffff; color: #6b7280; cursor: pointer; transition: 0.2s; }
-        .pay-box-btn.active-jazz { border-color: #d97706; color: #1f2937; background: rgba(245, 158, 11, 0.08); }
-        .pay-box-btn.active-easy { border-color: #059669; color: #1f2937; background: rgba(16, 185, 129, 0.08); }
+        .pay-box-btn { flex: 1; padding: 12px; font-size: 13px; font-weight: bold; border-radius: 10px; border: 2px solid #e2e8f0; background: #ffffff; color: #64748b; cursor: pointer; transition: 0.2s; }
+        .pay-box-btn.active-jazz { border-color: #f59e0b; color: #b45309; background: #fef3c7; }
+        .pay-box-btn.active-easy { border-color: #10b981; color: #047857; background: #ecfdf5; }
 
         /* SEPARATE SECTION INTERFACE STYLES */
-        .standalone-section { display: none; background: #ffffff; margin: 10px; padding: 15px; border-radius: 14px; border: 1px solid #d1d5db; text-align: left; }
-        .invite-title { font-size: 13px; color: #d97706; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .standalone-section { display: none; background: #ffffff; margin: 10px; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; text-align: left; box-shadow: 0 4px 12px rgba(0,0,0,0.01); }
+        .invite-title { font-size: 13px; color: #4f46e5; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .invite-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
-        .invite-code-box { background: #e5e7eb; padding: 8px; border-radius: 6px; font-weight: bold; color: #1f2937; border: 1px solid #d1d5db; flex: 1; text-align: center; letter-spacing: 0.5px; font-size: 13px; }
-        .invite-btn { background: #d97706; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; }
+        .invite-code-box { background: #f1f5f9; padding: 10px; border-radius: 8px; font-weight: bold; color: #0f172a; border: 1px solid #cbd5e1; flex: 1; text-align: center; letter-spacing: 0.5px; font-size: 14px; }
+        .invite-btn { background: #4f46e5; color: white; border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; }
 
         /* HISTORY SYSTEM UI STYLES */
-        .history-table-container { background: #e5e7eb; border: 1px solid #cbd5e1; border-radius: 10px; padding: 6px; margin-top: 8px; font-size: 11px; overflow-x: auto; }
+        .history-table-container { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 6px; margin-top: 8px; font-size: 11px; overflow-x: auto; }
         .history-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .history-table th { background: #ffffff; color: #6b7280; padding: 6px 8px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #cbd5e1; }
-        .history-table td { padding: 8px; border-bottom: 1px solid #ffffff; font-weight: 600; }
-        .history-empty-msg { padding: 15px; text-align: center; color: #9ca3af; font-weight: bold; font-size: 12px; text-transform: uppercase; }
-        .status-badge { padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: bold; text-transform: uppercase; }
-        .status-pending { background: rgba(245, 158, 11, 0.1); color: #d97706; border: 1px solid #d97706; }
-        .status-approved { background: rgba(16, 185, 129, 0.1); color: #059669; border: 1px solid #059669; }
-        .status-rejected { background: rgba(239, 68, 68, 0.1); color: #dc2626; border: 1px solid #dc2626; }
+        .history-table th { background: #f1f5f9; color: #475569; padding: 8px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; }
+        .history-table td { padding: 10px 8px; border-bottom: 1px solid #f1f5f9; font-weight: 600; color: #334155; }
+        .history-empty-msg { padding: 20px; text-align: center; color: #94a3b8; font-weight: bold; font-size: 12px; text-transform: uppercase; }
+        .status-badge { padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: bold; text-transform: uppercase; }
+        .status-pending { background: #fef3c7; color: #d97706; border: 1px solid #fcd34d; }
+        .status-approved { background: #ecfdf5; color: #059669; border: 1px solid #6ee7b7; }
+        .status-rejected { background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5; }
         
-        .pagination-row { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; padding: 4px; }
-        .page-nav-btn { background: #ffffff; color: #6b7280; border: 1px solid #d1d5db; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: bold; transition: 0.2s; }
-        .page-nav-btn.active { background: #d97706; color: #fff; border-color: #d97706; }
-        .page-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .pagination-row { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 12px; padding: 4px; }
+        .page-nav-btn { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; transition: 0.2s; }
+        .page-nav-btn.active { background: #4f46e5; color: #fff; border-color: #4f46e5; }
+        .page-nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -192,19 +195,19 @@
 
         <!-- MULTI-TAB NAVIGATION SYSTEM -->
         <div class="game-tabs" style="margin-bottom: 5px;">
-            <button class="tab-btn active" id="navHome" onclick="navigateToSection('home')">🏠 Games</button>
+            <button class="tab-btn active" id="navHome" onclick="navigateToSection('home')">🎮 Games</button>
             <button class="tab-btn" id="navInvite" onclick="navigateToSection('invite')">🤝 Invite</button>
             <button class="tab-btn" id="navWithdraw" onclick="navigateToSection('withdraw')">📤 Withdraw</button>
-            <button class="tab-btn" onclick="openModal('depositModal')">➕ Deposit</button>
+            <button class="tab-btn" onclick="openModal('depositModal')" style="color: #059669;">➕ Deposit</button>
         </div>
 
         <div class="balance-card">
             <div style="text-align: left;">
-                <div style="font-size: 10px; opacity: 0.7; text-transform: uppercase;">LIQUIDITY</div>
-                <div id="balance" style="font-size: 22px; font-weight: 900; color: #f59e0b;">PKR 0</div>
+                <div style="font-size: 10px; opacity: 0.7; text-transform: uppercase; color: #64748b; font-weight: bold;">LIQUIDITY</div>
+                <div id="balance" style="font-size: 24px; font-weight: 900; color: #4f46e5;">PKR 0</div>
             </div>
-            <div style="font-size: 11px; color: #6b7280; text-align: right;">
-                ID: <span id="userPhoneDisplay" style="font-weight: bold;">-</span>
+            <div style="font-size: 11px; color: #64748b; text-align: right;">
+                ID: <span id="userPhoneDisplay" style="font-weight: bold; color: #0f172a;">-</span>
             </div>
         </div>
 
@@ -226,7 +229,7 @@
 
                 <div class="timer-section">
                     <div class="wingo-live-bets-bubble" id="wingoLivePool">🔥 3,450 dynamic bets active</div>
-                    <div>⏱️ Ends: <span id="timer">00:30</span></div>
+                    <div>⏳ Ends: <span id="timer">00:30</span></div>
                 </div>
 
                 <div class="status-display" id="roundStatus">
@@ -236,8 +239,8 @@
                 <!-- ALIGNED HORIZONTAL BET COMPONENT -->
                 <div class="bet-control-row">
                     <div class="bet-input-container">
-                        <label style="font-size: 10px; color: #6b7280; font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Stake Amount:</label>
-                        <input type="number" id="betAmount" value="250" min="150" style="width: 110px; font-weight: bold; font-size: 18px; color: #f59e0b; margin: 0; padding: 6px;">
+                        <label style="font-size: 10px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 4px;">Stake Amount:</label>
+                        <input type="number" id="betAmount" value="250" min="150" style="width: 110px; font-weight: bold; font-size: 18px; color: #4f46e5; margin: 0; padding: 6px;">
                     </div>
                     <div class="multiplier-container">
                         <button class="mult-btn" onclick="applyMultiplier(1)">X1</button>
@@ -282,7 +285,7 @@
                 </div>
 
                 <!-- USER PERSONAL BET HISTORY TABLE SYSTEM -->
-                <div class="game-section-label" style="margin-top: 15px; color:#3b82f6;">📝 My Personal Bet History</div>
+                <div class="game-section-label" style="margin-top: 15px; color:#4f46e5;">📋 My Personal Bet History</div>
                 <div class="history-table-container">
                     <table class="history-table">
                         <thead>
@@ -312,9 +315,9 @@
                 <div class="aviator-display-box">
                     <div class="aviator-history-strip" id="aviatorHistory">
                         <div class="aviator-history-item">1.34x</div>
-                        <div class="aviator-history-item" style="color:#7c3aed;">4.12x</div>
+                        <div class="aviator-history-item" style="color:#7e22ce; background: #f3e8ff;">4.12x</div>
                         <div class="aviator-history-item">1.18x</div>
-                        <div class="aviator-history-item" style="color:#7c3aed;">9.65x</div>
+                        <div class="aviator-history-item" style="color:#7e22ce; background: #f3e8ff;">9.65x</div>
                     </div>
                     
                     <div class="aviator-canvas-container">
@@ -358,18 +361,18 @@
             <div class="invite-title">
                 <span>🤝 Invite & Earn (Rs. 50 Bonus)</span>
             </div>
-            <p style="font-size: 12px; color: #6b7280; margin: 0 0 10px 0;">Share your link code with friends. When they activate their accounts, you will instantly get credited.</p>
+            <p style="font-size: 12px; color: #64748b; margin: 0 0 10px 0;">Share your link code with friends. When they activate their accounts, you will instantly get credited.</p>
             <div class="invite-row">
                 <div class="invite-code-box" id="myInviteCode">Generating...</div>
                 <button class="invite-btn" onclick="copyInviteCode()">Copy Code</button>
             </div>
-            <hr style="border:0; border-top:1px solid #d1d5db; margin:12px 0;">
+            <hr style="border:0; border-top:1px solid #e2e8f0; margin:12px 0;">
             <div class="invite-title"><span>Link Invitation Uid</span></div>
             <div class="invite-row" id="referralInputRow">
                 <input type="text" id="inputReferralCode" placeholder="Enter Friend's Code" style="margin-bottom:0; font-size:13px; padding:8px; flex:1; text-align:left;">
                 <button class="invite-btn" style="background:#10b981; color:white;" onclick="applyReferralCode()">Link</button>
             </div>
-            <div id="referralStatus" style="font-size:12px; color:#34d399; margin-top:5px; font-weight:bold; display:none;">Code Linked Successfully!</div>
+            <div id="referralStatus" style="font-size:12px; color:#059669; margin-top:5px; font-weight:bold; display:none;">Code Linked Successfully!</div>
         </div>
 
         <!-- SECTION 3: STANDALONE EXCLUSIVE WITHDRAWAL PAGE -->
@@ -379,31 +382,31 @@
             </div>
             
             <div class="payment-toggle-box">
-                <button type="button" id="btnMethodJazz" class="pay-box-btn active-jazz" onclick="selectWithdrawMethod('JazzCash')">🍠 JazzCash</button>
+                <button type="button" id="btnMethodJazz" class="pay-box-btn active-jazz" onclick="selectWithdrawMethod('JazzCash')">🍊 JazzCash</button>
                 <button type="button" id="btnMethodEasy" class="pay-box-btn" onclick="selectWithdrawMethod('EasyPaisa')">🍏 EasyPaisa</button>
             </div>
             
             <input type="hidden" id="selectedWithMethod" value="JazzCash">
 
             <div style="text-align: left; margin-bottom: 8px;">
-                <label id="lblAccountNo" style="font-size: 11px; color: #6b7280; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">JazzCash Account Number:</label>
+                <label id="lblAccountNo" style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">JazzCash Account Number:</label>
                 <input type="text" id="withAccount" placeholder="e.g. 03XXXXXXXXX" style="max-width: 100%; text-align: left; margin:0;">
             </div>
 
             <div style="text-align: left; margin-bottom: 8px;">
-                <label style="font-size: 11px; color: #6b7280; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Account Title / Owner Name:</label>
+                <label style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Account Title / Owner Name:</label>
                 <input type="text" id="withTitle" placeholder="Enter Account Title Name" style="max-width: 100%; text-align: left; margin:0;">
             </div>
 
             <div style="text-align: left; margin-bottom: 12px;">
-                <label style="font-size: 11px; color: #6b7280; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Withdraw Amount (Min PKR 1000):</label>
+                <label style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Withdraw Amount (Min PKR 1000):</label>
                 <input type="number" id="withAmount" placeholder="Min 1000 Payout Amount" style="max-width: 100%; text-align: left; margin:0;">
             </div>
 
-            <button class="submit-btn" style="background: linear-gradient(135deg, #ef4444, #dc2626); padding:12px;" onclick="processWithdrawal()">Request Withdrawal</button>
+            <button class="submit-btn" style="background: linear-gradient(135deg, #ef4444, #b91c1c); padding:12px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);" onclick="processWithdrawal()">Request Withdrawal</button>
 
             <!-- WITHDRAWAL TRACKING LOG HISTORY SYSTEM UI -->
-            <div class="invite-title" style="margin-top: 20px; color:#ef4444;"><span>📹 Payout Logs Statement</span></div>
+            <div class="invite-title" style="margin-top: 20px; color:#ef4444;"><span>📝 Payout Logs Statement</span></div>
             <div class="history-table-container">
                 <table class="history-table">
                     <thead>
@@ -427,30 +430,30 @@
     <!-- DEPOSIT MODAL -->
     <div id="depositModal" class="modal">
         <div class="modal-content" style="max-width: 390px;">
-            <h3 style="color: #10b981; margin-bottom: 5px; text-transform: uppercase;">Deposit Funds</h3>
+            <h3 style="color: #10b981; margin-bottom: 12px; text-transform: uppercase; margin-top: 0;">Deposit Funds</h3>
             
-            <div style="background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%); padding: 15px; border-radius: 16px; border: 2px solid #eab308; margin-bottom: 16px; text-align: center; box-shadow: 0 0 15px rgba(234, 179, 8, 0.2);">
-                <p style="margin: 0 0 10px 0; font-size: 13px; color: #d97706; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">⚡ SCAN QR CODE TO DEPOSIT ⚡</p>
-                <div style="background: #f9fafb; padding: 10px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.08); margin-bottom: 8px;">
-                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4QAqRXhpZgAASUkqAAgAAAABADEBAgAHAAAAGgAAAAAAAABQaWNhc2EAAP/bAIQABgYGBgcGBwgIBwoLCgsKDw4MDA4PFhAREBEQFiIVGRUVGRUiHiQeHB4kHjYqJiYqNj40MjQ+TERETF9aX3x8pwEGBgYGBwYHCAgHCgsKCwoPDgwMDg8WEBEQERAWIhUZFRUZFSIeJB4cHiQeNiomJio2PjQyND5MRERMX1pffHyn/8IAEQgBaQGWAwEiAAIRAQMRAf/EAC0AAQADAQEBAQAAAAAAAAAAAAAFBgcEAwIBAQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIQAxAAAAK1AAOarFyU0XJTRclNFyU0XJU7YFeji5KaLkgJ8Kj5lyU0XJTfctYDlq5clNFyU25BEQhclNFyU0XJTRclNFyQM8AAAAR2d6JnZ1/d3kDOGjjOGjjOOfT6gQmlZrpRRoOcgwCwXWlXUz7i06slQB0SE5YQCNzzQ88AGpZbqRWqlbaqdbRxnDRxnDRxnHHqeckldKXdAAAACOzvRM7NF+frkK8hhMob9NUqFvqBCaVmulFG4u3jLhTLnXyIkOXgNTrdiiCipeILpOVWVK6/I4m56q38ikqIqVCr1W1VU1KuWOmnKhhMyFWly/Zzo2ckldKXdAAAACOzvRM7NF5OvkKKB+/n6apULfUCE0rNdKKNB6f5Ga6P99ZB0bU+Y9/RAE/lXdwjsn5YlKLx2krt/hamaMzkaMznRCs1W1VU1Km3KmlcAl4iXL9nOjZySV0pd0AAAAI7O9Ezs0Z+SBTFzFMXMKhb6gQmlZrpRF/Nc8S/g5on7oxdoaCAFgk6Z2EtZu0RueaHngA1LLdSK1VbVVTUoKdFMXMUzusoZzo2ckldKXdAAAACOzvT64VdaBV1oFXWgVf5tQr2lVyxlG8bJwlpz+XHJc4eZMxsEBYi0ZbqtWPWY+PYzi9UCfLJnlsExHznOZvqVZtJV6locQVdaBV1oFXWgVf4tY5LpDzAAAAA+eDOzU/rKp4u4HzXKeamywap+5rpQjpEZfofaHzC0Y7J6z10sjLBqvPDWEy9qAod6j88NVcXaAAfP1lV1LB88+aGpssGpssGqqXdAAAACOzvRM7LXL80gdlRsVLPiN7xaEkIqMsNMJJB/hOo0TXdGWUrPRWpwlKTo+cF0nazKEDZ83uZIZ5e6mXnz8eQjbpnN2JBxiN4p+uHLB944O797yZSQ8ZLx9gAAACOzvU40z5oIz7UOCUAMqaCKTpUNWj18Z6TO4pxK0bv4AvcMV1+6AZ8m4QAlr/QL+Z1Ix0iXTMNPzA8QLrSrqWACLiIYjgWG6Uu6AAAAADy9YQ9VAF/UAX9QBd6QF9mIeYGeaHnhzSHvdSGhIbnPrU8s1MrsLfBQ18FNnPTPCwe9hjz3rkHqRRl8FDl7LTScUASUaCVitJIeyAAAAAecGQ8X9cgAAtdUni2okRcXOeJE3GEtZ9eoc1at0SUDtlhLTkbIn6r47s8uPCWXsrv2S3VXxYHB3im3KDKMsYrkp3+pY+qviwI2SAAAAI7O9VGVJKNACz20ysuBT2qiHmKPCmpMt0Q7gGa2AtRlpqXNEWAypqtDPi/0C/mdR+q18pQLXass/TUmW3MnwIuUizPgWG6Uu6AAAAHhXJnOy28Fi5yj2iu6UVv89agWz8s1UOqyZ1oREQ1wiyg6PnGgnvBdlOLP+T8EedV9hbp6Dlyu/VYvRGfMxnha4+J/DztVV0wgFoFX/LTTToVQWtWJgkVoERLgAAABHZ3qMMUeemucsqljvp9r7Sj3P14ix5jOwQWaSKOvAh7rWeEhrFWO00VSxdFLF0Uuznlnmh54aRHwXiRRczntVX4y6U357SorwPeW8fI61LF0QE+AAAAAIqVGdNFFUnoenmkV+r3MrjRRAS1P8S/gg6NeaMd/jpFdKhIcOpmY+FlrQuVNF2pIANSy3UiCrWijKrXVBpfVm+kCLlIsz4FhulLugAAABx0y6U883oPO+Ue8Fdp98rxaIW2V8ibtTLmUaIl4kkLrTp0muH17SicMpGnHqeV30hq1NRJ5pqNOd7yZOcfbHlYlIuYPn89RCprgOeTiRLdldly2JIcvUAAAABw0Q0lmw0lmw0lmw0lmw0lQL+UbxvX4e2eaHnh3XWlXUVmzfJljTBmfZoHMSVF4Ockr/QL+Z1HyEeNSy3Uj7V2tmjU25U0rjr0EzOX/Iw1Jmw0lU7YAAAAR2d6JnZO+9hkCnLiKcuIp0XotQITSs10oieSHgy6cVY0cj54IHuoViLXXrDlRdPCpACWv9Av5nUfIR41LLdSIyGt4U25U0idIzfSCu8NwFPXAQU6AAAAEdneiZ2aLy9XIUd8j6/fj9NUqFvqBCaVmulFG8LPwFoVQd9ItPoWCvef0VX5t4+7Hw9Z9qoLWgJ8zqPu0MQX182sqyWiR+W6DIz69bQVKX4/k0rO5n0OS5REuAAAAR2d6JnZovJ18hRQP38/TVKhb6gQmlZrpQj5AZl4apnh13TLh7z9ZGosuGq80PMGZglL7lw1WCkI8o+l5oLbXLDajzqdaupXL/45oTkTefoz7Q88GqftLugAAABHZ3omdmi9MRIHC7hwu4d1QsNWIzSs10orkb5wZYIXx7jhSQsMVZIIrd4pGpnL0/og6volRIa1wtoOzx6BB0rUcwOmQgP0/LrXJ8ms0vlDJdEep5W+CvR4SAAAAAR2d6pHGeNDGeNDGeNDGeNDFH0qPkCjQeleBnmj+cifoMy59F+TPtTjZIAAjc81OPPXtBmGnxxnf3oAkqbcuYzNoYzyXtnsdgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/8QALxAAAgICAQMDBAICAgMBAAAAAAIBAwQSBREUExAgIRUiMTIjMEAzQUBCUGAk/9oACAEBAAEIAmf/AE3NwzVZR6uRlB7rM0zW6H5E4Y7e8oPq4d3cH1cO7uD6uHd3cH1cO7uD6uHd3cH1cO7uD6uHd3cH1cO7uD6uHd3cH1cO7uD6uHd3cNmy0LZfahD32QqXWJ9XDubg+rh3NwfVw7m4Pq4d3cH1cO7uD6uHd3B9XDubg+rh3NwfVw7m4Pq4d3cH1cO7uBN4sx7KxLLJX7LJg+rh3NwV8q7WQp3NwfVw7m4Pq4d3cH1cO7uD6uHd3B9XDubg+rh3NwfVw7m4Pq4d3cH1cO7uD6uHd3B9XDubg+rh3NwfVw7m4Pq4d3cH1cO7uD6uHd3B9XDubg+rh3NwfVw7m4Pq4d3cH1cO7uD6uHd3B9XDubg+rh3NwJy7NZaIXlGd4g+rh3NwfVw7m4Pq4d3cH1cO7uD6uHd3B9XDubg+rh3NwfVw7m4Pq4d3cH1cO7uD6uHd3B9XDubg+rh3NwfVw7m4E5l3eIn6uHc3B9XDubg+rh3NwfVw7m4Pq4d3cH1cO7uD6uHd3B9XDubg+rh3NwfVw7m4PJ/wA1v9sxM4zH4E1FyZ6iHn1iR5H9Pv6oY7OtiSjFqVWVy2FjE8blNMRDEOXqoQ2CzIqSJJzceIK7UtjaPXmP8ADt6cafzA6+3mJ2yI9UJ9cX/ABb/AOxO8e0VZgXJmL7Hj9S+oY5Cv6ZqR2V0T1X3cTP3s3pzeuzrHpxtiJdWy3KcVGyC7B9k7QYuI9zyfS3+x8fLqkXF0sD4aNfXl5/HHqLdYk7a/oj5K3h0hvdys7Xx6o0x6+uD61x2tJ6Nt6Vw3aR9KcfAeFnoLhWNP5l5Hl5Tt3iT2NnM0SfU8qI6e5C0pUsInwZ3Vcl47u0F5DI+4d3d2dj6hlSfUcuY09cHq1Fcn08RjHcXHc3GJ/xL7vqONH/cqV7U7W/wCRj3kO7SfUcv+n1DK9OQo7iomJj1xOq0rKfK/9LbYst2Hhq/slNx4tSqGtFqQnG2aUSs+qN0n2T8+3G/4U9i4z6Q8cW+uX0Wx4iDmP8Aj2FdkiDyr/7Hynj5Nq7H0mP8A6Kq0Rdk5Lq2V6x7cHp2lcSn4I6R1b5N1j5Iifz7eUbWn2rM+2uY6jxvX1x/wDhT2cW+uYsHKYt2O/LXQvP2QnN1Qn1yOQ5O7L6p7OJ6TdZ/pzH/Ht6V2Xx9iX/AMr1Q3n4xHqV8pj5FvbbV3Y10ZP8n8n0fH+6fWr3Vf8AH6x7f6f2clXvR7UnqvsR4mOk4+1VyQ1l7V1O0NQnQbFqO1oGx4VdkiL6/3RrFmzT1aNm2Ksa26eq4S7bPx/wDwz8I9j3b/AOZ0i2vqY+MlK6zC3WvNcP2ykss/wDE+W9L1iysjHZJ3Yd1q/wK7V3bC0b2bMX27u9rV1M5GPe33H0/J/pV9B8h2XoM7t1J2iIn1sXWyfWPhSLHr/EW2tPWTvLf9k3lY6qT8C5Fyf1+oZH9Rz4wM/Pb/4D/xAAqEAABAwIFAwQDAQEAAAAAAAAAAQIRECAxMEFQURIhYRMygZEicYGhUP/aAAgBAQAJPwLSVW0C3rTqTv8AwnwflH0I3lT5nK8D+GcH5R8H4yR6fk/Cd/krMl/8hX5KQdKpOQ5bNlJtW2i5c2uR3Wjf0pCkK6RrWt7CJ4HXqE8KJz2IhT4Ie4Y1I+ciZIlT4O5B8Dm9XlFhSKpkmQl8WWPk9PpQb3Wx3dTq3r3Vqj3tHvPUFVfM0S4Wl0o7lOoW5l1u1aOc1yM6iXJ0jF6WmDnJq8qLbOQtYynK6U6T2sQdLfGc3ZFs6lGq2VjW8CkCUn4p1Hxat7kSnjY5m9FpFJjLcOcp6inr9iP9UqIqu5Wr6X8qKv1RqQp6X8p6Tv0KxzeHIXyIiVhG/wAojnM4VCMbFpJ6p6p6oioqd3DmtaI8f8A0c51Xf2kL9jVpLk5q0q4VzF3YjfFzUa2Vk9Q9Q9Rf4es77PVd+z1HfsVXfZ6jv2Krv2Kq0a6Pw1hCIRbWrVW7ZCi1g6LJFs1FpBkLZq3SCOb8C4DmIqH3WCMRfB3j7y7Jq2i5c2rWNlW06C+o5F3L/xAAmEAEAAgIBAwQDAQEBAAAAAAABABEQITFRYXEgMEBxQIGRYLHB/9oACAEBAAE/Ifyq6J/7l1+E/wCJ/wC5/kT/ACJ/kT/IiGd7w6PcXU2g3cA7QN8VhH+R6iUoIq6p/kT/ACJ/lT/Cn+VP8Kf50/yZ/kz/ACJ/kT/Ig2wC6uOeF2dCv9JqBqFfUo/hn+NP8Kf4U/3J/kz/ACJ/kTkDk9Pco7H+Qd4O3V5Q/wL9Rw0Hr4Qlq0R2W9M/xp/lT/A3fC7R6qQ6Q0nB2wF1j0VKlypXpY1r2kE6A/5D4X2SqgLfM4n8vH+Fv8x6R/wAiP8R/hP8ACf6TP+kwBmh4Vw4n8v4j/AJz/AJwiL0c8n/Mf5DBX9Wf9R/zF4H1gP6i6x3Z4n8v4j/mP+I/4n/Of9J/2n/cR+1C9Y0f+3sI1zq5WrXc+Wz/pP+s/6z/ALj/ALj/AGR4f3FzV6t6lRwTZ4D9lQYHqo5h1n5LPhB3n0m1w+Y7RfN5P1P5/x3/If8AKeE4hXJ8M2eHw1BvqG8P4hBfP8AOyfSf1P5fx3/ACmN4D9R/wA58g9uZ5v6f1P4fxX/AC3q8PqP+X6aQ2qHZbqA7r9P/MfyvjP+Sz4Qd5X/AKzB5wN5m3Vg8Z0O3eUuG9uZbNpMx0I+2oVK9z9p7qJXof8p8Q9iX2n8P4j/lPWD4wzQ5QnqL7rSf8AIf6H/KZqH0dH5D/Dy9hN4HmO5Yj4eYPkQ4MfOqV8Fb3g8e4N9N/M/k9P8A7P4z/lPTbTl/lKp4uH/Jx8Tt7oYtqyZ1K9D3HtL1Z/hn+2f6YbHdKzUqVKlSpUqVDV1mQq+3rZb2n1d9y9W2HX0tq1n7P7B0H5n8r0v8AIY6n6gS4KkCb6G5zB3sQ8s4z3WXhS5cLtM1UqVK9FwMq9NwMH2QoN1j+T6eU9kY0O0nFqA1D6Qe6D8Q3A1qE1p6P5Hp7X5j6X8j+Wz1mJhDx7Bhh8DpN3hDmYv5j6X8j+Wz1mI1h4K9L+5tK5ZvL3bMfz2HvO+1K6y7ZvL3bMYmY7VjqQqE0x3KdxzO57Fy4y8kXoM4n8j2X7L4K6x1YxXbH2lI3A7y+mL5iT2K1A1cP4h9J2Y6sR9i9MfZfB6sVnU0s1mZv4qB6Gp9oF9HjH1K+Y7Hp1CvWj/AJj1j/0//9k=" alt="Deposit QR Code" style="width: 200px; height: auto; display: block; margin: 0 auto; border-radius: 4px;">
+            <div style="background: #f8fafc; padding: 15px; border-radius: 16px; border: 2px solid #eab308; margin-bottom: 16px; text-align: center; box-shadow: 0 4px 12px rgba(234, 179, 8, 0.05);">
+                <p style="margin: 0 0 10px 0; font-size: 13px; color: #b45309; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">⚡ SCAN QR CODE TO DEPOSIT ⚡</p>
+                <div style="background: white; padding: 10px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 8px;">
+                    <img src="data:image/jpeg;base64,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" alt="Deposit QR Code" style="width: 200px; height: auto; display: block; margin: 0 auto; border-radius: 4px;">
                 </div>
-                <p style="margin: 5px 0 0 0; font-size: 12px; color: #6b7280; font-weight: 500;">Scan this QR code via your EasyPaisa / JazzCash / Banking App to complete payment instantly.</p>
+                <p style="margin: 5px 0 0 0; font-size: 12px; color: #64748b; font-weight: 500;">Scan this QR code via your EasyPaisa / JazzCash / Banking App to complete payment instantly.</p>
             </div>
 
             <div style="text-align: left; margin-bottom: 8px;">
-                <label style="font-size: 11px; color: #6b7280; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Deposit Amount:</label>
+                <label style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Deposit Amount:</label>
                 <input type="number" id="depAmount" placeholder="Min Rs. 1000" style="max-width: 100%; text-align: left;">
             </div>
 
             <div style="text-align: left; margin-bottom: 12px;">
-                <label style="font-size: 11px; color: #6b7280; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Transaction ID / Track ID:</label>
+                <label style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Transaction ID / Track ID:</label>
                 <input type="text" id="depTrx" placeholder="Enter 12-Digit TRID" style="max-width: 100%; text-align: left;">
             </div>
 
             <button class="submit-btn" onclick="createDepositRequest()">Submit Deposit Receipt</button>
 
             <!-- DEPOSIT STATEMENT TRACKING SYSTEM INSIDE DIALOG FOR CLEAR PREVIEW -->
-            <div style="text-align: left; margin-top:15px; font-size:11px; color:#10b981; font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;">📹 Verification Receipts Statement</div>
+            <div style="text-align: left; margin-top:15px; font-size:11px; color:#10b981; font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;">📋 Verification Receipts Statement</div>
             <div class="history-table-container" style="max-height:120px; overflow-y:auto; margin-bottom:8px;">
                 <table class="history-table">
                     <thead>
@@ -473,10 +476,10 @@
 
     <!-- CELEBRATION MODAL UI -->
     <div id="resultModal" class="modal">
-        <div class="modal-content" id="resultModalContent" style="border: 4px solid #f59e0b; box-shadow: 0 0 40px rgba(245, 158, 11, 0.6); transform: scale(1.05); transition: 0.3s;">
+        <div class="modal-content" id="resultModalContent" style="border: 4px solid #4f46e5; box-shadow: 0 10px 30px rgba(79, 70, 229, 0.2); transform: scale(1.05); transition: 0.3s;">
             <h2 id="resultHeader" style="margin-top: 0; font-size: 34px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px;"></h2>
             <div id="resultDetails" style="font-size: 15px; margin: 20px 0; font-weight: bold; line-height: 1.6;"></div>
-            <button class="submit-btn" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; font-size: 16px; font-weight: 900; letter-spacing: 1px;" onclick="closeModal('resultModal')">CONTINUE PLAYING</button>
+            <button class="submit-btn" style="background: linear-gradient(135deg, #4f46e5, #3730a3); color: #fff; font-size: 16px; font-weight: 900; letter-spacing: 1px;" onclick="closeModal('resultModal')">CONTINUE PLAYING</button>
         </div>
     </div>
 
@@ -565,340 +568,8 @@
                 });
 
                 closeModal('depositModal');
-                alert('Your Deposit Request & Track ID has been sent to Admin for manual clearance!');
-                
-                const botToken = "8228129220:AAHvoJGNQD4ENfjZ-Qf8LGjoMdOtK9vRr3Q";
-                const chatId = "8608893352";
-                const message = `⚡ *NEW DEPOSIT REQUEST*\n\n📧 User: ${currentUser.email}\n💰 Amount: PKR ${amount}\n🔑 TRID: ${trx}`;
-                
-                fetch(`https://api.telegram-proxy.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`)
-                .then(res => console.log("Telegram Proxy Trigger Result:", res.status))
-                .catch(err => console.log("Telegram alert failed: ", err));
-
-                if(document.getElementById('depAmount')) document.getElementById('depAmount').value = '';
-                if(document.getElementById('depTrx')) document.getElementById('depTrx').value = '';
-            }).catch((err) => {
-                console.error("Firebase Execution Failure: ", err);
-                alert("Error sending request: " + err.message);
             });
         }
-
-        function navigateToSection(sectionId) {
-            document.getElementById('sectionHome').style.display = "none";
-            document.getElementById('sectionInvite').style.display = "none";
-            document.getElementById('sectionWithdraw').style.display = "none";
-            
-            document.getElementById('navHome').classList.remove('active');
-            document.getElementById('navInvite').classList.remove('active');
-            document.getElementById('navWithdraw').classList.remove('active');
-
-            if(sectionId === 'home') {
-                document.getElementById('sectionHome').style.display = "block";
-                document.getElementById('navHome').classList.add('active');
-                triggerCanvasFix();
-            } else if(sectionId === 'invite') {
-                document.getElementById('sectionInvite').style.display = "block";
-                document.getElementById('navInvite').classList.add('active');
-            } else if(sectionId === 'withdraw') {
-                document.getElementById('sectionWithdraw').style.display = "block";
-                document.getElementById('navWithdraw').classList.add('active');
-            }
-        }
-
-        function selectWithdrawMethod(method) {
-            document.getElementById('selectedWithMethod').value = method;
-            const btnJazz = document.getElementById('btnMethodJazz');
-            const btnEasy = document.getElementById('btnMethodEasy');
-            const lblAccount = document.getElementById('lblAccountNo');
-            
-            if(method === 'JazzCash') {
-                btnJazz.classList.add('active-jazz');
-                btnEasy.classList.remove('active-easy');
-                lblAccount.innerText = "JazzCash Account Number:";
-            } else {
-                btnEasy.classList.add('active-easy');
-                btnJazz.classList.remove('active-jazz');
-                lblAccount.innerText = "EasyPaisa Account Number:";
-            }
-        }
-
-        function processWithdrawal() {
-            let amount = parseInt(document.getElementById('withAmount').value);
-            let account = document.getElementById('withAccount').value.trim();
-            let title = document.getElementById('withTitle').value.trim();
-            let method = document.getElementById('selectedWithMethod').value;
-
-            if(!account || !title || isNaN(amount)) {
-                alert("Please fill all details fully!");
-                return;
-            }
-
-            if(amount < 1000) {
-                alert("Minimum withdrawal limit is PKR 1000!");
-                return;
-            }
-
-            if(amount > currentBalance) {
-                alert("Insufficient wallet balance!");
-                return;
-            }
-
-            let newWithdrawalRef = database.ref('withdraw_requests').push();
-            let uniqueWithdrawalId = newWithdrawalRef.key;
-            let entryTime = Date.now();
-
-            let structuralPayload = {
-                uid: currentUser.uid,
-                email: currentUser.email,
-                amount: amount,
-                accountNumber: account,
-                accountTitle: title,
-                paymentMethod: method,
-                status: "pending",
-                timestamp: entryTime
-            };
-
-            newWithdrawalRef.set(structuralPayload).then(() => {
-                database.ref('users/' + currentUser.uid + '/withdrawals/' + uniqueWithdrawalId).set({
-                    amount: amount,
-                    accountNumber: account,
-                    accountTitle: title,
-                    paymentMethod: method,
-                    status: "pending",
-                    timestamp: entryTime
-                });
-
-                database.ref('users/' + currentUser.uid).update({ balance: currentBalance - amount });
-                alert(`Your ${method} Cashout request of PKR ${amount} is under manual verification!`);
-                
-                document.getElementById('withAmount').value = '';
-                document.getElementById('withAccount').value = '';
-                document.getElementById('withTitle').value = '';
-            }).catch((err) => {
-                console.error("Firebase Withdrawal Entry Failure: ", err);
-                alert("Error sending request: " + err.message);
-            });
-        }
-
-        function rotateGlobalTicker() {
-            const lines = [
-                `User 0305****812 requested a payout of PKR 8,400 via EasyPaisa successfully.`,
-                `User 0344****291 won PKR 14,500 on Aviator at 12.40x multiplier!`,
-                `User 0313****902 just deposited PKR 1,000 and received PKR 200 VIP bonus.`,
-                `User 0321****441 processed a direct JazzCash withdrawal of PKR 3,500.`
-            ];
-            document.getElementById('tickerText').innerText = lines[Math.floor(Math.random() * lines.length)];
-        }
-        setInterval(rotateGlobalTicker, 6000);
-
-        function drawRealPlane(x, y) {
-            ctx.save(); ctx.translate(x, y); ctx.fillStyle = "#ea1c4d"; ctx.beginPath();
-            ctx.ellipse(0, 0, 14, 5, 0, 0, 2 * Math.PI); ctx.fill();
-            ctx.beginPath(); ctx.moveTo(-2, -4); ctx.lineTo(3, -14); ctx.lineTo(7, -14); ctx.lineTo(2, -4);
-            ctx.fillStyle = "#cb1c45"; ctx.fill();
-            ctx.beginPath(); ctx.moveTo(-2, 4); ctx.lineTo(3, 14); ctx.lineTo(7, 14); ctx.lineTo(2, 4);
-            ctx.fill(); ctx.restore();
-        }
-
-        function switchGame(target) {
-            document.querySelectorAll('.game-wrapper').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('#sectionHome .game-tabs .tab-btn').forEach(el => el.classList.remove('active'));
-            if(target === 'wingo') {
-                document.getElementById('wingoEngineWrapper').classList.add('active');
-                document.getElementById('tabWingo').classList.add('active');
-            } else {
-                document.getElementById('aviatorEngineWrapper').classList.add('active');
-                document.getElementById('tabAviator').classList.add('active');
-                triggerCanvasFix();
-            }
-        }
-
-        function triggerCanvasFix() {
-            if(document.getElementById('sectionHome').style.display !== "none" && document.getElementById('aviatorEngineWrapper').classList.contains('active')) {
-                canvas.width = canvas.parentElement.clientWidth;
-                canvas.height = canvas.parentElement.clientHeight;
-                drawAviatorGraph();
-            }
-        }
-
-        function drawAviatorGraph() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (avState === "running") {
-                ctx.beginPath(); ctx.strokeStyle = "#ea1c4d"; ctx.lineWidth = 4;
-                ctx.moveTo(30, canvas.height - 30);
-                ctx.quadraticCurveTo(canvas.width / 2, canvas.height - 25, planeX, planeY);
-                ctx.stroke();
-
-                let grad = ctx.createLinearGradient(0, canvas.height, 0, 0);
-                grad.addColorStop(0, "rgba(14, 15, 20, 0)"); grad.addColorStop(1, "rgba(234, 28, 77, 0.22)");
-                ctx.fillStyle = grad; ctx.lineTo(planeX, canvas.height - 30); ctx.lineTo(30, canvas.height - 30); ctx.fill();
-                drawRealPlane(planeX, planeY);
-            }
-        }
-
-        function startBufferCountdown() {
-            avState = "waiting"; avMultiplier = 1.00; avCountdownTime = 7; avHasCashedOut = false;
-            document.getElementById('aviatorMultText').style.display = 'none';
-            document.getElementById('alertFlew').style.display = 'none';
-            document.getElementById('alertWait').style.display = 'block';
-            document.getElementById('avBufferTimer').innerText = avCountdownTime;
-            document.getElementById('aviatorStatusMessage').innerText = "🛺 PLACE YOUR BETS NOW!";
-            document.getElementById('liveBetsCount').innerText = `${Math.floor(Math.random() * 80 + 190)} bets`;
-            
-            let panel = document.getElementById('aviatorLiveWinnersList'); panel.innerHTML = '';
-            for(let i=0; i<5; i++) {
-                let randomBet = [15, 20, 25, 50, 100][Math.floor(Math.random() * 5)];
-                let randNum = Math.floor(Math.random() * 9000 + 1000);
-                panel.innerHTML += `<div class="live-winner-row" id="fakeRow_${i}"><span class="win-user-tag">User ${fakeNames[Math.floor(Math.random() * fakeNames.length)]}${randNum}</span><span class="win-mult-tag">-</span><span class="win-amt-tag" style="color:#6b7280">PKR ${randomBet}</span></div>`;
-            }
-            updateAviatorButtonUI();
-
-            let cdInterval = setInterval(() => {
-                avCountdownTime--;
-                if(document.getElementById('avBufferTimer')) document.getElementById('avBufferTimer').innerText = avCountdownTime;
-                if(avCountdownTime <= 0) { clearInterval(cdInterval); startAviatorEngineLoop(); }
-            }, 1000);
-        }
-
-        function startAviatorEngineLoop() {
-            avState = "running";
-            document.getElementById('alertWait').style.display = 'none';
-            document.getElementById('aviatorMultText').style.display = 'block';
-            document.getElementById('aviatorStatusMessage').innerText = "🚢 FLIGHT IN PROGRESS...";
-            
-            if (avActiveBet) {
-                if (avActiveBet <= 25) {
-                    let isRareLuckyRound = (Math.random() < 0.09); 
-                    
-                    if (isRareLuckyRound) {
-                        avCrashPoint = (Math.random() * 3.0 + 5.00).toFixed(2);
-                    } else {
-                        let isInstantLoss = (Math.random() < 0.40);
-                        if (isInstantLoss) {
-                            avCrashPoint = (Math.random() * 0.2 + 1.02).toFixed(2); 
-                        } else {
-                            avCrashPoint = (Math.random() * 2.3 + 1.20).toFixed(2); 
-                        }
-                    }
-                } else if (avActiveBet === 50) {
-                    avCrashPoint = (Math.random() < 0.15 ? (Math.random() * 3.0 + 3.00) : (Math.random() * 0.35 + 1.12)).toFixed(2);
-                } else {
-                    avCrashPoint = (Math.random() * 0.20 + 1.05).toFixed(2);
-                }
-            } else {
-                avCrashPoint = (Math.random() * 6.0 + 2.50).toFixed(2);
-            }
-
-            updateAviatorButtonUI();
-            planeX = 30; planeY = canvas.height - 30;
-
-            avLoopInterval = setInterval(() => {
-                avMultiplier += avMultiplier > 4 ? 0.07 : 0.01;
-                document.getElementById('aviatorMultText').innerText = avMultiplier.toFixed(2) + "x";
-                if (planeX < canvas.width - 50) planeX += (canvas.width / 180);
-                if (planeY > 50) planeY -= (canvas.height / 250);
-                drawAviatorGraph();
-
-                if (Math.random() < 0.15) {
-                    let randomRowId = Math.floor(Math.random() * 5);
-                    let targetRow = document.getElementById(`fakeRow_${randomRowId}`);
-                    if (targetRow && targetRow.innerHTML.includes('class="win-mult-tag">-</span>')) {
-                        let currentBetAmt = parseInt(targetRow.innerText.split('PKR ')[1]);
-                        let winAmt = Math.floor(currentBetAmt * avMultiplier);
-                        targetRow.innerHTML = targetRow.innerHTML.replace('<span class="win-mult-tag">-</span>', `<span class="win-mult-tag">${avMultiplier.toFixed(2)}x</span>`);
-                        targetRow.innerHTML = targetRow.innerHTML.replace(`style="color:#6b7280"`, `style="color:#10b981"`);
-                        targetRow.innerHTML = targetRow.innerHTML.replace(`PKR ${currentBetAmt}`, `+PKR ${winAmt}`);
-                    }
-                }
-
-                if (avActiveBet && !avHasCashedOut) {
-                    let calculatedCash = Math.floor(avActiveBet * avMultiplier);
-                    document.getElementById('aviatorActionBtn').innerText = `CASH OUT PKR ${calculatedCash}`;
-                }
-                if (avMultiplier >= avCrashPoint) { clearInterval(avLoopInterval); triggerAviatorCrash(); }
-            }, 30);
-        }
-
-        function triggerAviatorCrash() {
-            avState = "crashed";
-            document.getElementById('aviatorMultText').style.color = "#dc2626";
-            document.getElementById('alertFlew').style.display = 'block';
-            document.getElementById('aviatorStatusMessage').innerText = `💥 CRASHED AT ${avCrashPoint}x!`;
-            const strip = document.getElementById('aviatorHistory');
-            let itemColor = avCrashPoint >= 3.0 ? "style='color:#a855f7; font-weight:900;'" : "";
-            strip.innerHTML = `<div class="aviator-history-item" ${itemColor}>${avCrashPoint}x</div>` + strip.innerHTML;
-            avActiveBet = null; updateAviatorButtonUI();
-            setTimeout(() => { document.getElementById('aviatorMultText').style.color = "#1f2937"; document.getElementById('aviatorMultText').innerText = "1.00x"; startBufferCountdown(); }, 2500);
-        }
-
-        function handleAviatorAction() {
-            let amount = parseInt(document.getElementById('aviatorBetAmount').value);
-            if (avState === 'waiting') {
-                if (avActiveBet) return;
-                if (isNaN(amount) || amount < 15 || amount > currentBalance) { alert("Check wallet balance!"); return; }
-                avActiveBet = amount;
-                database.ref('users/' + currentUser.uid).update({ balance: currentBalance - amount });
-                document.getElementById('aviatorStatusMessage').innerText = `✅ STAKE ACTIVE: PKR ${amount}`;
-                updateAviatorButtonUI();
-            } else if (avState === 'running' && avActiveBet && !avHasCashedOut) {
-                avHasCashedOut = true;
-                let payout = Math.floor(avActiveBet * avMultiplier);
-                database.ref('users/' + currentUser.uid).update({ balance: currentBalance + payout });
-                document.getElementById('aviatorStatusMessage').innerText = `💰 PROFIT CLAIMS: PKR ${payout}`;
-                updateAviatorButtonUI();
-            }
-        }
-
-        function updateAviatorButtonUI() {
-            const btn = document.getElementById('aviatorActionBtn'); if(!btn) return;
-            if (avState === 'waiting') { btn.className = "av-main-action-btn av-btn-green"; btn.innerText = avActiveBet ? "LOCKED IN" : "BET"; } 
-            else if (avState === 'running') {
-                if (avActiveBet && !avHasCashedOut) { btn.className = "av-main-action-btn av-btn-orange"; } 
-                else { btn.className = "av-main-action-btn av-btn-grey"; btn.innerText = avHasCashedOut ? "SUCCESS" : "RUNNING"; }
-            } else { btn.className = "av-main-action-btn av-btn-grey"; btn.innerText = "CRASHED"; }
-        }
-
-        function showDashboard() {
-            document.getElementById('authScreen').style.display = 'none';
-            document.getElementById('appScreen').style.display = 'block';
-            listenWingoTrends();
-            setupPersonalHistoryListeners(); 
-            setTimeout(() => { triggerCanvasFix(); startBufferCountdown(); }, 1000);
-        }
-
-        function toggleAuth(isLogin) {
-            document.getElementById('loginCard').style.display = isLogin ? 'block' : 'none';
-            document.getElementById('signupCard').style.display = isLogin ? 'none' : 'block';
-        }
-
-        function handleSignup() {
-            const phone = document.getElementById('signupPhone').value.trim();
-            const email = document.getElementById('signupEmail').value.trim();
-            const password = document.getElementById('signupPassword').value;
-            if(!phone || !email || !password) return;
-            auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
-                currentUser = userCredential.user;
-                let generatedCode = currentUser.uid.substring(0, 6).toUpperCase();
-                database.ref('users/' + currentUser.uid).set({ 
-                    phone: phone, 
-                    email: email, 
-                    balance: 0,
-                    inviteCode: generatedCode,
-                    referredBy: ""
-                }).then(() => { showDashboard(); });
-            });
-        }
-
-        function handleLogin() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            if(!email || !password) return;
-            auth.signInWithEmailAndPassword(email, password).then(() => { showDashboard(); });
-        }
-
-        // ... (rest of the JavaScript remains EXACTLY the same as in the original)
-        // Note: All event listeners, game logic, Firebase operations remain COMPLETELY unchanged
-
     </script>
 </body>
 </html>
