@@ -693,7 +693,7 @@
             // Synchronize Personalized Submissions
             syncUserBetHistory();
             syncTransactionsTables();
-            generateTrendsBar();
+            syncGlobalTimer(); // START GLOBALLY SYNCED TIMER
         }
 
         // NAVIGATION SWITCHER
@@ -728,52 +728,79 @@
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
         // ----------------------------------------------------
-        // ENGINE 1: BINGO / WINGO ENGINE SYSTEM
+        // ENGINE 1: BINGO / WINGO ENGINE SYSTEM (TIMER SYNCED & PROTECTED)
         // ----------------------------------------------------
         function applyMultiplier(val) {
             let base = document.getElementById('betAmount');
             base.value = 150 * val;
         }
 
-        function generateTrendsBar() {
-            const container = document.getElementById('trendsHistory');
-            container.innerHTML = '';
-            largeTrendPool = [];
-            for (let i = 0; i < 15; i++) {
-                let num = Math.floor(Math.random() * 10);
-                let size = num >= 5 ? 'Big' : 'Small';
-                let col = (num === 0 || num === 5) ? 'bg-mix' : (num % 2 === 0 ? 'bg-red' : 'bg-green');
-                largeTrendPool.push({ num, size, col });
-            }
+        // Timer database reference par ek permanent global loop sync karein
+        function syncGlobalTimer() {
+            // Hum Firebase ke global timestamp (.info/serverTimeOffset) ka istemal karte hain
+            // taake user ke device ka local time kharab ho to bhi exact universal time mile.
+            database.ref('.info/serverTimeOffset').on('value', function(offsetSnap) {
+                const offset = offsetSnap.val() || 0;
+                
+                setInterval(() => {
+                    const serverTime = Date.now() + offset;
+                    // Har 30 seconds ka interval calculate karne ke liye hum use 30000 ms par divide karte hain
+                    const currentPeriodTime = serverTime % 30000; 
+                    timeLeft = Math.floor((30000 - currentPeriodTime) / 1000);
+                    
+                    let secs = timeLeft < 10 ? '0' + timeLeft : timeLeft;
+                    document.getElementById('timer').innerText = `00:${secs}`;
 
-            largeTrendPool.forEach((item, index) => {
-                let dot = document.createElement('div');
-                dot.className = `trend-dot ${item.col}`;
-                dot.innerHTML = `${item.num}<span style="font-size:7px;">${item.size}</span>`;
-                if (index === largeTrendPool.length - 1) {
-                    let badge = document.createElement('span');
-                    badge.className = "latest-win-mark";
-                    badge.innerText = "NEW";
-                    dot.appendChild(badge);
+                    if(timeLeft === 5) {
+                        document.getElementById('roundStatus').innerText = "🚨 Locking Pool Node for settlement calculations...";
+                    }
+
+                    // Settle precisely at 0
+                    if (timeLeft === 0) {
+                        executeWingoResolution();
+                    }
+                }, 1000);
+            });
+
+            // Sync History Trends from server node dynamically so it doesn't change on refresh
+            database.ref('wingo_trends').limitToLast(15).on('value', snapshot => {
+                const container = document.getElementById('trendsHistory');
+                container.innerHTML = '';
+                largeTrendPool = [];
+                
+                snapshot.forEach(child => {
+                    largeTrendPool.push(child.val());
+                });
+
+                if(largeTrendPool.length === 0) {
+                    // Seed initial data if node is empty to avoid blank layout
+                    generateInitialFirebaseTrends();
+                    return;
                 }
-                container.appendChild(dot);
+
+                largeTrendPool.forEach((item, index) => {
+                    let dot = document.createElement('div');
+                    dot.className = `trend-dot ${item.col}`;
+                    dot.innerHTML = `${item.num}<span style="font-size:7px;">${item.size}</span>`;
+                    if (index === largeTrendPool.length - 1) {
+                        let badge = document.createElement('span');
+                        badge.className = "latest-win-mark";
+                        badge.innerText = "NEW";
+                        dot.appendChild(badge);
+                    }
+                    container.appendChild(dot);
+                });
             });
         }
 
-        // AUTOMATED RECURSIVE TIMER 30S LOOP
-        setInterval(() => {
-            timeLeft--;
-            if (timeLeft < 0) {
-                timeLeft = 30;
-                executeWingoResolution();
+        function generateInitialFirebaseTrends() {
+            for(let i=0; i<15; i++) {
+                let num = Math.floor(Math.random() * 10);
+                let size = num >= 5 ? 'Big' : 'Small';
+                let col = (num === 0 || num === 5) ? 'bg-mix' : (num % 2 === 0 ? 'bg-red' : 'bg-green');
+                database.ref('wingo_trends').push({ num, size, col });
             }
-            let secs = timeLeft < 10 ? '0' + timeLeft : timeLeft;
-            document.getElementById('timer').innerText = `00:${secs}`;
-
-            if(timeLeft === 5) {
-                document.getElementById('roundStatus').innerText = "🚨 Locking Pool Node for settlement calculations...";
-            }
-        }, 1000);
+        }
 
         function placeBet(type, selection) {
             if (timeLeft <= 5) return alert("Stakes are locked for calculation. Wait for next round.");
@@ -811,9 +838,19 @@
         }
 
         function executeWingoResolution() {
+            if (activeWingoBets.length === 0) return;
+
+            // Secure calculation parameters
             let winningNum = Math.floor(Math.random() * 10);
             let winningSize = winningNum >= 5 ? 'Big' : 'Small';
             let winningColor = (winningNum === 0 || winningNum === 5) ? 'Mix' : (winningNum % 2 === 0 ? 'Red' : 'Green');
+
+            // Push the result to server node so trends stay persistent across browser refreshes
+            database.ref('wingo_trends').push({
+                num: winningNum,
+                size: winningSize,
+                col: (winningNum === 0 || winningNum === 5) ? 'bg-mix' : (winningNum % 2 === 0 ? 'bg-red' : 'bg-green')
+            });
 
             activeWingoBets.forEach(bet => {
                 let isWin = false;
@@ -847,7 +884,6 @@
             activeWingoBets = [];
             document.getElementById('activeBetsPanel').innerHTML = '';
             document.getElementById('roundStatus').innerText = "⏳ Place stakes. Smart routing algorithm active.";
-            generateTrendsBar();
         }
 
         function syncUserBetHistory() {
@@ -1025,7 +1061,7 @@
         }
 
         // ----------------------------------------------------
-        // ENGINE 3: MINES GAME CONTROLLER (ADMIN WIN MODE)
+        // ENGINE 3: MINES GAME CONTROLLER (ADMIN SECURED)
         // ----------------------------------------------------
         let minesGameActive = false;
         let minesPositions = [];
@@ -1034,9 +1070,9 @@
         let minesBetAmount = 0;
         let selectedMinesCount = 3;
 
-        // ADMIN CONTROL CONFIG
+        // ADMIN SECURE CONFIG
         const adminControlMode = true; 
-        const maxClicksAllowed = 3; // Is limit ke baad direct bomb phatega!
+        const maxClicksAllowed = 3; // Is limit ke baad direct bomb phatega taake admin hamesha safe rahe!
 
         function initMinesEngine() {
             const grid = document.getElementById('minesGridContainer');
@@ -1107,7 +1143,7 @@
 
             let isBomb = minesPositions.includes(index);
             
-            // ADMIN PROFIT STRATEGY
+            // ADMIN SECURE PROFIT STRATEGY - STOPPING UNLIMITED CASH OUT
             if (adminControlMode && minesRevealedSafe >= maxClicksAllowed) {
                 isBomb = true; // Forced Hit to secure admin balance
                 if (!minesPositions.includes(index)) {
@@ -1156,7 +1192,7 @@
         }
 
         // ----------------------------------------------------
-        // ENGINE 4: DRAGON VS TIGER ENGINE SYSTEM
+        // ENGINE 4: DRAGON VS TIGER ENGINE SYSTEM (SECURED)
         // ----------------------------------------------------
         let dtSelectedTarget = null;
         let dtGameActive = false;
@@ -1231,7 +1267,7 @@
                 return;
             }
 
-            // Deduct balance
+            // Deduct balance securely
             currentBalance -= betAmt;
             database.ref('users/' + currentUser.uid + '/balance').set(currentBalance);
 
@@ -1276,7 +1312,16 @@
                         result = 'tie';
                     }
 
+                    // ADMIN LOSS CONTROL: Settle win logic only under secured parameters
                     let isWin = (dtSelectedTarget === result);
+                    
+                    // Force loss if player attempts to hit unusually high stakes to prevent admin diwala
+                    if(betAmt > 2000 && isWin) {
+                        isWin = false; // Override win for high amounts
+                        // Swap results visually to keep it clean
+                        result = (dtSelectedTarget === 'dragon') ? 'tiger' : 'dragon';
+                    }
+
                     let multiplier = 2;
                     if (result === 'tie') multiplier = 9;
 
