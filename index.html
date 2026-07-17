@@ -512,16 +512,22 @@
 
     <!-- DEPOSIT MODAL -->
     <div id="depositModal" class="modal">
-        <div class="modal-content" style="max-width: 390px;">
+        <div class="modal-content" style="max-width: 390px; max-height: 90vh; overflow-y: auto;">
             <h3 style="color: #10b981; margin-bottom: 12px; text-transform: uppercase; margin-top: 0;">Deposit Funds</h3>
             
-           <!-- Easypaisa Details Start -->
-            <div style="background: #f8fafc; padding: 15px; border-radius: 16px; border: 2px solid #008f52; margin-bottom: 16px; text-align: center; box-shadow: 0 4px 12px rgba(0, 143, 82, 0.05);">
-                <h3 style="color: #008f52; margin: 0 0 10px 0; font-size: 18px; font-weight: bold;">⚡ EASYPAISA PAYMENT DETAILS ⚡</h3>
-                <p style="margin: 5px 0; font-size: 15px; color: #333;"><strong>Account Name:</strong> Mjafar</p>
-                <p style="margin: 5px 0; font-size: 18px; color: #008f52; font-weight: bold; letter-spacing: 1px;"><strong>Number:</strong> 03356161020</p>
+            <!-- Modern 3D Light Easypaisa Card -->
+            <div style="background: linear-gradient(145deg, #ffffff, #f1fcf6); padding: 14px; border-radius: 16px; border: 1px solid #a7f3d0; margin-bottom: 12px; text-align: center; box-shadow: 0 6px 12px rgba(16, 185, 129, 0.08), inset 0 -4px 0px #10b981;">
+                <h4 style="color: #047857; margin: 0 0 6px 0; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">🍏 Easypaisa Business Account</h4>
+                <p style="margin: 3px 0; font-size: 13px; color: #475569;">Account Title: <strong style="color: #0f172a;">Mjafar</strong></p>
+                <p style="margin: 4px 0; font-size: 17px; color: #047857; font-weight: 900; letter-spacing: 0.5px;">03356161020</p>
             </div>
-            <!-- Easypaisa Details End -->
+
+            <!-- Modern 3D Light JazzCash Card -->
+            <div style="background: linear-gradient(145deg, #ffffff, #fffbeb); padding: 14px; border-radius: 16px; border: 1px solid #fde68a; margin-bottom: 16px; text-align: center; box-shadow: 0 6px 12px rgba(245, 158, 11, 0.08), inset 0 -4px 0px #f59e0b;">
+                <h4 style="color: #b45309; margin: 0 0 6px 0; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">🍊 JazzCash Business Account</h4>
+                <p style="margin: 3px 0; font-size: 13px; color: #475569;">Account Title: <strong style="color: #0f172a;">Mjafar</strong></p>
+                <p style="margin: 4px 0; font-size: 17px; color: #b45309; font-weight: 900; letter-spacing: 0.5px;">03356161020</p>
+            </div>
 
             <div style="text-align: left; margin-bottom: 8px;">
                 <label style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px;">Deposit Amount:</label>
@@ -737,14 +743,11 @@
 
         // Timer database reference par ek permanent global loop sync karein
         function syncGlobalTimer() {
-            // Hum Firebase ke global timestamp (.info/serverTimeOffset) ka istemal karte hain
-            // taake user ke device ka local time kharab ho to bhi exact universal time mile.
             database.ref('.info/serverTimeOffset').on('value', function(offsetSnap) {
                 const offset = offsetSnap.val() || 0;
                 
                 setInterval(() => {
                     const serverTime = Date.now() + offset;
-                    // Har 30 seconds ka interval calculate karne ke liye hum use 30000 ms par divide karte hain
                     const currentPeriodTime = serverTime % 30000; 
                     timeLeft = Math.floor((30000 - currentPeriodTime) / 1000);
                     
@@ -762,7 +765,7 @@
                 }, 1000);
             });
 
-            // Sync History Trends from server node dynamically so it doesn't change on refresh
+            // Sync History Trends from server node dynamically
             database.ref('wingo_trends').limitToLast(15).on('value', snapshot => {
                 const container = document.getElementById('trendsHistory');
                 container.innerHTML = '';
@@ -773,7 +776,6 @@
                 });
 
                 if(largeTrendPool.length === 0) {
-                    // Seed initial data if node is empty to avoid blank layout
                     generateInitialFirebaseTrends();
                     return;
                 }
@@ -825,7 +827,6 @@
 
             activeWingoBets.push(betLog);
 
-            // Add UI Log element immediately
             let panel = document.getElementById('activeBetsPanel');
             let badgeClass = selection === 'Big' ? 'badge-big' : selection === 'Small' ? 'badge-small' : selection === 'Red' ? 'badge-red' : selection === 'Green' ? 'badge-green' : 'badge-num';
             panel.innerHTML += `
@@ -840,12 +841,10 @@
         function executeWingoResolution() {
             if (activeWingoBets.length === 0) return;
 
-            // Secure calculation parameters
             let winningNum = Math.floor(Math.random() * 10);
             let winningSize = winningNum >= 5 ? 'Big' : 'Small';
             let winningColor = (winningNum === 0 || winningNum === 5) ? 'Mix' : (winningNum % 2 === 0 ? 'Red' : 'Green');
 
-            // Push the result to server node so trends stay persistent across browser refreshes
             database.ref('wingo_trends').push({
                 num: winningNum,
                 size: winningSize,
@@ -967,7 +966,6 @@
                 planeX += (canvas.width - 60) / 150;
                 planeY -= 80 / 150;
 
-                // Draw curve tracking vector line
                 ctx.beginPath();
                 ctx.moveTo(30, 130);
                 ctx.quadraticCurveTo(canvas.width / 2, 130, planeX, planeY);
@@ -975,7 +973,6 @@
                 ctx.lineWidth = 4;
                 ctx.stroke();
 
-                // Draw matching plane icon proxy
                 ctx.beginPath();
                 ctx.arc(planeX, planeY, 6, 0, 2 * Math.PI);
                 ctx.fillStyle = '#cb1c45';
@@ -1015,7 +1012,6 @@
             if (isNaN(amt) || amt < 150) return alert("Minimum stake required is PKR 150");
 
             if (avState === "flying" && !avActiveBet && !avHasCashedOut) {
-                // Placing bet live mid-air
                 if (amt > currentBalance) return alert("Insufficient account assets.");
                 currentBalance -= amt;
                 database.ref('users/' + currentUser.uid + '/balance').set(currentBalance);
@@ -1024,7 +1020,6 @@
                 btn.className = "av-main-action-btn av-btn-orange";
                 btn.innerText = "CASH OUT";
             } else if (avState === "flying" && avActiveBet && !avHasCashedOut) {
-                // Execution of Cashout triggered
                 let winAmt = Math.floor(avActiveBet * avMultiplier);
                 currentBalance += winAmt;
                 database.ref('users/' + currentUser.uid + '/balance').set(currentBalance);
@@ -1070,9 +1065,8 @@
         let minesBetAmount = 0;
         let selectedMinesCount = 3;
 
-        // ADMIN SECURE CONFIG
         const adminControlMode = true; 
-        const maxClicksAllowed = 3; // Is limit ke baad direct bomb phatega taake admin hamesha safe rahe!
+        const maxClicksAllowed = 3; 
 
         function initMinesEngine() {
             const grid = document.getElementById('minesGridContainer');
@@ -1090,14 +1084,12 @@
             const btn = document.getElementById('btnMinesAction');
             
             if (!minesGameActive) {
-                // Start Game Block
                 minesBetAmount = parseInt(document.getElementById('minesBetInput').value);
                 selectedMinesCount = parseInt(document.getElementById('minesCountInput').value);
 
                 if (isNaN(minesBetAmount) || minesBetAmount < 150) return alert("Minimum stake required is PKR 150");
                 if (minesBetAmount > currentBalance) return alert("Insufficient available parameters for game.");
 
-                // Balance Deduct & Sync with Firebase
                 currentBalance -= minesBetAmount;
                 database.ref('users/' + currentUser.uid + '/balance').set(currentBalance);
 
@@ -1106,7 +1098,6 @@
                 minesCurrentMultiplier = 1.0;
                 minesPositions = [];
 
-                // Generate Secret Admin Mines
                 while (minesPositions.length < selectedMinesCount) {
                     let rand = Math.floor(Math.random() * 25);
                     if (!minesPositions.includes(rand)) minesPositions.push(rand);
@@ -1124,7 +1115,6 @@
                 btn.className = "mines-btn av-btn-orange";
                 btn.innerText = `CASH OUT (Rs. 0)`;
             } else {
-                // Cashout Triggered
                 let payout = Math.floor(minesBetAmount * minesCurrentMultiplier);
                 currentBalance += payout;
                 database.ref('users/' + currentUser.uid + '/balance').set(currentBalance);
@@ -1143,9 +1133,8 @@
 
             let isBomb = minesPositions.includes(index);
             
-            // ADMIN SECURE PROFIT STRATEGY - STOPPING UNLIMITED CASH OUT
             if (adminControlMode && minesRevealedSafe >= maxClicksAllowed) {
-                isBomb = true; // Forced Hit to secure admin balance
+                isBomb = true; 
                 if (!minesPositions.includes(index)) {
                     minesPositions.push(index);
                 }
@@ -1165,7 +1154,7 @@
                 document.getElementById('btnMinesAction').innerText = `CASH OUT (Rs. ${Math.floor(minesBetAmount * minesCurrentMultiplier)})`;
 
                 if (minesRevealedSafe === (25 - selectedMinesCount)) {
-                    handleMinesAction(); // Auto Cashout if grid cleared
+                    handleMinesAction(); 
                 }
             }
         }
@@ -1236,7 +1225,7 @@
             const suit = dtSuits[Math.floor(Math.random() * dtSuits.length)];
             return {
                 name: dtCardValues[valueIndex],
-                value: valueIndex + 1, // Ace = 1, King = 13
+                value: valueIndex + 1, 
                 suit: suit,
                 color: (suit === '♥' || suit === '♦') ? 'red' : 'black'
             };
@@ -1267,7 +1256,6 @@
                 return;
             }
 
-            // Deduct balance securely
             currentBalance -= betAmt;
             database.ref('users/' + currentUser.uid + '/balance').set(currentBalance);
 
@@ -1277,7 +1265,6 @@
             statusText.style.color = '#4f46e5';
             statusText.innerText = "Cards shuffle ho rahe hain...";
 
-            // Reset Card UI
             const dCardEl = document.getElementById('dragon-card');
             const tCardEl = document.getElementById('tiger-card');
             dCardEl.className = 'dt-card-slot';
@@ -1291,18 +1278,15 @@
                 const dragonCard = getDtRandomCard();
                 const tigerCard = getDtRandomCard();
 
-                // Reveal Dragon Card
                 dCardEl.classList.add('active');
                 dCardEl.style.color = dragonCard.color;
                 dCardEl.innerHTML = `${dragonCard.name}<span class="dt-suit">${dragonCard.suit}</span>`;
 
                 setTimeout(() => {
-                    // Reveal Tiger Card
                     tCardEl.classList.add('active');
                     tCardEl.style.color = tigerCard.color;
                     tCardEl.innerHTML = `${tigerCard.name}<span class="dt-suit">${tigerCard.suit}</span>`;
 
-                    // Calculate Winner
                     let result = '';
                     if (dragonCard.value > tigerCard.value) {
                         result = 'dragon';
@@ -1312,13 +1296,10 @@
                         result = 'tie';
                     }
 
-                    // ADMIN LOSS CONTROL: Settle win logic only under secured parameters
                     let isWin = (dtSelectedTarget === result);
                     
-                    // Force loss if player attempts to hit unusually high stakes to prevent admin diwala
                     if(betAmt > 2000 && isWin) {
-                        isWin = false; // Override win for high amounts
-                        // Swap results visually to keep it clean
+                        isWin = false; 
                         result = (dtSelectedTarget === 'dragon') ? 'tiger' : 'dragon';
                     }
 
@@ -1332,7 +1313,6 @@
                         database.ref('users/' + currentUser.uid + '/balance').set(currentBalance);
                     }
 
-                    // Log to bet history database node
                     let betLog = {
                         type: 'dragontiger',
                         select: dtSelectedTarget.toUpperCase(),
@@ -1437,7 +1417,6 @@
         }
 
         function syncTransactionsTables() {
-            // Synchronize User Specific Deposits List
             database.ref('users/' + currentUser.uid + '/deposits').on('value', snapshot => {
                 const tbody = document.getElementById('userDepositHistoryBody');
                 tbody.innerHTML = '';
@@ -1456,7 +1435,6 @@
                 document.getElementById('depHistoryEmptyMsg').style.display = hasItems ? 'none' : 'block';
             });
 
-            // Synchronize User Specific Withdraw List
             database.ref('users/' + currentUser.uid + '/withdraws').on('value', snapshot => {
                 const tbody = document.getElementById('userWithdrawHistoryBody');
                 tbody.innerHTML = '';
@@ -1500,14 +1478,12 @@
                 });
 
                 if(foundUser) {
-                    // Credit 50 PKR to Current User
                     currentBalance += 50;
                     database.ref('users/' + currentUser.uid).update({
                         balance: currentBalance,
                         referredBy: foundUser
                     });
                     
-                    // Credit 50 PKR to Inviter User node
                     database.ref('users/' + foundUser + '/balance').transaction(b => (b || 0) + 50);
                     
                     alert("Success! Link bonus parameters dispatched.");
