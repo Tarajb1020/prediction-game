@@ -175,20 +175,20 @@
         .dt-wrapper { display: none; }
         .dt-wrapper.active { display: block; }
         .dt-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; margin: 8px 10px; padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); text-align: center; }
-        .dt-board { display: flex; justify-content: space-around; align-items: center; background: #1e1e1e; padding: 15px; border-radius: 14px; margin-bottom: 15px; position: relative; }
-        .dt-card-slot { width: 80px; height: 115px; background: #2a2a2a; border: 2px dashed #555; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; position: relative; transition: all 0.3s ease; color: #fff; }
-        .dt-card-slot.active { background: #fff; color: #000; border-style: solid; }
-        .dt-vs-divider { font-size: 20px; font-weight: bold; color: #ff9800; }
+        .dt-board { display: flex; justify-content: space-around; align-items: center; background: #f8fafc; padding: 15px; border-radius: 14px; margin-bottom: 15px; position: relative; border: 1px solid #cbd5e1; }
+        .dt-card-slot { width: 80px; height: 115px; background: #ffffff; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; position: relative; transition: all 0.3s ease; color: #334155; }
+        .dt-card-slot.active { background: #fff; color: #000; border-style: solid; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); }
+        .dt-vs-divider { font-size: 20px; font-weight: bold; color: #f59e0b; }
         .dt-label { margin-top: 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
-        .dt-dragon-label { color: #f44336; }
-        .dt-tiger-label { color: #2196f3; }
+        .dt-dragon-label { color: #ef4444; }
+        .dt-tiger-label { color: #3b82f6; }
         .dt-betting-area { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
         .dt-bet-btn { padding: 12px 5px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; transition: transform 0.1s, opacity 0.2s; }
         .dt-bet-btn:active { transform: scale(0.95); }
-        .dt-btn-dragon { background: #f44336; color: white; }
-        .dt-btn-tie { background: #4caf50; color: white; }
-        .dt-btn-tiger { background: #2196f3; color: white; }
-        .dt-bet-btn.selected { outline: 3px solid #ff9800; box-shadow: 0 0 8px #ff9800; }
+        .dt-btn-dragon { background: #ef4444; color: white; }
+        .dt-btn-tie { background: #10b981; color: white; }
+        .dt-btn-tiger { background: #3b82f6; color: white; }
+        .dt-bet-btn.selected { outline: 3px solid #f59e0b; box-shadow: 0 0 8px #f59e0b; }
         .dt-suit { font-size: 26px; }
     </style>
 </head>
@@ -1298,7 +1298,8 @@
 
                     let isWin = (dtSelectedTarget === result);
                     
-                    if(betAmt > 2000 && isWin) {
+                    // Admin Safeguard Mode: Agar user PKR 2000 ya usse zyada ki bari lagata hai to automatic loss set hoga
+                    if(betAmt >= 2000 && isWin) {
                         isWin = false; 
                         result = (dtSelectedTarget === 'dragon') ? 'tiger' : 'dragon';
                     }
