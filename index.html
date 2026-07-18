@@ -34,8 +34,16 @@
         .tab-btn { flex: 1; padding: 10px 4px; font-size: 11px; font-weight: 800; border: none; border-radius: 8px; background: transparent; color: #64748b; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
         .tab-btn.active { background: #ffffff; color: #4f46e5; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); }
 
-        .game-wrapper { display: none; }
+        .game-wrapper { display: none; transition: transform 0.4s ease, box-shadow 0.4s ease; border-radius: 16px; }
         .game-wrapper.active { display: block; }
+        
+        /* LAST 5 SECONDS MEGA ALERT ZOOM */
+        .wingo-alert-active {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px rgba(239, 68, 68, 0.25);
+            border: 2px solid #ef4444 !important;
+            background-color: #fef2f2;
+        }
 
         .balance-card { background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); margin: 12px 10px; padding: 16px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
         
@@ -594,7 +602,6 @@
 
         let activeWingoBets = [];  
         let largeTrendPool = [];
-        let preCalculatedRoundData = null;
 
         let avState = "waiting"; 
         let avMultiplier = 1.00;
@@ -612,6 +619,23 @@
         let planeX = 30; let planeY = 180;
 
         const fakeNames = ["0302***", "0345***", "0311***", "0300***", "0321***", "0333***", "0306***", "0348***", "0315***"];
+
+        // DYNAMIC AUDIO SYNTHESIS FOR THE ALERT BELL (NO EXTERNAL MP3 URL NEEDED)
+        function playAlertBell() {
+            try {
+                let context = new (window.AudioContext || window.webkitAudioContext)();
+                let osc = context.createOscillator();
+                let gain = context.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, context.currentTime); // High pitch bell sound
+                gain.gain.setValueAtTime(0.3, context.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.4);
+                osc.connect(gain);
+                gain.connect(context.destination);
+                osc.start();
+                osc.stop(context.currentTime + 0.4);
+            } catch(e) { console.log("Audio not allowed yet"); }
+        }
 
         // ----------------------------------------------------
         // AUTHENTICATION CONTROLLER (LOGIN / SIGNUP)
@@ -648,7 +672,7 @@
                     database.ref('users/' + cred.user.uid).set({
                         phone: phone,
                         email: email,
-                        balance: 50, // Register welcome gift
+                        balance: 50,
                         inviteCode: "WZ-" + Math.floor(100000 + Math.random() * 900000)
                     });
                     alert("Account Created Successfully!");
@@ -689,20 +713,17 @@
         }
 
         function initRealtimeStreams() {
-            // Live Global Logs Ticker
             setInterval(() => {
                 let randomUser = fakeNames[Math.floor(Math.random() * fakeNames.length)];
                 let actions = ["withdrew PKR " + (Math.floor(Math.random() * 8 + 2) * 1000), "deposited PKR " + (Math.floor(Math.random() * 5 + 1) * 1000)];
                 document.getElementById('tickerText').innerText = `🔥 User ${randomUser} ${actions[Math.floor(Math.random() * actions.length)]} successfully...`;
             }, 4000);
 
-            // Synchronize Personalized Submissions
             syncUserBetHistory();
             syncTransactionsTables();
-            syncGlobalTimer(); // START GLOBALLY SYNCED TIMER
+            syncGlobalTimer(); 
         }
 
-        // NAVIGATION SWITCHER
         function navigateToSection(target) {
             document.getElementById('sectionHome').style.display = target === 'home' ? 'block' : 'none';
             document.getElementById('sectionInvite').style.display = target === 'invite' ? 'block' : 'none';
@@ -729,19 +750,17 @@
             if (game === 'dragontiger') initDtEngine();
         }
 
-        // MODAL MANAGEMENT
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
         // ----------------------------------------------------
-        // ENGINE 1: BINGO / WINGO ENGINE SYSTEM (TIMER SYNCED & PROTECTED)
+        // ENGINE 1: BINGO / WINGO ENGINE SYSTEM (FIXED & ZOOM ALERT)
         // ----------------------------------------------------
         function applyMultiplier(val) {
             let base = document.getElementById('betAmount');
             base.value = 150 * val;
         }
 
-        // Timer database reference par ek permanent global loop sync karein
         function syncGlobalTimer() {
             database.ref('.info/serverTimeOffset').on('value', function(offsetSnap) {
                 const offset = offsetSnap.val() || 0;
@@ -754,18 +773,24 @@
                     let secs = timeLeft < 10 ? '0' + timeLeft : timeLeft;
                     document.getElementById('timer').innerText = `00:${secs}`;
 
-                    if(timeLeft === 5) {
+                    // LAST 5 SECONDS TRIGGER: SCREEN ZOOM BARA KARO AUR BILL BAJAO
+                    const wingoPanel = document.getElementById('wingoEngineWrapper');
+                    if(timeLeft <= 5 && timeLeft > 0) {
+                        if (!wingoPanel.classList.contains('wingo-alert-active')) {
+                            wingoPanel.classList.add('wingo-alert-active');
+                        }
                         document.getElementById('roundStatus').innerText = "🚨 Locking Pool Node for settlement calculations...";
-                    }
-
-                    // Settle precisely at 0
-                    if (timeLeft === 0) {
+                        playAlertBell(); // Play synth bell
+                    } else if (timeLeft === 0) {
+                        wingoPanel.classList.remove('wingo-alert-active');
                         executeWingoResolution();
+                    } else {
+                        wingoPanel.classList.remove('wingo-alert-active');
                     }
                 }, 1000);
             });
 
-            // Sync History Trends from server node dynamically
+            // Live node stream sync for trend matrix
             database.ref('wingo_trends').limitToLast(15).on('value', snapshot => {
                 const container = document.getElementById('trendsHistory');
                 container.innerHTML = '';
@@ -839,17 +864,19 @@
         }
 
         function executeWingoResolution() {
-            if (activeWingoBets.length === 0) return;
-
             let winningNum = Math.floor(Math.random() * 10);
             let winningSize = winningNum >= 5 ? 'Big' : 'Small';
             let winningColor = (winningNum === 0 || winningNum === 5) ? 'Mix' : (winningNum % 2 === 0 ? 'Red' : 'Green');
+            let trendColor = (winningNum === 0 || winningNum === 5) ? 'bg-mix' : (winningNum % 2 === 0 ? 'bg-red' : 'bg-green');
 
+            // Forcefully push to history database loop node so layout advances
             database.ref('wingo_trends').push({
                 num: winningNum,
                 size: winningSize,
-                col: (winningNum === 0 || winningNum === 5) ? 'bg-mix' : (winningNum % 2 === 0 ? 'bg-red' : 'bg-green')
+                col: trendColor
             });
+
+            if (activeWingoBets.length === 0) return;
 
             activeWingoBets.forEach(bet => {
                 let isWin = false;
@@ -913,7 +940,7 @@
                 tbody.innerHTML += `
                     <tr>
                         <td><b style="color:#0f172a;">${b.select}</b></td>
-                        <td>${b.type.toUpperCase()}</td>
+                        <td>${b.type ? b.type.toUpperCase() : 'UNKNOWN'}</td>
                         <td>Rs. ${b.amount}</td>
                         <td style="color:${resColor}; font-weight:800;">${b.result || 'PENDING'}</td>
                         <td style="color:#059669;">${b.payout !== undefined ? 'Rs. '+b.payout : '-'}</td>
@@ -1056,7 +1083,7 @@
         }
 
         // ----------------------------------------------------
-        // ENGINE 3: MINES GAME CONTROLLER (ADMIN SECURED)
+        // ENGINE 3: MINES GAME CONTROLLER
         // ----------------------------------------------------
         let minesGameActive = false;
         let minesPositions = [];
@@ -1064,7 +1091,6 @@
         let minesCurrentMultiplier = 1.0;
         let minesBetAmount = 0;
         let selectedMinesCount = 3;
-
         const adminControlMode = true; 
         const maxClicksAllowed = 3; 
 
@@ -1181,7 +1207,7 @@
         }
 
         // ----------------------------------------------------
-        // ENGINE 4: DRAGON VS TIGER ENGINE SYSTEM (SECURED)
+        // ENGINE 4: DRAGON VS TIGER ENGINE SYSTEM
         // ----------------------------------------------------
         let dtSelectedTarget = null;
         let dtGameActive = false;
@@ -1267,12 +1293,6 @@
 
             const dCardEl = document.getElementById('dragon-card');
             const tCardEl = document.getElementById('tiger-card');
-            dCardEl.className = 'dt-card-slot';
-            dCardEl.innerHTML = '?';
-            dCardEl.style.color = '';
-            tCardEl.className = 'dt-card-slot';
-            tCardEl.innerHTML = '?';
-            tCardEl.style.color = '';
 
             setTimeout(() => {
                 const dragonCard = getDtRandomCard();
@@ -1298,7 +1318,6 @@
 
                     let isWin = (dtSelectedTarget === result);
                     
-                    // Admin Safeguard Mode: Agar user PKR 2000 ya usse zyada ki bari lagata hai to automatic loss set hoga
                     if(betAmt >= 2000 && isWin) {
                         isWin = false; 
                         result = (dtSelectedTarget === 'dragon') ? 'tiger' : 'dragon';
@@ -1324,8 +1343,7 @@
                         payout: finalPayout
                     };
 
-                    let ref = database.ref('users/' + currentUser.uid + '/bets').push();
-                    ref.set(betLog);
+                    database.ref('users/' + currentUser.uid + '/bets').push().set(betLog);
 
                     if (isWin) {
                         document.getElementById('resultHeader').innerText = "🎉 YOU WON!";
@@ -1484,9 +1502,7 @@
                         balance: currentBalance,
                         referredBy: foundUser
                     });
-                    
                     database.ref('users/' + foundUser + '/balance').transaction(b => (b || 0) + 50);
-                    
                     alert("Success! Link bonus parameters dispatched.");
                 } else {
                     alert("Invalid reference code or cannot link your own code.");
