@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Win Zone Pro - Automated Control Center</title>
+    <!-- Firebase Libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <style>
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a; color: #f8fafc;
+            overflow-x: hidden;
+        }
+        .admin-container { padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .admin-header { background: linear-gradient(135deg, #1e1b4b, #311042); padding: 20px; border-radius: 16px; border: 1px solid #4338ca; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin-bottom: 25px; }
+        .admin-header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 1px; color: #818cf8; }
+        .live-pulse { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: bold; color: #10b981; }
+        .pulse-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+        
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .admin-card { background: #1e293b; border-radius: 16px; border: 1px solid #334155; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+        .card-title { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Prediction / Next Round Box */
+        .preview-box { background: #0f172a; border-radius: 12px; padding: 15px; border: 1px solid #4f46e5; text-align: center; margin-bottom: 15px; }
+        .preview-highlight { font-size: 28px; font-weight: 900; margin: 10px 0; color: #f59e0b; }
+        
+        /* Table Styles */
+        .table-container { max-height: 350px; overflow-y: auto; font-size: 13px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: #0f172a; color: #94a3b8; padding: 10px; font-weight: bold; position: sticky; top: 0; }
+        td { padding: 12px 10px; border-bottom: 1px solid #334155; font-weight: 600; vertical-align: middle; }
+        
+        /* Action Buttons */
+        .btn-action { padding: 6px 12px; border: none; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        .btn-approve { background: #10b981; color: white; margin-right: 4px; }
+        .btn-approve:hover { background: #059669; }
+        .btn-reject { background: #ef4444; color: white; }
+        .btn-reject:hover { background: #dc2626; }
+        
+        /* Status Badges */
+        .badge { padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .badge-pending { background: #7c2d12; color: #fdba74; }
+        .badge-approved { background: #064e3b; color: #6ee7b7; }
+        .badge-rejected { background: #7f1d1d; color: #fca5a5; }
+        
+        .empty-msg { text-align: center; color: #64748b; font-weight: bold; padding: 20px; text-transform: uppercase; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <!-- HEADER MODULE -->
+        <div class="admin-header">
+            <div>
+                <h1>WIN ZONE CONTROL CENTER</h1>
+                <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Exclusive Live Administrator Console</div>
+            </div>
+            <div class="live-pulse">
+                <span class="pulse-dot"></span> SECURE TUNNEL ACTIVE
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- 1. LIVE ENGINE / AUTOMATION TRACKER -->
+            <div class="admin-card">
+                <div class="card-title">
+                    <span>📡 Wingo Game Loop Status</span>
+                </div>
+                <div class="preview-box">
+                    <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Seeded 15s Advanced Calculation</div>
+                    <div id="panelPrediction" class="preview-highlight">Awaiting Loop Seed...</div>
+                    <div id="panelPeriod" style="font-size: 12px; color: #818cf8; font-weight: bold;">Period ID: --</div>
+                </div>
+                <div style="font-size: 12px; color: #64748b; line-height: 1.5; background: #0f172a; padding: 10px; border-radius: 8px; border-left: 3px solid #f59e0b;">
+                    💡 Node engine auto-synchronizes and locks the outcome 15 seconds prior to resolution shift. No manual configuration needed.
+                </div>
+            </div>
+
+            <!-- 2. DEPOSIT VERIFICATION MODULE -->
+            <div class="admin-card" style="grid-column: span 1;">
+                <div class="card-title">
+                    <span>💰 Deposit Receipts Queue</span>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User/Trx</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="depositQueueBody"></tbody>
+                    </table>
+                    <div id="depEmpty" class="empty-msg" style="display: none;">No incoming deposits</div>
+                </div>
+            </div>
+
+            <!-- 3. WITHDRAWAL GATEWAY MODULE -->
+            <div class="admin-card" style="grid-column: span 1;">
+                <div class="card-title">
+                    <span>📤 Cloud Withdrawal Dispatches</span>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Channel/Account</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="withdrawQueueBody"></tbody>
+                    </table>
+                    <div id="withEmpty" class="empty-msg" style="display: none;">No pending dispatches</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // FIREBASE SETUP (Direct Linked to winzone-bff7c)
+        const firebaseConfig = {
+            apiKey: "AIzaSyC38KxWq7xJdaadAiF5nfChWyne_iA6vBw",
+            authDomain: "winzone-bff7c.firebaseapp.com",
+            databaseURL: "https://winzone-bff7c-default-rtdb.firebaseio.com",
+            projectId: "winzone-bff7c",
+            storageBucket: "winzone-bff7c.firebasestorage.app",
+            messagingSenderId: "398802919500",
+            appId: "1:398802919500:web:3a80d3f0f8c76786b0d4e9"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // 1. DYNAMIC PREVIEW DATA NODE STREAM
+        database.ref("admin_controls/auto_preview").on("value", snapshot => {
+            const data = snapshot.val();
+            if (data) {
+                document.getElementById("panelPrediction").innerText = `${data.size} (${data.num})`;
+                document.getElementById("panelPeriod").innerText = `Target Period Block: ${data.period || 'Syncing'}`;
+            } else {
+                document.getElementById("panelPrediction").innerText = "Idle / Running Loop";
+            }
+        });
+
+        // 2. LIVE INTEGRATED DEPOSIT QUEUE STREAM
+        database.ref("deposit_requests").on("value", snapshot => {
+            const tbody = document.getElementById("depositQueueBody");
+            tbody.innerHTML = '';
+            let count = 0;
+            
+            snapshot.forEach(child => {
+                count++;
+                const item = child.val();
+                const key = child.key;
+                
+                let actionTemplate = '';
+                if (item.status === "pending") {
+                    actionTemplate = `
+                        <button class="btn-action btn-approve" onclick="settleDeposit('${key}', '${item.uid}', ${item.amount}, 'approved')">Pass</button>
+                        <button class="btn-action btn-reject" onclick="settleDeposit('${key}', '${item.uid}', ${item.amount}, 'rejected')">Fail</button>
+                    `;
+                } else {
+                    actionTemplate = `<span style="color:#64748b; font-size:11px;">Processed</span>`;
+                }
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>
+                            <span style="color:#818cf8; font-weight:bold;">${item.email ? item.email.split('@')[0] : 'User'}</span><br>
+                            <code style="color:#a7f3d0; font-size:11px;">TRID: ${item.trxId}</code>
+                        </td>
+                        <td style="color:#10b981; font-weight:bold;">Rs. ${item.amount}</td>
+                        <td><span class="badge badge-${item.status}">${item.status}</span></td>
+                        <td>${actionTemplate}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById("depEmpty").style.display = count === 0 ? 'block' : 'none';
+        });
+
+        function settleDeposit(reqKey, userUid, amount, statusUpdate) {
+            if(!confirm(`Kya aap is Deposit Request ko ${statusUpdate.toUpperCase()} karna chahte hain?`)) return;
+
+            database.ref(`deposit_requests/${reqKey}`).update({ status: statusUpdate }).then(() => {
+                database.ref(`users/${userUid}/deposits/${reqKey}`).update({ status: statusUpdate });
+                
+                if (statusUpdate === 'approved') {
+                    // Approved hone par direct user balance update code execution
+                    database.ref(`users/${userUid}/balance`).transaction(currentBal => {
+                        return (currentBal || 0) + parseInt(amount);
+                    });
+                }
+                alert(`Deposit request successfully marked as ${statusUpdate}.`);
+            });
+        }
+
+        // 3. LIVE INTEGRATED WITHDRAWAL DISPATCH STREAM
+        database.ref("withdrawal_requests").on("value", snapshot => {
+            const tbody = document.getElementById("withdrawQueueBody");
+            tbody.innerHTML = '';
+            let count = 0;
+            
+            snapshot.forEach(child => {
+                count++;
+                const item = child.val();
+                const key = child.key;
+                
+                let actionTemplate = '';
+                if (item.status === "pending") {
+                    actionTemplate = `
+                        <button class="btn-action btn-approve" onclick="settleWithdrawal('${key}', '${item.uid}', ${item.amount}, 'approved')">Done</button>
+                        <button class="btn-action btn-reject" onclick="settleWithdrawal('${key}', '${item.uid}', ${item.amount}, 'rejected')">Reject</button>
+                    `;
+                } else {
+                    actionTemplate = `<span style="color:#64748b; font-size:11px;">Dispatched</span>`;
+                }
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>
+                            <strong style="color:#f59e0b;">${item.method}</strong><br>
+                            <span style="font-size:11px; color:#94a3b8;">Num: ${item.account}</span><br>
+                            <span style="font-size:10px; color:#64748b;">Title: ${item.title}</span>
+                        </td>
+                        <td style="color:#ef4444; font-weight:bold;">Rs. ${item.amount}</td>
+                        <td><span class="badge badge-${item.status}">${item.status}</span></td>
+                        <td>${actionTemplate}</td>
+                    </tr>
+                `;
+            });
+            document.getElementById("withEmpty").style.display = count === 0 ? 'block' : 'none';
+        });
+
+        function settleWithdrawal(reqKey, userUid, amount, statusUpdate) {
+            if(!confirm(`Kya aap is Withdrawal Request ko ${statusUpdate.toUpperCase()} karna chahte hain?`)) return;
+
+            database.ref(`withdrawal_requests/${reqKey}`).update({ status: statusUpdate }).then(() => {
+                database.ref(`users/${userUid}/withdraws/${reqKey}`).update({ status: statusUpdate });
+                
+                if (statusUpdate === 'rejected') {
+                    // Agar reject ho jaye to amount user ke wallet me automatically wapis rollback ho jayegi
+                    database.ref(`users/${userUid}/balance`).transaction(currentBal => {
+                        return (currentBal || 0) + parseInt(amount);
+                    });
+                }
+                alert(`Withdrawal request successfully updated to ${statusUpdate}.`);
+            });
+        }
+    </script>
+</body>
+</html>
