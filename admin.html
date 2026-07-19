@@ -14,34 +14,40 @@
             background-color: #0f172a; color: #f8fafc;
             overflow-x: hidden;
         }
-        .admin-container { padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .admin-container { padding: 20px; max-width: 1400px; margin: 0 auto; }
         .admin-header { background: linear-gradient(135deg, #1e1b4b, #311042); padding: 20px; border-radius: 16px; border: 1px solid #4338ca; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin-bottom: 25px; }
         .admin-header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 1px; color: #818cf8; }
         .live-pulse { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: bold; color: #10b981; }
         .pulse-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
         
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .admin-card { background: #1e293b; border-radius: 16px; border: 1px solid #334155; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+        .admin-card { background: #1e293b; border-radius: 16px; border: 1px solid #334155; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: flex; flex-direction: column; }
         .card-title { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
         
-        /* Prediction / Next Round Box */
+        /* Prediction Box */
         .preview-box { background: #0f172a; border-radius: 12px; padding: 15px; border: 1px solid #4f46e5; text-align: center; margin-bottom: 15px; }
         .preview-highlight { font-size: 28px; font-weight: 900; margin: 10px 0; color: #f59e0b; }
         
         /* Table Styles */
-        .table-container { max-height: 350px; overflow-y: auto; font-size: 13px; }
+        .table-container { max-height: 380px; overflow-y: auto; font-size: 13px; flex-grow: 1; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { background: #0f172a; color: #94a3b8; padding: 10px; font-weight: bold; position: sticky; top: 0; }
+        th { background: #0f172a; color: #94a3b8; padding: 12px 10px; font-weight: bold; position: sticky; top: 0; z-index: 10; }
         td { padding: 12px 10px; border-bottom: 1px solid #334155; font-weight: 600; vertical-align: middle; }
         
-        /* Action Buttons */
+        /* Action UI */
         .btn-action { padding: 6px 12px; border: none; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
         .btn-approve { background: #10b981; color: white; margin-right: 4px; }
         .btn-approve:hover { background: #059669; }
         .btn-reject { background: #ef4444; color: white; }
         .btn-reject:hover { background: #dc2626; }
         
+        /* User Manual Deposit Input */
+        .manual-deposit-box { display: flex; gap: 6px; align-items: center; }
+        .input-money { background: #0f172a; border: 1px solid #475569; border-radius: 6px; padding: 6px; color: #f8fafc; font-size: 12px; width: 70px; font-weight: bold; text-align: center; }
+        .btn-add-money { background: #6366f1; color: white; padding: 6px 10px; border: none; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; }
+        .btn-add-money:hover { background: #4f46e5; }
+
         /* Status Badges */
         .badge { padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
         .badge-pending { background: #7c2d12; color: #fdba74; }
@@ -57,7 +63,7 @@
         <!-- HEADER MODULE -->
         <div class="admin-header">
             <div>
-                <h1>WIN ZONE CONTROL CENTER</h1>
+                <h1>WIN ZONE CONTROL CENTER v2</h1>
                 <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Exclusive Live Administrator Console</div>
             </div>
             <div class="live-pulse">
@@ -82,7 +88,7 @@
             </div>
 
             <!-- 2. DEPOSIT VERIFICATION MODULE -->
-            <div class="admin-card" style="grid-column: span 1;">
+            <div class="admin-card">
                 <div class="card-title">
                     <span>💰 Deposit Receipts Queue</span>
                 </div>
@@ -103,7 +109,7 @@
             </div>
 
             <!-- 3. WITHDRAWAL GATEWAY MODULE -->
-            <div class="admin-card" style="grid-column: span 1;">
+            <div class="admin-card">
                 <div class="card-title">
                     <span>📤 Cloud Withdrawal Dispatches</span>
                 </div>
@@ -120,6 +126,26 @@
                         <tbody id="withdrawQueueBody"></tbody>
                     </table>
                     <div id="withEmpty" class="empty-msg" style="display: none;">No pending dispatches</div>
+                </div>
+            </div>
+
+            <!-- 4. NEW! ENHANCED REGISTERED USERS MANAGEMENT MODULE -->
+            <div class="admin-card" style="grid-column: span 1; min-width: 350px;">
+                <div class="card-title">
+                    <span>👥 Total Registered Game Users</span>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User Details</th>
+                                <th>Balance</th>
+                                <th>Direct Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userManagementBody"></tbody>
+                    </table>
+                    <div id="userEmpty" class="empty-msg" style="display: none;">No users registered yet</div>
                 </div>
             </div>
         </div>
@@ -194,7 +220,6 @@
                 database.ref(`users/${userUid}/deposits/${reqKey}`).update({ status: statusUpdate });
                 
                 if (statusUpdate === 'approved') {
-                    // Approved hone par direct user balance update code execution
                     database.ref(`users/${userUid}/balance`).transaction(currentBal => {
                         return (currentBal || 0) + parseInt(amount);
                     });
@@ -247,12 +272,73 @@
                 database.ref(`users/${userUid}/withdraws/${reqKey}`).update({ status: statusUpdate });
                 
                 if (statusUpdate === 'rejected') {
-                    // Agar reject ho jaye to amount user ke wallet me automatically wapis rollback ho jayegi
                     database.ref(`users/${userUid}/balance`).transaction(currentBal => {
                         return (currentBal || 0) + parseInt(amount);
                     });
                 }
                 alert(`Withdrawal request successfully updated to ${statusUpdate}.`);
+            });
+        }
+
+        // 4. LIVE ALL REGISTERED USERS PIPELINE WITH DIRECT DEPOSIT INJECTION
+        database.ref("users").on("value", snapshot => {
+            const tbody = document.getElementById("userManagementBody");
+            tbody.innerHTML = '';
+            let count = 0;
+
+            snapshot.forEach(child => {
+                count++;
+                const userUid = child.key;
+                const userData = child.val();
+                const userBalance = userData.balance !== undefined ? userData.balance : 0;
+                const userEmail = userData.email ? userData.email : 'No Email Added';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>
+                            <strong style="color:#38bdf8; font-size:13px;">${userEmail}</strong><br>
+                            <span style="color:#64748b; font-size:10px; font-family:monospace;">UID: ${userUid}</span>
+                        </td>
+                        <td style="color:#e2e8f0; font-weight:bold;">
+                            Rs. <span id="bal-display-${userUid}" style="color:#f59e0b;">${userBalance}</span>
+                        </td>
+                        <td>
+                            <div class="manual-deposit-box">
+                                <input type="number" id="input-${userUid}" class="input-money" placeholder="Rs" min="1">
+                                <button class="btn-add-money" onclick="injectManualDeposit('${userUid}', '${userEmail}')">Add</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("userEmpty").style.display = count === 0 ? 'block' : 'none';
+        });
+
+        // FUNCTION TO INJECT MANUAL CASH DIRECT TO WALLET
+        function injectManualDeposit(uid, email) {
+            const inputField = document.getElementById(`input-${uid}`);
+            const amount = parseInt(inputField.value);
+
+            if (isNaN(amount) || amount <= 0) {
+                alert("Bhai, pehle valid amount likhein (jo 0 se badi ho)!");
+                return;
+            }
+
+            if (!confirm(`Kya aap ${email} ke wallet me Rs. ${amount} manual deposit add karna chahte hain?`)) {
+                return;
+            }
+
+            // Realtime Firebase transaction balance injection
+            database.ref(`users/${uid}/balance`).transaction(currentBal => {
+                return (currentBal || 0) + amount;
+            }, (error, committed) => {
+                if (committed) {
+                    alert(`Rs. ${amount} successfully user ke account me load kar diye gae hain!`);
+                    inputField.value = ''; // Reset input box
+                } else {
+                    alert("Deposit injection failed. Database connectivity check karein.");
+                }
             });
         }
     </script>
